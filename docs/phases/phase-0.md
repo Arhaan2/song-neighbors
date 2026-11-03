@@ -27,7 +27,7 @@ Resolved local versions: Node 24.18.0, npm 11.16.0, React/React DOM 19.3.1, Type
 
 ## Exact verification and outcomes
 
-Tested code state: the Phase 0 scaffold before its initial commit, with final production assets `index-guxZoWfs.js` and `index-a5yl92GL.css`. The resulting Git commit is reported separately; this file does not try to embed its own SHA.
+Tested code state: scaffold commit [`7d53082e3cf63f14faca607f1baa60632945016e`](https://github.com/Arhaan2/song-neighbors/commit/7d53082e3cf63f14faca607f1baa60632945016e), with local production assets `index-guxZoWfs.js` and `index-a5yl92GL.css`. The subsequent evidence-only documentation commit changes this report and progress only; its resulting SHA is reported separately rather than embedded in itself.
 
 | Command / check | Actual result |
 | --- | --- |
@@ -57,7 +57,11 @@ The design follows True-black flat, seed 1484283753, with platform fonts instead
 
 ## Publication evidence
 
-The public repository and origin are verified. Initial scaffold push and remote CI are pending in this precommit report; a subsequent evidence-only update will record the tested code commit and actual CI result. No Pages site, deployment or release tag is created in Phase 0.
+The scaffold was committed directly to the new `main` and pushed as [`7d53082e3cf63f14faca607f1baa60632945016e`](https://github.com/Arhaan2/song-neighbors/commit/7d53082e3cf63f14faca607f1baa60632945016e). `git ls-remote origin refs/heads/main` matched that SHA after push, and the local working tree was clean. No bootstrap PR was needed.
+
+[Foundation CI run 41703528953](https://github.com/Arhaan2/song-neighbors/actions/runs/41703528953) completed **successfully** on that exact SHA: Web checks in 26 seconds and Python foundation in 20 seconds. `gh run watch 41703528953 --repo Arhaan2/song-neighbors --exit-status --interval 10` exited 0. The jobs performed fresh locked installs and all configured checks. The runner's Ubuntu migration notice was informational; neither job failed.
+
+The public repository and origin were verified independently of push success. This evidence-only update records the completed publication without altering tested code or configuration. No Pages site, deployment or release tag is created in Phase 0. Local technical completion and remote source publication are complete; public website release remains Phase 4.
 
 ## Limitations and Phase 1 handoff
 
