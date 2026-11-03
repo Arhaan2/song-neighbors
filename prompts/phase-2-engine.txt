@@ -1,0 +1,21 @@
+Implement Phase 2 of Song Neighbors: the actual browser recommendation engine. Execute only this phase, verify it, and stop.
+
+PREFLIGHT
+Use the actual song-neighbors project, normally ~/Desktop/song-neighbors. Read AGENTS.md, PROJECT.md, PROGRESS.md, and the Phase 1 report. Inspect checkout/origin/main/working tree, preserve unrelated changes, and keep the repository PUBLIC. Confirm which real catalog exists and whether any data gate remains outstanding. Do not relabel fixtures as real music analysis.
+
+The product selects 1–5 songs and lists up to 20 recommendations. Offline Python generates embeddings; React/TypeScript/Vite and static files operate on GitHub Pages. No API server or model inference is needed in the browser. Use a phase branch and coherent commits; coordinator owns integration and authorized push/merge. Use disjoint workers and independent review where useful.
+
+WORK
+1. Implement catalog loading/validation and a pure TypeScript ranking module independent of React. Use exact cosine comparisons over normalized vectors. Retain a single-seed nearest-neighbor baseline.
+2. For multiple seeds, retrieve candidates around each selected song, union IDs, and rerank with a small documented blend of closest-seed and average-seed similarity. Add a modest diversity adjustment when assembling results. Keep weights explicit and configurable; they are initial heuristics, not proven optimal choices.
+3. Exclude selected seeds, positive-feedback tracks, explicitly rejected tracks, and their verified duplicates/same-recording groups. Retrieve around positive-feedback tracks too, or score the whole small catalog, so refinement can discover new candidates and a positive example cannot recommend itself. Expand the pool when necessary. Use stable ID tie-breaking. Return fewer than 20 if fewer eligible tracks exist; never pad with duplicates or invented records. Do not treat different recordings as duplicates from title alone.
+4. More like this adds an idempotent positive session preference separate from the 1–5 seed selector. Not this mood excludes the track and modestly reduces related candidates. Prevent conflicting states and retain the current selected seeds as an anchor. Editing seeds clears refinement. Reset clears positive/negative feedback while keeping the current selected chips and restoring their seed-only ranking. Include seed/feedback state in request identity. Unchanged inputs must be deterministic; do not silently exclude every previously displayed recommendation.
+5. Put calculation in a Web Worker with a clear load/query/result/error protocol, request IDs, and latest-request-wins handling. Load vectors once, keep row identity intact, and prevent stale replies from replacing newer results.
+6. Return truthful explanation data, such as closest selected seed. Do not turn cosine values into probabilities of enjoyment or invent mood descriptions.
+
+VERIFY
+Use small hand-calculated vector fixtures for ordering, ties, exclusions, duplicates, multiseed behavior, positive/negative feedback, seed edits, and reset. Check that positives cannot recommend themselves and can contribute new candidate neighborhoods. Check empty input, invalid IDs, undersized catalogs, zero/nonfinite vectors, and manifest/vector mismatch. Compare a few fixed scores with a small independent Python/NumPy reference within a declared tolerance; do not build a second production engine.
+
+Verify latest-request-wins and worker errors. Run real-catalog smoke cases demonstrating that different seeds can change recommendations. If the real catalog is unavailable, finish independent mathematics/worker work and preserve the outstanding data gate. Synthetic tests do not establish musical quality.
+
+Run relevant tests, lint, typecheck, catalog validation when real data exists, and build. Repair actual defects without expanding scope. Update PROGRESS.md and docs/phases/phase-2.md with algorithm/weights, exact evidence, model/catalog identity, limits, and the Phase 3 handoff. Independently review, commit/push/integrate into main when permitted, and report actual local/remote status. Do not build the full UI or start Phase 3. Stop.

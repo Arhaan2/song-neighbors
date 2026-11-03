@@ -1,0 +1,13 @@
+Recover the current Song Neighbors phase without expanding scope.
+
+Work in the actual project, normally ~/Desktop/song-neighbors. Read AGENTS.md, PROJECT.md, PROGRESS.md, and the latest phase report. Inspect the real checkout, origin, branch, working tree, and any remote failure evidence. Preserve unrelated work and keep this repository PUBLIC.
+
+First reproduce or verify the reported blocker. Classify it as a code defect, catalog/model problem, unavailable tool, authentication issue, or remote CI/deployment failure. Do not assume a missing optional tool is an application bug.
+
+Repair the smallest actual cause. Complete independent authorized work while access-dependent actions are pending. Do not add features, silently weaken meaningful acceptance criteria, bypass repository protections, change visibility, fabricate musical quality results, or replace real audio embeddings with synthetic data. Temporary fixtures remain clearly labeled tests.
+
+Use useful disjoint workers and an independent review if available. The coordinator owns integration, commits, pushes, merges, and any deployment already authorized for the current phase. Fixing authentication may require a precise user step; do not ask again whether ordinary commits or the already requested public publication are allowed.
+
+Run affected tests and the relevant production smoke check. Avoid broad reruns without a concrete remaining risk. If optional tooling is unavailable, use an appropriate available check and describe its limits. A required unperformed browser/data check remains pending. Human music preference evaluation can remain unmeasured without blocking a technically honest beta.
+
+Update the phase report and PROGRESS.md with evidence and distinct local/remote/deployment status. Commit the repair and complete the originally authorized publication steps that are now possible. Provide the actual final revision, checks, remaining blocker if any, and next bounded action. Stop at the current phase boundary rather than automatically starting another phase.

@@ -1,0 +1,21 @@
+Implement Phase 3 of Song Neighbors: the complete responsive selection-to-recommendation interface. Execute only this phase, verify it, and stop.
+
+PREFLIGHT
+Use the actual song-neighbors project, normally ~/Desktop/song-neighbors. Read AGENTS.md, PROJECT.md, PROGRESS.md, and the Phase 2 report. Inspect root/origin/main/working tree and preserve unrelated work. Keep the repository PUBLIC. Confirm real catalog and engine status before claiming a working product.
+
+The product is simple: select 1–5 songs that fit the current mood and receive up to 20 recommended titles/artists. React/TypeScript/Vite loads static metadata/vectors and uses the actual browser engine. No playback, music-account integration, user accounts, or hosted API belongs in this phase. Use a phase branch, disjoint workers where useful, an independent reviewer, and coordinator-owned Git/integration. Authorized public pushes/merges should complete when access permits.
+
+WORK
+1. Build one polished page with title/artist search, keyboard-accessible results, recording disambiguation, 1–5 selected chips with removal, a Recommend action, and ranked result cards. Use real catalog examples for a first visit. Surface actual coverage naturally and handle songs outside the catalog honestly.
+2. Wire all results to the actual engine. Add More like this and Not this mood, visibly indicate active refinement, and provide reset. Editing selected seeds clears refinement; reset clears feedback while preserving the current seed chips. Positive-feedback tracks should not reappear as their own recommendations. Keep state in memory for v1. Do not hardcode result lists or silently switch to metadata recommendations.
+3. Design responsive desktop/mobile layouts with clear hierarchy, readable contrast, visible focus, useful spacing, and restrained motion. Respect reduced-motion preference. Use original decorative styling or generated geometric placeholders, not uncleared album artwork. Keep engineering details in an About/Catalog disclosure.
+4. Implement empty, loading, retryable error, no-match, insufficient-result, and catalog-unavailable states. Rapid selection changes must not display results for an old request. Clearly separate initial seeds from feedback preferences.
+5. Ensure asset, worker, and catalog URLs use Vite's actual repository base path. Prefer one entry page without an unnecessary router. Production output must work as static files without a local API, Python process, or private token.
+6. Make attribution and catalog limitations accessible. Keep provider authentication, analytics, audio uploads, graph visualizations, and extra product modes outside v1 unless necessary to repair the agreed flow.
+
+VERIFY AND FINISH
+Run relevant unit tests, lint/typecheck, catalog validation, and production build. Use the built site with a local preview normally on 127.0.0.1:4173 under the repository subpath. In Chromium, test a desktop viewport and mobile viewport: search, select 1–5, remove, recommend, refine, reset, unsupported search, keyboard behavior, rapid input, refresh, and load failure. Capture a small useful set of evidence images/traces; no screenshot-count target.
+
+Required unavailable browser verification stays pending, not passed. Optional browser engines or physical devices must not become blockers. If data remains unavailable, finish independent UI work with clearly labeled fixtures but do not claim the real end-to-end flow passed.
+
+Fix reproduced issues, rerun affected checks, independently review, and update PROJECT.md, PROGRESS.md, and docs/phases/phase-3.md. Commit/push/integrate verified work into main when permitted. Report what actually works, exact commands/results, commit/PR/CI state, catalog coverage, and remaining limits. Do not deploy publicly or start Phase 4. Stop.

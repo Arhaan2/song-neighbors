@@ -1,0 +1,24 @@
+Implement Phase 0 of Song Neighbors. Execute the work, verify it, and stop after this phase.
+
+CONTEXT
+This is Arhaan's new public GitHub side project. A user searches an analyzed song catalog, selects 1–5 songs that fit the current mood, and receives up to 20 audio-similar recommendations. More like this and Not this mood refine the current session. V1 lists titles/artists; it does not play music or connect streaming accounts.
+
+Use offline Python to produce real music embeddings, then a React/TypeScript/Vite website that searches a versioned static catalog in the browser. GitHub Pages is the hosting target. No paid service, hosted inference API, user account system, or vector database is needed.
+
+LOCATION AND AUTHORIZATION
+Use the actual user's ~/Desktop/song-neighbors. Verify the current filesystem and any existing folder before reuse; never initialize an unrelated parent repository. In a non-Mac workspace use the actual selected workspace and report its location instead of inventing a Desktop path. Verify the authenticated personal GitHub identity; the expected account is Arhaan2. Create a new repository named song-neighbors explicitly PUBLIC. If that name belongs to unrelated work, preserve it and choose an available song-neighbors-demo name, reporting the choice. Do not change an unrelated repository's visibility.
+
+Creating this project's public repo, committing, pushing, and integrating completed phases into main are authorized. GitHub Pages publication is authorized in Phase 4. Do not ask for routine confirmation. If authentication is missing, finish local work and report the exact publication step still needed.
+
+WORK
+1. Inspect actual root/origin/branch/working tree and preserve unrelated changes. If the supplied build pack is accessible, import its repository templates into AGENTS.md, PROJECT.md, and PROGRESS.md, and its plan/catalog policy/prompts into the new project. If absent, create equivalent notes from this prompt and the phase sequence below.
+2. Scaffold React, TypeScript, and Vite; create an isolated uv-managed Python project under tools/catalog. Select compatible current dependencies from official documentation and commit lockfiles. Avoid installing globally when a project-local path works.
+3. Establish src/catalog, src/recommend, UI components, tests, public/catalog, and docs/phases. Configure assets for the actual repository base path. The initial screen must honestly say the catalog is not ready; do not create fake song recommendations.
+4. Define the catalog contract: manifest, tracks.json, normalized little-endian embeddings.f32, stable IDs/row mapping, dimensions/counts, encoder immutable revision, preprocessing/window aggregation, hashes, provenance, and attribution. The actual dimension comes from inference later.
+5. Add meaningful lint/typecheck/build and CI. Keep heavy audio extraction out of ordinary web CI. Add ignore rules for source audio, downloaded weights, caches, credentials, local paths/private manifests, and generated build output. Use an MIT license for original application code and separate third-party/data notices.
+6. Record phases: 0 foundation; 1 permitted real catalog/inference/export; 2 exact ranking and worker; 3 complete responsive UI; 4 verification and Pages release.
+
+WORKFLOW AND COMPLETION
+Use at most two implementers with disjoint ownership plus one independent reviewer when useful; coordinator owns integration and Git. If agents are unavailable, use a separate review pass. Bootstrap main and publish the scaffold when authenticated. Verify public visibility rather than assuming it. Run clean installation, lint, typecheck, meaningful existing tests, and production build. Do not invent tests solely to raise counts.
+
+Update PROGRESS.md and docs/phases/phase-0.md with actual work, exact checks/results, limitations, and the Phase 1 handoff. Reports can name the tested code state; give the resulting commit/CI URLs in the final response without circular self-SHA updates. Report local and remote status separately. Do not deploy the unfinished site or start Phase 1. Stop.

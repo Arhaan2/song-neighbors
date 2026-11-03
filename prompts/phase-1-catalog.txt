@@ -1,0 +1,21 @@
+Implement Phase 1 of Song Neighbors: a real, reproducible, publishable audio-embedding catalog. Execute only this phase, verify it, and stop.
+
+PREFLIGHT
+Work in the actual song-neighbors project, normally ~/Desktop/song-neighbors. Read AGENTS.md, PROJECT.md, PROGRESS.md, docs/CATALOG_POLICY.md if present, and the Phase 0 report. Inspect root/origin/main/working tree; preserve unrelated work. The repository must remain PUBLIC. V1 is a static recommendation website with offline Python analysis, not a music player or streaming integration.
+
+Use a phase branch, coherent commits, an independent review, and integrate into main through a PR when available. Existing protections must be respected. Public commits/pushes/integration are authorized; missing remote access must not stop independent local work. Use disjoint implementation workers only when useful.
+
+WORK
+1. Verify the initial source route from https://github.com/mdeff/fma. Download metadata first, inspect actual license fields and subset IDs, count eligible records, and check the published small-archive link/checksum on this machine. The published small audio archive is about 7.2 GiB; check space, use an ignored local cache, and do not fetch larger/full datasets. Do not build elaborate remote-ZIP infrastructure.
+2. Apply a documented per-record allowlist: explicit CC0 or CC BY with exact license/provenance and attribution. Exclude ambiguous, unmapped, NC/ND/SA records under the initial narrow policy. Do not infer a license version from vague text. Keep separate software/model/metadata/audio notices. Establish the basis for the actual public derived catalog; omitting raw audio is not blanket permission.
+3. Implement an offline resumable Python CLI under tools/catalog. Start with laion/larger_clap_music, pin its real revision and compatible processor, and run real inference on permitted audio. Derive output dimensions. Use a documented fixed window/aggregation policy; record which excerpt was actually analyzed. CPU operation is an acceptable default; do not require an unavailable GPU.
+4. Prove extraction on 30–50 actual tracks, then expand toward roughly 500 with a useful range of artists and sounds. The scoped public-beta floor is 100 distinct eligible recordings across at least 10 artists plus a demonstrated five-seed/twenty-result case after exclusions. Report actual counts. Below that floor, report a technical prototype with beta catalog coverage pending; continue independent work without inventing records. This floor is an engineering scope choice, not proof of musical quality.
+5. Cache by source hash + model revision + preprocessing + aggregation; support interrupted runs and per-file failures. Export a versioned manifest, tracks.json, embeddings.f32, and attribution under public/catalog. Store public-safe provenance, stable recording IDs, vector row mapping, norms, dtype/byte order, and file hashes. Exclude local absolute paths, private tracks, raw audio, weights, and caches.
+6. Implement a lightweight catalog validator usable by web CI. Reject missing/misaligned rows, incompatible configuration, corrupt/nonfinite/zero vectors, incorrect byte counts, and missing required provenance. Searchable metadata must correspond to real embeddings. Synthetic vectors belong only in isolated tests.
+
+VERIFY AND FINISH
+Show a genuine inference smoke result, validate the export, and demonstrate compatible-cache reuse and safe resume. Run targeted pipeline/validator tests and the existing web gates. Record source failures and exclusions. A failed source download is a data/access issue, not evidence that random vectors are acceptable.
+
+If no suitable real source can be obtained, finish independent pipeline work, give the precise missing step, and mark the real-catalog requirement incomplete. Do not claim this phase or a public acoustic demo passed. Independent later code may use labeled fixtures while the real-data requirement stays outstanding.
+
+Update PROJECT.md, PROGRESS.md, and docs/phases/phase-1.md with model/catalog identity, actual size/coverage, rights basis, commands/results, and remaining limits. Commit/push/integrate what is verified when permitted; distinguish local from remote state. Do not start Phase 2. Stop.
