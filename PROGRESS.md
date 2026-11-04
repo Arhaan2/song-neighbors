@@ -2,12 +2,11 @@
 
 ## Current state — November 4, 2026
 
-Phase 4 source is integrated and verified. **PUBLICATION PENDING.** Two Pages attempts
-timed out. A third attempt reused their Pages deployment ID and received a cancelled
-status on its first poll. Signed-out desktop and mobile probes of the initial deployments
-received HTTP 404. The planned recovery sends the original verified bytes with a fresh
-delivery ID. Live browser verification, the tag and the GitHub Release remain pending.
-The repository is PUBLIC. Human listening and preference are **unmeasured**.
+**Phase 4 complete.** Song Neighbors v0.1.0 is published on GitHub Pages. Signed-out Chromium desktop and mobile
+journeys passed against the public site and matched all 16 files to the tested artifact.
+Live `build-info.json` identifies source `f8c6260985bbb4de1a041e42e2b1959522aa88b6` and
+catalog `fma-small-clap-general-20261104`. The repository is PUBLIC. Human listening and
+preference are **unmeasured**. [Website](https://arhaan2.github.io/song-neighbors/) · [Live build identity](https://arhaan2.github.io/song-neighbors/build-info.json) · [Release v0.1.0](https://github.com/Arhaan2/song-neighbors/releases/tag/v0.1.0)
 
 | Phase | Implementation | Verification | Publication |
 | --- | --- | --- | --- |
@@ -15,7 +14,7 @@ The repository is PUBLIC. Human listening and preference are **unmeasured**.
 | 1 Real catalog | Complete | Real inference, provenance, 500-track export passed | Public main via PR #1 |
 | 2 Recommendation engine | Complete | Mathematics, worker and session gates passed | Public main via PR #2 |
 | 3 Complete interface | Complete | Required Chromium desktop/mobile flows passed | Public main via PR #3; merge `2e23ff3` |
-| 4 Public release | Release workflow, metadata, notices, evaluation and docs complete | Local 16/16 Chromium, artifact audit and independent review passed; live pending | Public main via PR #4; Pages publication and immutable tag pending |
+| 4 Public release | Release workflow, metadata, notices, evaluation and docs complete | Local/CI 16/16 Chromium cases and live 2/2 journeys passed | Verified public Pages site and `v0.1.0` release |
 
 Catalog `fma-small-clap-general-20261104`: **500 real recordings, 169 artist display names /
 170 source artist IDs, eight source genres, 512 dimensions**. Encoder:
@@ -28,21 +27,20 @@ reset. Pure cosine agrees with an independent full-row calculation; that is func
 not musical satisfaction. [Listening worksheet](docs/LISTENING_WORKSHEET.md) keeps “sounds similar”
 and “want to hear it now” separate and blank.
 
-[PR #4](https://github.com/Arhaan2/song-neighbors/pull/4) merged reviewed
-`f257b652f905293b3c9ea47a7ca3cf756fd345c6` as `f8c6260985bbb4de1a041e42e2b1959522aa88b6`.
-[Main workflow](https://github.com/Arhaan2/song-neighbors/actions/runs/41923813385) passed
-web/Python checks, then uploaded artifact `13368122615` (16 files, 3,271,857 bytes unpacked).
-The [Phase 4 report](docs/phases/phase-4.md) records the separate deployment and live results.
-[Browser evidence](docs/phases/phase-4-browser.json) includes measured local timings. Both
-local and CI production flows passed; a live 404 cannot stand in for a verified public flow.
-The uploaded `build-info.json` identifies the integrated source. Evidence-only commit
-`341d8d0` records the initial attempts. A fresh loopback check of the retained artifact
-passed both Chromium viewports and matched all 16 file hashes. The manual recovery
-workflow checks the original tar digest, embedded build identity and product inputs
-before re-uploading the same tar. Its workflow SHA identifies the delivery attempt.
-Tag `f8c6260985bbb4de1a041e42e2b1959522aa88b6` only after both anonymous live
-journeys confirm that source, catalog and artifact on Pages.
+[PR #4](https://github.com/Arhaan2/song-neighbors/pull/4) integrated the reviewed release
+as `f8c6260985bbb4de1a041e42e2b1959522aa88b6`. Its [main workflow](https://github.com/Arhaan2/song-neighbors/actions/runs/41923813385)
+passed web and Python checks and uploaded the production artifact. The first three Pages
+attempts timed out or returned a cancelled status. Signed-out probes during those attempts
+returned HTTP 404. Evidence-only commit `341d8d0` records the initial failures.
 
-## Phase boundary
+[PR #5](https://github.com/Arhaan2/song-neighbors/pull/5) integrated the workflow for
+restoring the tested tar. The successful [recovery run](https://github.com/Arhaan2/song-neighbors/actions/runs/41929584485)
+used delivery SHA `73d393a735e95570d52c2e1241417b295c45947a`. Independent downloads of
+both artifacts yielded byte-identical tars. The live browser flows confirmed search,
+selection, recommendations, positive/negative refinement, exact reset and refresh.
+[Phase 4 report](docs/phases/phase-4.md) · [Browser measurements](docs/phases/phase-4-browser.json)
 
-Phase 4 continues through the bounded Pages recovery and required live verification.
+The annotated `v0.1.0` tag points to the verified application source
+`f8c6260985bbb4de1a041e42e2b1959522aa88b6`. The GitHub Release was published at
+22:59:27 UTC after both live checks passed. Final verification evidence is recorded
+separately after publication. Work stops at the Phase 4 boundary.

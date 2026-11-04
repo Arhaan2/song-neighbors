@@ -1,11 +1,12 @@
 # Phase 4 — public beta release
 
-November 4, 2026 (America/Los_Angeles). **Implementation and local/CI verification complete;
-PUBLICATION PENDING.** Reviewed release code `f257b652f905293b3c9ea47a7ca3cf756fd345c6`
-was integrated as `f8c6260985bbb4de1a041e42e2b1959522aa88b6`. Their Git trees match.
-The main workflow's clean artifact identifies the latter SHA; a verified live site is required
-before this revision can be tagged. Evidence-only commit `341d8d0` records the initial
-hosting attempts. The recovery workflow has a separate delivery identity.
+November 4, 2026 (America/Los_Angeles). **Phase 4 complete. The public v0.1.0 release passed live verification.**
+Reviewed release code `f257b652f905293b3c9ea47a7ca3cf756fd345c6` was integrated as
+`f8c6260985bbb4de1a041e42e2b1959522aa88b6`. Their Git trees match. The public
+`build-info.json` identifies the integrated SHA and catalog `fma-small-clap-general-20261104`.
+Evidence-only commit `341d8d0` recorded the initial failures. The successful workflow
+used delivery SHA `73d393a735e95570d52c2e1241417b295c45947a` to publish the original
+artifact bytes. [Live site](https://arhaan2.github.io/song-neighbors/) · [Build identity](https://arhaan2.github.io/song-neighbors/build-info.json) · [Release v0.1.0](https://github.com/Arhaan2/song-neighbors/releases/tag/v0.1.0)
 
 ## Preflight and ownership
 
@@ -127,32 +128,36 @@ Neither job reported an invalid artifact or missing permission.
 
 Anonymous Chromium probes on the [actual Pages URL](https://arhaan2.github.io/song-neighbors/)
 during the retry and again after the terminal cancellation returned GitHub's **HTTP 404** on
-both viewports. The `build-info.json` request for those attempts also returned 404. The app, worker and
-catalog were not available there, so **no verified live source/catalog, tag or GitHub Release**
-is claimed. Local and CI verification are complete; **PUBLICATION PENDING**. The public
-repository still has no `v0.1.0` tag. Source release notes are ready in [RELEASE_NOTES.md](../RELEASE_NOTES.md).
+both viewports. The `build-info.json` request for those attempts also returned 404. The app and catalog were unavailable during those probes, so tagging was deferred.
 
 The [third deploy-only attempt](https://github.com/Arhaan2/song-neighbors/actions/runs/41923813385/job/126917884910)
 created environment deployment `7559912724`. At 22:46:25 UTC Pages accepted the same
 artifact and again identified the deployment as `f8c6260985bbb4de1a041e42e2b1959522aa88b6`.
 Its first poll at 22:46:31 UTC returned `deployment_cancelled`. This immediate result
-motivates one attempt with a fresh delivery ID. The cause of the earlier stall is unknown.
+motivated one attempt with a fresh delivery ID. The cause of the earlier stall is unknown.
 
 The retained original `artifact.tar` has SHA-256
 `7e5919b8ce212548440ec3fa1247e099e7cee3ac8f782ef5199faa8584341e05`. Two fresh
 loopback Chromium journeys passed against those bytes, one per required viewport.
-Each exercised the product flow and matched all 16 file hashes. The original artifact
-is retained by Actions until November 5, 2026 at 22:17 UTC.
+Each exercised the product flow and matched all 16 file hashes.
 
-**Pending recovery.** The [manual recovery workflow](../../.github/workflows/recover-phase-4.yml)
-restores artifact `13368122615` from run `41923813385`. It requires the original release
-as an ancestor and allows only workflow/evidence differences from that source. It checks
-the exact tar digest, clean embedded source SHA, catalog version and manifest hash, and
-repo base path before passing the same tar to Pages. Failure of any check blocks deployment.
-Product and catalog inputs are unchanged. The recovery workflow commit supplies the fresh
-Pages delivery ID. The site bytes still identify integrated source `f8c6260985bbb4de1a041e42e2b1959522aa88b6`.
-Observe the recovery job's terminal result and run the anonymous live checks below. The
-release tag must target the live-confirmed source and both browser journeys must pass first.
+[PR #5](https://github.com/Arhaan2/song-neighbors/pull/5) added a manual workflow to
+restore the tested payload. Head `932054e3784087bd6c7ad9f2c6246b2fc27411e1` passed
+[PR CI](https://github.com/Arhaan2/song-neighbors/actions/runs/41929186559) and was
+integrated as `73d393a735e95570d52c2e1241417b295c45947a`. Its [main CI](https://github.com/Arhaan2/song-neighbors/actions/runs/41929429274)
+passed and skipped normal Pages deployment.
+
+The [recovery workflow](https://github.com/Arhaan2/song-neighbors/actions/runs/41929584485)
+succeeded. Its [restore job](https://github.com/Arhaan2/song-neighbors/actions/runs/41929584485/job/126922779841)
+verified source ancestry, allowed only workflow/evidence changes, and checked the tar digest,
+clean embedded SHA, catalog version, manifest hash and base path. It uploaded the same
+`artifact.tar` in Actions artifact `13370193066`. Its outer ZIP has SHA-256
+`28874cf2cd0380692c9812f78b1134f89c91fb65484e4c69d61f54a0465d03cd`.
+Independent downloads and a byte comparison confirmed that both inner tars match exactly.
+The [deploy job](https://github.com/Arhaan2/song-neighbors/actions/runs/41929584485/job/126922871782)
+published those bytes in environment deployment `7560099844`. Its delivery SHA was
+`73d393a735e95570d52c2e1241417b295c45947a`. The deployed application identifies its
+original source `f8c6260985bbb4de1a041e42e2b1959522aa88b6`.
 
 The clean local candidate at `f257b652f905293b3c9ea47a7ca3cf756fd345c6` also passed the two
 focused anonymous release journeys with `sourceDirty: false`; each compared all 16 file hashes.
@@ -163,9 +168,28 @@ screenshots show the locally verified release candidate, not the public Pages UR
 These single unthrottled localhost measurements include Playwright actionability, assertion
 polling and rendering; they are not public network timings or guarantees.
 
-For an independent live check, download the workflow's `github-pages` artifact and unpack
-its `artifact.tar` into a temporary directory. Confirm `build-info.json` matches the workflow
-source and catalog. Point the focused test at those exact downloaded bytes:
+## Live browser verification
+
+Two fresh anonymous Chromium 156 contexts exercised the actual HTTPS Pages URL.
+The desktop (1440×900) and mobile (390×844) journeys both passed in 9.8 seconds total.
+They loaded the real worker and catalog, searched and selected one through five seeds,
+rendered 20 recommendations, applied both feedback directions, reset to the exact
+seed-only ordering and refreshed to an empty session. Both checked attribution and
+matched all 16 deployed file hashes to the recovered artifact. Each had zero failed
+requests and zero page errors. The public `build-info.json` reported `sourceDirty: false`,
+source `f8c6260985bbb4de1a041e42e2b1959522aa88b6` and catalog `fma-small-clap-general-20261104`.
+[Desktop screenshot](assets/phase-4-live-desktop.png) · [Mobile screenshot](assets/phase-4-live-mobile.png) · [Browser evidence, `recovery.live`](phase-4-browser.json)
+
+| Observed public Pages flow | Desktop | Mobile viewport |
+| --- | ---: | ---: |
+| Navigation to usable search | 2,184 ms | 283 ms |
+| Recommend click to 20 rendered cards, one seed | 82 ms | 61 ms |
+| Recommend click to 20 rendered cards, five seeds | 59 ms | 57 ms |
+
+These are single observations from the tested browser, network and catalog. The click
+measurements include worker execution, browser rendering and test-side waiting.
+
+The focused check used the extracted artifact as its reference.
 
 ```sh
 RELEASE_ARTIFACT_DIR="$artifact_directory" \
@@ -173,10 +197,13 @@ RELEASE_BASE_URL=https://arhaan2.github.io/song-neighbors/ \
 PLAYWRIGHT_CHANNEL=chrome npm run test:e2e -- tests/e2e/release.spec.ts
 ```
 
-The browser contexts start without cookies or stored identity. They must load the real worker
-and catalog, render results and both feedback directions, reset exactly, clear state on refresh,
-fetch attribution, and match all public file hashes. An HTTP 200 on just the landing page is
-insufficient. Do not tag until both browser cases pass against the intended deployment.
+## Release
+
+After both public journeys passed, GitHub Release `v0.1.0` was published at 22:59:27 UTC.
+The remote annotated tag object `0bfc227487bee8fcb5e66c8cc601c0061d0d61c7` peels to
+`f8c6260985bbb4de1a041e42e2b1959522aa88b6`, the source in live `build-info.json`.
+The final evidence update records this outcome separately from the delivery and tagged
+application revisions. [Release v0.1.0](https://github.com/Arhaan2/song-neighbors/releases/tag/v0.1.0) · [Source release notes](../RELEASE_NOTES.md)
 
 ## Human listening and limitations
 

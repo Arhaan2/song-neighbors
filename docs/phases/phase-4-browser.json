@@ -1,4 +1,5 @@
 {
+  "currentStatus": "Phase 4 complete: published and verified on GitHub Pages. Earlier probe failures below are historical; see recovery.live and recovery.release.",
   "localFullSuite": {
     "stats": {
       "startTime": "2026-11-04T22:13:43.368Z",
@@ -419,7 +420,222 @@
     ],
     "productFlow": "Could not start: GitHub Pages returned its own 404 to both contexts during the deployment-only retry."
   },
-  "liveFinalAttempt": {
+  "workflow": {
+    "run": 41923813385,
+    "sourceSha": "f8c6260985bbb4de1a041e42e2b1959522aa88b6",
+    "artifactId": 13368122615,
+    "archiveSha256": "4a244a04ef90a530bc71060de3e470e507bd45880a695a20edcfd37b83c2d97b",
+    "archiveBytes": 1241526,
+    "artifactExpiresUtc": "2026-11-05T22:17:41Z",
+    "attempts": [
+      {
+        "attempt": 1,
+        "deployJob": 126903498137,
+        "environmentDeployment": 7559377173,
+        "outcome": "cancelled at 10-minute timeout while updating_pages"
+      },
+      {
+        "attempt": 2,
+        "deployJob": 126909018013,
+        "environmentDeployment": 7559586372,
+        "outcome": "deploy-only retry cancelled at 10-minute timeout; Pages returned empty polling status"
+      }
+    ]
+  },
+  "recovery": {
+    "previousEvidenceCommit": "341d8d0850d4a5c8d72de0d5471114984a57679f",
+    "sharedIdAttempt": {
+      "run": 41923813385,
+      "attempt": 3,
+      "job": 126917884910,
+      "environmentDeployment": 7559912724,
+      "outcome": "Same Pages ID accepted then reported cancelled on first poll."
+    },
+    "sourceSha": "f8c6260985bbb4de1a041e42e2b1959522aa88b6",
+    "deliverySha": "73d393a735e95570d52c2e1241417b295c45947a",
+    "pr": 5,
+    "prValidation": 41929186559,
+    "mainValidation": 41929429274,
+    "workflowRun": 41929584485,
+    "verifyJob": 126922779841,
+    "deployJob": 126922871782,
+    "environmentDeployment": 7560099844,
+    "outcome": "success",
+    "originalArtifactId": 13368122615,
+    "originalZipSha256": "4a244a04ef90a530bc71060de3e470e507bd45880a695a20edcfd37b83c2d97b",
+    "restoredArtifactId": 13370193066,
+    "restoredZipSha256": "28874cf2cd0380692c9812f78b1134f89c91fb65484e4c69d61f54a0465d03cd",
+    "identicalTarSha256": "7e5919b8ce212548440ec3fa1247e099e7cee3ac8f782ef5199faa8584341e05",
+    "identicalTarBytes": 3287040,
+    "retainedArtifactSmoke": {
+      "passed": 2,
+      "comparedArtifactFilesPerContext": 16
+    },
+    "live": {
+      "stats": {
+        "startTime": "2026-11-04T22:57:26.024Z",
+        "duration": 9791.703000000001,
+        "expected": 2,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "observations": [
+        {
+          "project": "desktop",
+          "url": "https://arhaan2.github.io/song-neighbors/",
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          },
+          "browser": "156.0.8078.80",
+          "identity": {
+            "schemaVersion": 1,
+            "sourceSha": "f8c6260985bbb4de1a041e42e2b1959522aa88b6",
+            "sourceDirty": false,
+            "catalogVersion": "fma-small-clap-general-20261104",
+            "catalogManifestSha256": "b57bda0fb968b5feb49bb4ad7f33ea61ff67647483f496b519edea85b576ae11",
+            "basePath": "/song-neighbors/"
+          },
+          "navigationToReadyMs": 2184.278709,
+          "clickTo20VisibleMs": [
+            82.08787500000017,
+            58.51629100000082
+          ],
+          "timingNote": "Single unthrottled run; wall time includes Playwright actions/assertion polling, worker validation, network and rendering. Not a universal latency promise.",
+          "seeds": [
+            "fma:045099",
+            "fma:003832",
+            "fma:003950",
+            "fma:004037",
+            "fma:004070"
+          ],
+          "baseline": [
+            "fma:004071",
+            "fma:006855",
+            "fma:004075",
+            "fma:004074",
+            "fma:004076",
+            "fma:004072",
+            "fma:045100",
+            "fma:006856",
+            "fma:004078",
+            "fma:004077",
+            "fma:004080",
+            "fma:006854",
+            "fma:122363",
+            "fma:004073",
+            "fma:148234",
+            "fma:074370",
+            "fma:122360",
+            "fma:004079",
+            "fma:115775",
+            "fma:148235"
+          ],
+          "positive": "fma:004071",
+          "rejected": "fma:004074",
+          "comparedArtifactFiles": 16,
+          "anonymousContext": true,
+          "resetExact": true,
+          "refreshCleared": true,
+          "errors": [],
+          "failed": [],
+          "requestedUrls": [
+            "https://arhaan2.github.io/song-neighbors/",
+            "https://arhaan2.github.io/song-neighbors/assets/index-BKBPVX1B.css",
+            "https://arhaan2.github.io/song-neighbors/assets/index-ugoifDOh.js",
+            "https://arhaan2.github.io/song-neighbors/assets/recommend.worker-BUQyE7PA.js",
+            "https://arhaan2.github.io/song-neighbors/catalog/current.json",
+            "https://arhaan2.github.io/song-neighbors/catalog/fma-small-clap-general-20261104/manifest.json",
+            "https://arhaan2.github.io/song-neighbors/catalog/fma-small-clap-general-20261104/build.json",
+            "https://arhaan2.github.io/song-neighbors/catalog/fma-small-clap-general-20261104/tracks.json",
+            "https://arhaan2.github.io/song-neighbors/catalog/fma-small-clap-general-20261104/embeddings.f32"
+          ],
+          "screenshot": "assets/phase-4-live-desktop.png"
+        },
+        {
+          "project": "mobile",
+          "url": "https://arhaan2.github.io/song-neighbors/",
+          "viewport": {
+            "width": 390,
+            "height": 844
+          },
+          "browser": "156.0.8078.80",
+          "identity": {
+            "schemaVersion": 1,
+            "sourceSha": "f8c6260985bbb4de1a041e42e2b1959522aa88b6",
+            "sourceDirty": false,
+            "catalogVersion": "fma-small-clap-general-20261104",
+            "catalogManifestSha256": "b57bda0fb968b5feb49bb4ad7f33ea61ff67647483f496b519edea85b576ae11",
+            "basePath": "/song-neighbors/"
+          },
+          "navigationToReadyMs": 283.25579099999993,
+          "clickTo20VisibleMs": [
+            60.73979099999997,
+            56.89199999999994
+          ],
+          "timingNote": "Single unthrottled run; wall time includes Playwright actions/assertion polling, worker validation, network and rendering. Not a universal latency promise.",
+          "seeds": [
+            "fma:045099",
+            "fma:003832",
+            "fma:003950",
+            "fma:004037",
+            "fma:004070"
+          ],
+          "baseline": [
+            "fma:004071",
+            "fma:006855",
+            "fma:004075",
+            "fma:004074",
+            "fma:004076",
+            "fma:004072",
+            "fma:045100",
+            "fma:006856",
+            "fma:004078",
+            "fma:004077",
+            "fma:004080",
+            "fma:006854",
+            "fma:122363",
+            "fma:004073",
+            "fma:148234",
+            "fma:074370",
+            "fma:122360",
+            "fma:004079",
+            "fma:115775",
+            "fma:148235"
+          ],
+          "positive": "fma:004071",
+          "rejected": "fma:004074",
+          "comparedArtifactFiles": 16,
+          "anonymousContext": true,
+          "resetExact": true,
+          "refreshCleared": true,
+          "errors": [],
+          "failed": [],
+          "requestedUrls": [
+            "https://arhaan2.github.io/song-neighbors/",
+            "https://arhaan2.github.io/song-neighbors/assets/index-BKBPVX1B.css",
+            "https://arhaan2.github.io/song-neighbors/assets/index-ugoifDOh.js",
+            "https://arhaan2.github.io/song-neighbors/assets/recommend.worker-BUQyE7PA.js",
+            "https://arhaan2.github.io/song-neighbors/catalog/current.json",
+            "https://arhaan2.github.io/song-neighbors/catalog/fma-small-clap-general-20261104/manifest.json",
+            "https://arhaan2.github.io/song-neighbors/catalog/fma-small-clap-general-20261104/build.json",
+            "https://arhaan2.github.io/song-neighbors/catalog/fma-small-clap-general-20261104/embeddings.f32",
+            "https://arhaan2.github.io/song-neighbors/catalog/fma-small-clap-general-20261104/tracks.json"
+          ],
+          "screenshot": "assets/phase-4-live-mobile.png"
+        }
+      ]
+    },
+    "release": {
+      "tag": "v0.1.0",
+      "annotatedTagObject": "0bfc227487bee8fcb5e66c8cc601c0061d0d61c7",
+      "peeledSourceSha": "f8c6260985bbb4de1a041e42e2b1959522aa88b6",
+      "url": "https://github.com/Arhaan2/song-neighbors/releases/tag/v0.1.0",
+      "publishedAt": "2026-11-04T22:59:27Z"
+    }
+  },
+  "liveAttemptAfterOriginalTimeouts": {
     "url": "https://arhaan2.github.io/song-neighbors/",
     "stats": {
       "startTime": "2026-11-04T22:39:08.539Z",
@@ -453,27 +669,5 @@
     "releaseTag": null,
     "status": "PUBLICATION PENDING",
     "explanation": "GitHub Pages did not serve the product. Public selection, ranking, refinement, reset, refresh and file hashes could not be verified."
-  },
-  "workflow": {
-    "run": 41923813385,
-    "sourceSha": "f8c6260985bbb4de1a041e42e2b1959522aa88b6",
-    "artifactId": 13368122615,
-    "archiveSha256": "4a244a04ef90a530bc71060de3e470e507bd45880a695a20edcfd37b83c2d97b",
-    "archiveBytes": 1241526,
-    "artifactExpiresUtc": "2026-11-05T22:17:41Z",
-    "attempts": [
-      {
-        "attempt": 1,
-        "deployJob": 126903498137,
-        "environmentDeployment": 7559377173,
-        "outcome": "cancelled at 10-minute timeout while updating_pages"
-      },
-      {
-        "attempt": 2,
-        "deployJob": 126909018013,
-        "environmentDeployment": 7559586372,
-        "outcome": "deploy-only retry cancelled at 10-minute timeout; Pages returned empty polling status"
-      }
-    ]
   }
 }
