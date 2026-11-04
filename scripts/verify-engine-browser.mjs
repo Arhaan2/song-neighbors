@@ -8,6 +8,9 @@ const [helperPath, preview = 'http://127.0.0.1:4173/song-neighbors/', output = '
 if (!helperPath) throw new Error('Usage: node scripts/verify-engine-browser.mjs <cdp-helper.mjs> [preview-url] [evidence.json]')
 const { Browser } = await import(pathToFileURL(resolve(helperPath)).href)
 const manifest = JSON.parse(await readFile('dist/.vite/manifest.json', 'utf8'))
+if (!manifest['src/recommend/browser.ts']) {
+  throw new Error('This historical Phase 2 verifier requires its standalone engine entry. On Phase 3 and later, build the application and run npm run test:e2e.')
+}
 const engine = new URL(manifest['src/recommend/browser.ts'].file, preview).href
 const browser = await Browser.launch()
 try {

@@ -31,6 +31,8 @@ jobs:
       - run: npm test
       - run: npm run validate:catalog
       - run: npm run build
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e
 
   python-catalog:
     name: Python pipeline (no audio extraction)
