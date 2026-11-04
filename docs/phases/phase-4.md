@@ -4,7 +4,8 @@ November 4, 2026 (America/Los_Angeles). **Implementation and local/CI verificati
 PUBLICATION PENDING.** Reviewed release code `f257b652f905293b3c9ea47a7ca3cf756fd345c6`
 was integrated as `f8c6260985bbb4de1a041e42e2b1959522aa88b6`. Their Git trees match.
 The main workflow's clean artifact identifies the latter SHA; a verified live site is required
-before this revision can be tagged. The evidence commit is separate from the workflow source.
+before this revision can be tagged. Evidence-only commit `341d8d0` records the initial
+hosting attempts. The recovery workflow has a separate delivery identity.
 
 ## Preflight and ownership
 
@@ -122,24 +123,36 @@ reused the same artifact ID and digest (environment deployment `7559586372`, fol
 `7559377173`). Pages accepted it at 22:28:41 UTC but returned an empty status while polling;
 at 22:38:39 UTC the second job also timed out and cancelled. Workflow attempt 2 finished
 **cancelled**, not successful. The official [Pages deployment limit](https://docs.github.com/en/pages/getting-started-with-github-pages/github-pages-limits) is ten minutes.
-Neither job reported an invalid artifact or missing permission; no evidence supported another
-application change or a third immediate retry.
+Neither job reported an invalid artifact or missing permission.
 
 Anonymous Chromium probes on the [actual Pages URL](https://arhaan2.github.io/song-neighbors/)
 during the retry and again after the terminal cancellation returned GitHub's **HTTP 404** on
-both viewports; the final `build-info.json` request also returned 404. The app, worker and
+both viewports. The `build-info.json` request for those attempts also returned 404. The app, worker and
 catalog were not available there, so **no verified live source/catalog, tag or GitHub Release**
 is claimed. Local and CI verification are complete; **PUBLICATION PENDING**. The public
 repository still has no `v0.1.0` tag. Source release notes are ready in [RELEASE_NOTES.md](../RELEASE_NOTES.md).
 
-**Smallest unblock:** when Pages can process the deployment, rerun only its job:
-`gh run rerun --repo Arhaan2/song-neighbors --job 126909018013`. This reuses the verified
-artifact until November 5, 2026, 2:17 p.m. Pacific (22:17 UTC). If that artifact expires,
-rerun the original workflow run `41923813385` at its original SHA to validate/build/test and
-upload the same integrated source again. If Pages continues to stall, the two linked job logs,
-environment deployment IDs and artifact digest identify the case for GitHub Support. After a
-successful deployment, run the live check below, then tag only the exact live-confirmed SHA.
-The later evidence-only commit does not change what was tested and must not be tagged instead.
+The [third deploy-only attempt](https://github.com/Arhaan2/song-neighbors/actions/runs/41923813385/job/126917884910)
+created environment deployment `7559912724`. At 22:46:25 UTC Pages accepted the same
+artifact and again identified the deployment as `f8c6260985bbb4de1a041e42e2b1959522aa88b6`.
+Its first poll at 22:46:31 UTC returned `deployment_cancelled`. This immediate result
+motivates one attempt with a fresh delivery ID. The cause of the earlier stall is unknown.
+
+The retained original `artifact.tar` has SHA-256
+`7e5919b8ce212548440ec3fa1247e099e7cee3ac8f782ef5199faa8584341e05`. Two fresh
+loopback Chromium journeys passed against those bytes, one per required viewport.
+Each exercised the product flow and matched all 16 file hashes. The original artifact
+is retained by Actions until November 5, 2026 at 22:17 UTC.
+
+**Pending recovery.** The [manual recovery workflow](../../.github/workflows/recover-phase-4.yml)
+restores artifact `13368122615` from run `41923813385`. It requires the original release
+as an ancestor and allows only workflow/evidence differences from that source. It checks
+the exact tar digest, clean embedded source SHA, catalog version and manifest hash, and
+repo base path before passing the same tar to Pages. Failure of any check blocks deployment.
+Product and catalog inputs are unchanged. The recovery workflow commit supplies the fresh
+Pages delivery ID. The site bytes still identify integrated source `f8c6260985bbb4de1a041e42e2b1959522aa88b6`.
+Observe the recovery job's terminal result and run the anonymous live checks below. The
+release tag must target the live-confirmed source and both browser journeys must pass first.
 
 The clean local candidate at `f257b652f905293b3c9ea47a7ca3cf756fd345c6` also passed the two
 focused anonymous release journeys with `sourceDirty: false`; each compared all 16 file hashes.

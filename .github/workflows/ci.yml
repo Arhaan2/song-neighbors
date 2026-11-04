@@ -22,11 +22,32 @@ jobs:
     name: Web checks
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    outputs:
+      publish: ${{ steps.publication.outputs.publish }}
     permissions:
       contents: read
       pages: read
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      # A delivery-workflow change still runs every existing check. It must not
+      # replace the released build when the only other changes are phase evidence.
+      - name: Decide whether this event publishes website files
+        id: publication
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        env:
+          BEFORE: ${{ github.event.before }}
+        run: |
+          publish=true
+          if [[ "$GITHUB_EVENT_NAME" == push && "$BEFORE" != 0000000000000000000000000000000000000000 ]]; then
+            changes=$(git diff --name-only "$BEFORE" "$GITHUB_SHA" -- . \
+              ':(exclude).github/workflows/ci.yml' ':(exclude).github/workflows/recover-phase-4.yml' \
+              ':(exclude)PROGRESS.md' ':(exclude)docs/phases/**')
+            [[ -n "$changes" ]] || publish=false
+          fi
+          echo "publish=$publish" >> "$GITHUB_OUTPUT"
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
         with:
           node-version-file: .nvmrc
@@ -38,7 +59,7 @@ jobs:
       - run: npm run validate:catalog -- --require-ready
       - run: npm run test:release
       - name: Configure Pages
-        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        if: steps.publication.outputs.publish == 'true'
         uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5
       - run: npm run build
       - run: npx playwright install --with-deps chromium
@@ -46,7 +67,7 @@ jobs:
       - run: npm run audit:release
       # Upload the exact dist/ just tested. No build occurs in the deploy job.
       - name: Upload verified Pages artifact
-        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        if: steps.publication.outputs.publish == 'true'
         uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4
         with:
           path: dist
@@ -73,7 +94,7 @@ jobs:
 
   deploy:
     name: Deploy verified artifact
-    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && needs.web.outputs.publish == 'true'
     needs: [web, python-catalog]
     runs-on: ubuntu-latest
     timeout-minutes: 10
