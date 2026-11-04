@@ -1,0 +1,220 @@
+{
+  "schemaVersion": 1,
+  "auditDate": "2026-11-04",
+  "scope": "Independent raw-checkpoint and genuine inference verification for Phase 1. Rejected checkpoint data are retained only in the ignored local cache; only the accepted general checkpoint may produce the public catalog.",
+  "method": {
+    "loader": "torch.load(checkpoint, map_location=cpu, weights_only=True), torch 2.8.0; inspect the stored state dictionary directly, without creating a model or reinitializing tensors.",
+    "biasSelection": "State keys ending in .bias; compare every element exactly with zero.",
+    "normalizationParameterSelection": "Keys containing norm or bn (case insensitive), ending in .weight or .bias; compare every weight with one and every bias with zero.",
+    "batchNormRunningStatisticSelection": "Keys ending in .running_mean or .running_var; compare respectively with zero or one.",
+    "normalizationCountClarification": "There are 134 normalization parameter tensors (84 audio, 50 text) and 2 audio batch-normalization running-statistic buffers, totaling the earlier reported 136 normalization tensors/buffers. The training counter is separate.",
+    "pairwiseCosine": "Read little-endian float32 vectors, promote to float64, L2-normalize each row, compute all upper-triangular off-diagonal dot products. Distribution is a diagnostic, not a quality metric."
+  },
+  "checkpoints": [
+    {
+      "id": "laion/larger_clap_music",
+      "revision": "a0b4534a14f58e20944452dff00a22a06ce629d1",
+      "sourceUrl": "https://huggingface.co/laion/larger_clap_music/tree/a0b4534a14f58e20944452dff00a22a06ce629d1",
+      "status": "rejected",
+      "weightArtifact": {
+        "path": "pytorch_model.bin",
+        "bytes": 776444665,
+        "sha256": "5c289311f4a030d768af7ffbfdecd01b008aa64824211899a4e59f4f9d154fd1"
+      },
+      "stateTensorCount": 555,
+      "allFloatingStateFinite": true,
+      "all": {
+        "biasTensorCount": 253,
+        "allZeroBiasTensorCount": 253,
+        "normalizationParameterTensorCount": 134,
+        "defaultNormalizationParameterTensorCount": 134,
+        "batchNormRunningStatisticTensorCount": 2,
+        "defaultBatchNormRunningStatisticTensorCount": 2
+      },
+      "audio": {
+        "biasTensorCount": 153,
+        "allZeroBiasTensorCount": 153,
+        "normalizationParameterTensorCount": 84,
+        "defaultNormalizationParameterTensorCount": 84,
+        "batchNormRunningStatisticTensorCount": 2,
+        "defaultBatchNormRunningStatisticTensorCount": 2
+      },
+      "text": {
+        "biasTensorCount": 100,
+        "allZeroBiasTensorCount": 100,
+        "normalizationParameterTensorCount": 50,
+        "defaultNormalizationParameterTensorCount": 50,
+        "batchNormRunningStatisticTensorCount": 0,
+        "defaultBatchNormRunningStatisticTensorCount": 0
+      },
+      "batchNormCounters": {
+        "audio_model.audio_encoder.batch_norm.num_batches_tracked": 0
+      },
+      "relativePositionBiasTableCount": 18,
+      "allZeroRelativePositionBiasTableCount": 18,
+      "conclusion": "Rejected: the raw immutable checkpoint has an initialization-state fingerprint across both towers. Its derived vectors were withdrawn and are not accepted as trained acoustic embeddings."
+    },
+    {
+      "id": "laion/larger_clap_general",
+      "revision": "ada0c23a36c4e8582805bb38fec3905903f18b41",
+      "sourceUrl": "https://huggingface.co/laion/larger_clap_general/tree/ada0c23a36c4e8582805bb38fec3905903f18b41",
+      "status": "accepted",
+      "weightArtifact": {
+        "path": "pytorch_model.bin",
+        "bytes": 776444665,
+        "sha256": "314eb00cce6ad68d25237b8446b659ccdb136ed4672c1bca470f142f72455026"
+      },
+      "stateTensorCount": 555,
+      "allFloatingStateFinite": true,
+      "all": {
+        "biasTensorCount": 253,
+        "allZeroBiasTensorCount": 0,
+        "normalizationParameterTensorCount": 134,
+        "defaultNormalizationParameterTensorCount": 0,
+        "batchNormRunningStatisticTensorCount": 2,
+        "defaultBatchNormRunningStatisticTensorCount": 0
+      },
+      "audio": {
+        "biasTensorCount": 153,
+        "allZeroBiasTensorCount": 0,
+        "normalizationParameterTensorCount": 84,
+        "defaultNormalizationParameterTensorCount": 0,
+        "batchNormRunningStatisticTensorCount": 2,
+        "defaultBatchNormRunningStatisticTensorCount": 0
+      },
+      "text": {
+        "biasTensorCount": 100,
+        "allZeroBiasTensorCount": 0,
+        "normalizationParameterTensorCount": 50,
+        "defaultNormalizationParameterTensorCount": 0,
+        "batchNormRunningStatisticTensorCount": 0,
+        "defaultBatchNormRunningStatisticTensorCount": 0
+      },
+      "batchNormCounters": {
+        "audio_model.audio_encoder.batch_norm.num_batches_tracked": 85173
+      },
+      "relativePositionBiasTableCount": 18,
+      "allZeroRelativePositionBiasTableCount": 0,
+      "conclusion": "Accepted for Phase 1 extraction: the exact pinned checkpoint contains non-default learned state across both towers and nonzero training batch statistics, with genuine CPU inference separately reproduced. This does not establish musical recommendation quality."
+    }
+  ],
+  "acceptedSmokeRuns": [
+    {
+      "run": "smoke-general-40-interrupted",
+      "rowCount": 32,
+      "cacheHits": 0,
+      "inferred": 32,
+      "failureCount": 0,
+      "configurationSha256": "df676ec4a59e37f6abff6084a2a5ea1d9f175a9c953e8864afe531f5bddfe2eb",
+      "extractionPipeline": {
+        "dirty": false,
+        "sourceCommit": "69af20ef2fe9f1f4e03746c06078159901a0399b",
+        "sourceTreeSha256": "8215e5ad4fc6e794c3e047993f05974a0a7f5d6f47f8cfe429e80bbd84d36227"
+      }
+    },
+    {
+      "run": "smoke-general-40",
+      "rowCount": 40,
+      "cacheHits": 32,
+      "inferred": 8,
+      "failureCount": 0,
+      "configurationSha256": "df676ec4a59e37f6abff6084a2a5ea1d9f175a9c953e8864afe531f5bddfe2eb",
+      "extractionPipeline": {
+        "dirty": false,
+        "sourceCommit": "69af20ef2fe9f1f4e03746c06078159901a0399b",
+        "sourceTreeSha256": "8215e5ad4fc6e794c3e047993f05974a0a7f5d6f47f8cfe429e80bbd84d36227"
+      }
+    },
+    {
+      "run": "smoke-general-40-reuse",
+      "rowCount": 40,
+      "cacheHits": 40,
+      "inferred": 0,
+      "failureCount": 0,
+      "configurationSha256": "df676ec4a59e37f6abff6084a2a5ea1d9f175a9c953e8864afe531f5bddfe2eb",
+      "extractionPipeline": {
+        "dirty": false,
+        "sourceCommit": "69af20ef2fe9f1f4e03746c06078159901a0399b",
+        "sourceTreeSha256": "8215e5ad4fc6e794c3e047993f05974a0a7f5d6f47f8cfe429e80bbd84d36227"
+      }
+    }
+  ],
+  "resumeRowsPreservedExactly": true,
+  "independentCpuInference": {
+    "modelId": "laion/larger_clap_general",
+    "revision": "ada0c23a36c4e8582805bb38fec3905903f18b41",
+    "sourceRecordingId": "fma:045099",
+    "dimension": 512,
+    "threads": 2,
+    "vectorSha256": "f8f9fab0dd11634d14fb27bca22ecf03471075217d213277f1a6de08c5935e8c",
+    "matchesPreviouslyExtractedCacheBytesExactly": true,
+    "coverageMatchesExactly": true,
+    "analyzedWindowsSeconds": [
+      [
+        0,
+        10
+      ],
+      [
+        10,
+        20
+      ],
+      [
+        20,
+        30
+      ]
+    ],
+    "sourceDurationSeconds": 30.002708333333334
+  },
+  "vectorDiagnostics": [
+    {
+      "label": "rejected-music-smoke",
+      "catalogVersion": "smoke-40",
+      "manifestSha256": "5bf92eba31fc4fa2e0cafc5dc019b2aa2b345dfb75b9b967b2510e9605595c75",
+      "trackCount": 40,
+      "dimension": 512,
+      "uniqueVectorByteRows": 40,
+      "pairwiseCosineExcludingDiagonal": {
+        "minimum": 0.20292536075378173,
+        "median": 0.9702740133693426,
+        "maximum": 0.9968465484774309
+      }
+    },
+    {
+      "label": "accepted-general-smoke",
+      "catalogVersion": "smoke-general-40",
+      "manifestSha256": "31128019898df10f48f33c291a495c32a689220768560f1a65bff6e0f6153591",
+      "trackCount": 40,
+      "dimension": 512,
+      "uniqueVectorByteRows": 40,
+      "pairwiseCosineExcludingDiagonal": {
+        "minimum": -0.07077178157820231,
+        "median": 0.34215866820643437,
+        "maximum": 0.8498305920351709
+      }
+    },
+    {
+      "label": "accepted-general-final",
+      "catalogVersion": "fma-small-clap-general-20261104",
+      "manifestSha256": "b57bda0fb968b5feb49bb4ad7f33ea61ff67647483f496b519edea85b576ae11",
+      "trackCount": 500,
+      "dimension": 512,
+      "uniqueVectorByteRows": 500,
+      "pairwiseCosineExcludingDiagonal": {
+        "minimum": -0.1149650405279238,
+        "median": 0.36210026843265974,
+        "maximum": 0.9670215055898725
+      }
+    }
+  ],
+  "upstreamContext": [
+    {
+      "url": "https://huggingface.co/laion/larger_clap_music/discussions/2",
+      "relevance": "Primary model repository users report nearly equal zero-shot class outputs. This concerns audio/text classification and is context, not the basis of the direct checkpoint finding."
+    },
+    {
+      "url": "https://github.com/embeddings-benchmark/mteb/issues/5069",
+      "relevance": "Primary benchmark issue reports near-constant music-checkpoint text embeddings; maintainer calls it model-specific. This is not independently treated as proof about the audio tower."
+    }
+  ],
+  "decision": "Do not publish or reuse the initial music-checkpoint vectors. Pin and verify the general replacement, use a distinct configuration/cache identity, repeat real extraction and all export gates. Musical quality and model comparison remain unvalidated and outside Phase 1."
+}

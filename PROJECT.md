@@ -20,7 +20,7 @@ A user searches the prepared catalog, selects one to five songs that fit their c
 3. A pure TypeScript engine combines candidates around each selected seed, reranks for current-session feedback, removes exact/known recording duplicates, and returns up to twenty results with stable tie-breaking.
 4. GitHub Actions verifies and builds the static website. In Phase 4, the exact verified build artifact is deployed to GitHub Pages.
 
-Start with `laion/larger_clap_music`; verify and pin the actual model revision and compatible dependencies during implementation. The model is replaceable through the catalog contract, but comparing multiple encoders is later work. The frontend needs no model weights and no Python runtime.
+Phase 1 started with `laion/larger_clap_music`, rejected its initialization-state checkpoint, and verified a pinned trained `laion/larger_clap_general` replacement. The model remains replaceable through the catalog contract; comparative musical-quality evaluation is later work. The frontend needs no model weights and no Python runtime.
 
 ## Catalog contract
 
@@ -31,6 +31,24 @@ Use `public/catalog/<catalog-version>/manifest.json`, `tracks.json`, and `embedd
 - Vectors: row-major little-endian float32, finite and normalized within a recorded tolerance. File byte count is `track_count * dimension * 4`.
 
 Keep detailed reproducibility configuration and public-safe source audio hashes in the build manifest. Exclude local absolute paths and private records. Do not assign the same recording group merely because two titles look similar.
+
+## Phase 1 implementation status
+
+Catalog `fma-small-clap-general-20261104` contains **500 distinct real recordings**, **169 artist
+display names** (170 source artist IDs), all eight FMA-small source genre labels, and measured
+**512-dimensional** embeddings. The ready pointer and all five version artifacts pass the lightweight
+validator. A real 40-track CPU smoke, deliberate interruption/resume, full compatible-cache reuse,
+and five-seed/twenty-result case after exclusions are verified.
+
+The initial `laion/larger_clap_music` revision was tested and rejected after its checkpoint showed
+initialization-state weights. The accepted trained replacement is `laion/larger_clap_general` at
+`ada0c23a36c4e8582805bb38fec3905903f18b41`, with its same-revision audio processor. Rejected vectors
+are excluded. Exact CC0/CC BY recording grants and retained notices establish the derived-data
+publication basis; metadata, model and software notices remain separate.
+
+See [Phase 1 evidence](docs/phases/phase-1.md) for measured coverage, model audit, hashes, commands
+and limits. Phase 2 has not started; the current site reports catalog availability and credits only.
+The catalog coverage floor is an engineering scope choice, not evidence of listener preference.
 
 ## Initial ranking behavior
 

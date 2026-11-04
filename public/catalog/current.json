@@ -1,5 +1,1 @@
-{
-  "schemaVersion": 1,
-  "status": "not-ready",
-  "reason": "The initial music checkpoint failed the pretrained-weight audit; a trained replacement is being verified."
-}
+{"catalogVersion":"fma-small-clap-general-20261104","manifestSha256":"b57bda0fb968b5feb49bb4ad7f33ea61ff67647483f496b519edea85b576ae11","schemaVersion":1,"status":"ready"}

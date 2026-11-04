@@ -1,0 +1,148 @@
+{
+  "schemaVersion": 1,
+  "catalogVersion": "fma-small-clap-general-20261104",
+  "manifestSha256": "b57bda0fb968b5feb49bb4ad7f33ea61ff67647483f496b519edea85b576ae11",
+  "inferenceKind": "Real permitted FMA audio; pinned trained LAION general checkpoint; CPU. Rejected music-checkpoint vectors are excluded.",
+  "audioArchive": {
+    "bytes": 7679594875,
+    "sha1": "ade154f733639d52e35e32f5593efe5be76c6d70",
+    "sha256": "f923bbef327820456d50965c3c320c3c7b6dab8456449429fd78f7ec96a5d02c",
+    "completedPartialVerifiedAndAdoptedWithoutNetwork": true
+  },
+  "extractionPipeline": {
+    "dirty": false,
+    "sourceCommit": "69af20ef2fe9f1f4e03746c06078159901a0399b",
+    "sourceTreeSha256": "8215e5ad4fc6e794c3e047993f05974a0a7f5d6f47f8cfe429e80bbd84d36227"
+  },
+  "configurationSha256": "df676ec4a59e37f6abff6084a2a5ea1d9f175a9c953e8864afe531f5bddfe2eb",
+  "dependencyLockSha256": "5ba57ff401a6abfad3327adef559b0f37991f5258882f7d39f12ff920d7cfab9",
+  "runs": {
+    "smoke-general-40-interrupted": {
+      "rows": 32,
+      "cacheHits": 0,
+      "inferred": 32,
+      "failures": []
+    },
+    "smoke-general-40": {
+      "rows": 40,
+      "cacheHits": 32,
+      "inferred": 8,
+      "failures": []
+    },
+    "smoke-general-40-reuse": {
+      "rows": 40,
+      "cacheHits": 40,
+      "inferred": 0,
+      "failures": []
+    },
+    "catalog-general-500": {
+      "rows": 500,
+      "cacheHits": 40,
+      "inferred": 460,
+      "failures": []
+    }
+  },
+  "interruption": {
+    "method": "SIGINT during smoke-general-40",
+    "exitCode": 130,
+    "completedEntriesPreserved": 32,
+    "identicalCommandResumedSuccessfully": true
+  },
+  "smokeExample": {
+    "id": "fma:045099",
+    "title": "Spell",
+    "artist": "Rolemusic",
+    "audioSha256": "ca039a16af5c13db576811bc7d0a4cdad8e4bbb278523b0a98d713011950d5b6",
+    "dimension": 512,
+    "coverage": {
+      "analyzedWindows": [
+        {
+          "endSeconds": 10,
+          "startSeconds": 0
+        },
+        {
+          "endSeconds": 20,
+          "startSeconds": 10
+        },
+        {
+          "endSeconds": 30,
+          "startSeconds": 20
+        }
+      ],
+      "describes": "available-audio-excerpt",
+      "sourceDurationSeconds": 30.002708333333334
+    },
+    "vectorSha256": "f8f9fab0dd11634d14fb27bca22ecf03471075217d213277f1a6de08c5935e8c",
+    "vectorNorm": 0.999999999975603,
+    "firstEightFloat32Values": [
+      -0.09786021709442139,
+      -0.03524757921695709,
+      0.05358074605464935,
+      -0.0015454647364094853,
+      0.029764322564005852,
+      0.021352116018533707,
+      -0.030052531510591507,
+      0.09037502110004425
+    ]
+  },
+  "coverage": {
+    "tracks": 500,
+    "distinctAudioHashes": 500,
+    "artistDisplayNames": 169,
+    "sourceArtistIds": 170,
+    "sourceGenreCounts": {
+      "Folk": 71,
+      "Rock": 70,
+      "International": 51,
+      "Experimental": 71,
+      "Hip-Hop": 70,
+      "Electronic": 71,
+      "Instrumental": 70,
+      "Pop": 26
+    },
+    "recordingLicenseCounts": {
+      "https://creativecommons.org/licenses/by/3.0/": 125,
+      "https://creativecommons.org/licenses/by/4.0/": 356,
+      "https://creativecommons.org/publicdomain/zero/1.0/": 19
+    }
+  },
+  "vectorIntegrity": {
+    "dimension": 512,
+    "bytes": 1024000,
+    "distinctVectorHashes": 500,
+    "minimumNorm": 0.9999999942569098,
+    "maximumNorm": 1.0000000050878215
+  },
+  "vectorDistribution": {
+    "metric": "off-diagonal pairwise cosine after float64 normalization of exported float32 vectors",
+    "pairs": 124750,
+    "minimum": -0.1149650405279238,
+    "median": 0.36210026843265974,
+    "p90": 0.5770867981765042,
+    "p99": 0.7669773003798336,
+    "maximum": 0.9670215055898725,
+    "interpretation": "These measured statistics and the coverage floor do not establish musical quality or listener preference."
+  },
+  "publicArtifacts": {
+    "ATTRIBUTION.md": {
+      "bytes": 578195,
+      "sha256": "84f78b50a8135da5484d444ff7c7c31fa7ae914ed0a7b1346e82b8fce871e981"
+    },
+    "build.json": {
+      "bytes": 331169,
+      "sha256": "f7dce8ea9a4a0c3e65a744832a9e6a38982d945cf71fed2a2f3bddd31531a166"
+    },
+    "embeddings.f32": {
+      "bytes": 1024000,
+      "sha256": "0b29eefec5e6f708f1be7bc2d25d5b3e4970b4f036e698c7ce8d775389aa9054"
+    },
+    "manifest.json": {
+      "bytes": 3173,
+      "sha256": "b57bda0fb968b5feb49bb4ad7f33ea61ff67647483f496b519edea85b576ae11"
+    },
+    "tracks.json": {
+      "bytes": 864444,
+      "sha256": "0c057dfd8a53e14f04a4f19471e4aea22761b43e60b0b13c9eeee3dfd421284f"
+    }
+  }
+}

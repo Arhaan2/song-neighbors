@@ -67,9 +67,8 @@ The initial `laion/larger_clap_music` revision
 withdrawn to the ignored cache. Passing byte/shape checks did not establish a usable pretrained
 acoustic representation, and the validator now rejects both that revision and those checkpoint
 bytes. The Phase 1 report preserves the investigation and replacement-inference evidence.
-Replacement dimensions must be derived from actual inference and checked across every row;
-this contract does not claim a replacement smoke result or carry forward the rejected model's
-measured dimension.
+The accepted replacement's real 40-track smoke independently measured 512 dimensions, checked
+across every final row. A future replacement must measure its own dimension again.
 
 Preprocessing decodes float32 audio with soundfile/libsndfile, averages channels in float64 then
 converts to float32, and uses soxr HQ to resample to 48,000 Hz. It applies no loudness or peak
