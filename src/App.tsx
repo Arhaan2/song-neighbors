@@ -27,7 +27,7 @@ export default function App() {
         <details className="about-project">
           <summary>What will Song Neighbors do?</summary>
           <div className="about-content">
-            <p>Once the catalog is ready, you’ll be able to search its titles and artists, choose 1–5 songs, and get up to 20 audio-similar recommendations.</p>
+            <p>Once the discovery tools are ready, you’ll be able to search the catalog’s titles and artists, choose 1–5 songs, and get up to 20 audio-similar recommendations.</p>
             <p>“More like this” and “Not this mood” will refine that session. Results will list songs and artists, with no playback or streaming account required.</p>
             <p>Only analyzed songs in the prepared catalog will be searchable. Your favorites may not be included.</p>
           </div>
