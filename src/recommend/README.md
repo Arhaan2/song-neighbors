@@ -41,7 +41,15 @@ Explanations return the actual closest **selected** seed (even after feedback), 
 that seed, mean seed cosine, feedback similarities and applied diversity penalty. `score`
 is ranking utility after adjustments, never a probability of enjoyment or a mood label.
 
-## Phase 3 integration
+## UI integration
+
+`src/ui/controller.ts` owns the current memory-only UI session, with `useSongNeighbors.ts`
+adapting it to React. Selecting/removing a seed clears refinement and displayed results;
+the user explicitly chooses Recommend. Feedback/reset rerun automatically. The controller
+invalidates previous generations immediately and sends an empty query to supersede any
+pending worker work when chips change. Retrying recreates the worker and reloads validated
+data while preserving usable seeds/preferences. Its generation/lifecycle guards also cover
+already-settled replies and StrictMode setup/cleanup.
 
 ```ts
 import {
@@ -87,10 +95,8 @@ queried for every changed selection, including empty selection, so obsolete work
 A load failure can be retried on the same client. `dispose()` terminates the worker.
 
 The browser constructor uses Vite's `new Worker(new URL(..., import.meta.url))` convention
-and `import.meta.env.BASE_URL` for catalog fetches. Before Phase 3 imports it into the UI,
-the production build emits a standalone module at the entry recorded for
-`src/recommend/browser.ts` in `dist/.vite/manifest.json`. The public screen remains the
-existing catalog status view; the engine is verified directly, not presented as a finished UI.
+and `import.meta.env.BASE_URL` for catalog fetches. The production build has one HTML entry,
+with the engine imported by the UI and its worker emitted as a separate static asset.
 
 ## Verification
 
@@ -100,7 +106,9 @@ worker/client schedules. `tools/catalog/reference_scores.py` is a small independ
 score oracle, not another recommendation engine. `tests/fixtures/numpy-scores.json` records
 its results; the TS comparison requires absolute error ≤ 1e-12 and binds the real vector hash.
 
-`scripts/browser-engine-smoke.mjs` exports `runEngineSmoke(engineModuleUrl)` for evaluation
-inside a real browser on the preview origin. It imports the built entry and checks real
-catalog/session/worker behavior. The Phase 2 report records Chromium execution and measured
-results. Full user-interface end-to-end tests belong to Phase 3.
+`npm run test:e2e` exercises the built interface in Chromium at desktop/mobile sizes, including
+actual worker replies, errors/retry, keyboard selection and stale-request behavior. Its
+transport/presentation fault harness exists only in tests and never enters the production
+bundle. `scripts/browser-engine-smoke.mjs` and `verify-engine-browser.mjs` are historical
+Phase 2 tooling for that revision's standalone engine entry; the immutable Phase 2 report
+records their measurements.
