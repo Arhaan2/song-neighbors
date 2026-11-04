@@ -1,0 +1,60 @@
+{
+  "tolerance": 1e-12,
+  "numpyVersion": "2.3.4",
+  "fixtures": [
+    {
+      "id": "axis-x",
+      "cosineX": 1.0,
+      "cosineY": 0.0,
+      "blend": 0.825
+    },
+    {
+      "id": "axis-y",
+      "cosineX": 0.0,
+      "cosineY": 1.0,
+      "blend": 0.825
+    },
+    {
+      "id": "three-four",
+      "cosineX": 0.6,
+      "cosineY": 0.8,
+      "blend": 0.765
+    },
+    {
+      "id": "diagonal",
+      "cosineX": 0.7071067811865475,
+      "cosineY": 0.7071067811865475,
+      "blend": 0.7071067811865475
+    },
+    {
+      "id": "opposite",
+      "cosineX": -1.0,
+      "cosineY": 0.0,
+      "blend": -0.175
+    }
+  ],
+  "catalogVersion": "fma-small-clap-general-20261104",
+  "vectorSha256": "0b29eefec5e6f708f1be7bc2d25d5b3e4970b4f036e698c7ce8d775389aa9054",
+  "realScores": [
+    {
+      "seedId": "fma:045099",
+      "targetId": "fma:045100",
+      "cosine": 0.964205199149891
+    },
+    {
+      "seedId": "fma:045099",
+      "targetId": "fma:071506",
+      "cosine": 0.8525317970404438
+    },
+    {
+      "seedId": "fma:003832",
+      "targetId": "fma:006855",
+      "cosine": 0.9156093335148492
+    },
+    {
+      "seedId": "fma:154307",
+      "targetId": "fma:141592",
+      "cosine": 0.7277821424569964
+    }
+  ]
+}

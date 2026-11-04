@@ -47,7 +47,7 @@ are excluded. Exact CC0/CC BY recording grants and retained notices establish th
 publication basis; metadata, model and software notices remain separate.
 
 See [Phase 1 evidence](docs/phases/phase-1.md) for measured coverage, model audit, hashes, commands
-and limits. Phase 2 has not started; the current site reports catalog availability and credits only.
+and limits. Phase 2 implements and verifies the pure ranking engine, browser loader, session helpers and worker client. The current public-facing screen still reports catalog availability and credits only; the complete interface is Phase 3. See [Phase 2 evidence](docs/phases/phase-2.md).
 The catalog coverage floor is an engineering scope choice, not evidence of listener preference.
 
 ## Initial ranking behavior

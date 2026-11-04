@@ -1,0 +1,264 @@
+{
+  "test": "Production module worker smoke, not listener quality evaluation",
+  "date": "2026-11-04",
+  "browser": {
+    "protocolVersion": "1.3",
+    "product": "Chrome/156.0.8078.80",
+    "revision": "@fb096c0011f9d50f0a264a9376420cdea9c421e3",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+    "jsVersion": "15.6.75.27"
+  },
+  "cases": [
+    {
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "catalogVersion": "fma-small-clap-general-20261104",
+      "trackCount": 500,
+      "dimension": 512,
+      "loadMs": 66.60000014305115,
+      "queryTimesMs": [
+        6.799999952316284,
+        4,
+        3.8999998569488525,
+        4.200000047683716,
+        4.299999952316284,
+        3.9000000953674316,
+        4.8999998569488525,
+        0,
+        13.799999952316284
+      ],
+      "seedCases": [
+        {
+          "seedId": "fma:045099",
+          "top3": [
+            {
+              "id": "fma:045100",
+              "title": "Leafless Quince Tree",
+              "artist": "Rolemusic",
+              "cosineToClosestSeed": 0.9642051991498909
+            },
+            {
+              "id": "fma:071506",
+              "title": "Cloudy",
+              "artist": "Subway Sonicbeat",
+              "cosineToClosestSeed": 0.8525317970404445
+            },
+            {
+              "id": "fma:071508",
+              "title": "Burn Down the Monostery",
+              "artist": "egr",
+              "cosineToClosestSeed": 0.8081061843701456
+            }
+          ]
+        },
+        {
+          "seedId": "fma:003832",
+          "top3": [
+            {
+              "id": "fma:006855",
+              "title": "This Old Love",
+              "artist": "Lior",
+              "cosineToClosestSeed": 0.915609333514849
+            },
+            {
+              "id": "fma:006856",
+              "title": "Autumn Flow",
+              "artist": "Lior",
+              "cosineToClosestSeed": 0.9035952905764725
+            },
+            {
+              "id": "fma:006854",
+              "title": "Lost in Your",
+              "artist": "Lior",
+              "cosineToClosestSeed": 0.8821388576452318
+            }
+          ]
+        }
+      ],
+      "fiveSeedCase": {
+        "seedIds": [
+          "fma:003832",
+          "fma:003950",
+          "fma:004037",
+          "fma:004070",
+          "fma:004071"
+        ],
+        "positiveIds": [
+          "fma:068551"
+        ],
+        "negativeIds": [
+          "fma:113511"
+        ],
+        "eligibleCount": 493,
+        "candidateCount": 195,
+        "resultIds": [
+          "fma:004074",
+          "fma:004072",
+          "fma:004078",
+          "fma:004076",
+          "fma:004077",
+          "fma:004075",
+          "fma:004073",
+          "fma:006855",
+          "fma:004079",
+          "fma:004080",
+          "fma:006856",
+          "fma:006854",
+          "fma:074370",
+          "fma:148234",
+          "fma:115775",
+          "fma:122363",
+          "fma:122360",
+          "fma:148235",
+          "fma:122354",
+          "fma:115774"
+        ]
+      },
+      "checks": [
+        "actual module worker and Pages base",
+        "row identity",
+        "metadata-only session state",
+        "load coalescing",
+        "seed-sensitive results",
+        "determinism",
+        "positive idempotence and exclusion",
+        "negative exclusion",
+        "reset",
+        "seed edits",
+        "latest-request-wins",
+        "worker query errors",
+        "empty input",
+        "five seeds and twenty results"
+      ],
+      "uncaughtPageErrors": []
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "mobile": true
+      },
+      "catalogVersion": "fma-small-clap-general-20261104",
+      "trackCount": 500,
+      "dimension": 512,
+      "loadMs": 43.799999952316284,
+      "queryTimesMs": [
+        4.599999904632568,
+        3.4000000953674316,
+        3.5999999046325684,
+        4.5,
+        4.400000095367432,
+        3.3999998569488525,
+        3.6000001430511475,
+        0.09999990463256836,
+        13.100000143051147
+      ],
+      "seedCases": [
+        {
+          "seedId": "fma:045099",
+          "top3": [
+            {
+              "id": "fma:045100",
+              "title": "Leafless Quince Tree",
+              "artist": "Rolemusic",
+              "cosineToClosestSeed": 0.9642051991498909
+            },
+            {
+              "id": "fma:071506",
+              "title": "Cloudy",
+              "artist": "Subway Sonicbeat",
+              "cosineToClosestSeed": 0.8525317970404445
+            },
+            {
+              "id": "fma:071508",
+              "title": "Burn Down the Monostery",
+              "artist": "egr",
+              "cosineToClosestSeed": 0.8081061843701456
+            }
+          ]
+        },
+        {
+          "seedId": "fma:003832",
+          "top3": [
+            {
+              "id": "fma:006855",
+              "title": "This Old Love",
+              "artist": "Lior",
+              "cosineToClosestSeed": 0.915609333514849
+            },
+            {
+              "id": "fma:006856",
+              "title": "Autumn Flow",
+              "artist": "Lior",
+              "cosineToClosestSeed": 0.9035952905764725
+            },
+            {
+              "id": "fma:006854",
+              "title": "Lost in Your",
+              "artist": "Lior",
+              "cosineToClosestSeed": 0.8821388576452318
+            }
+          ]
+        }
+      ],
+      "fiveSeedCase": {
+        "seedIds": [
+          "fma:003832",
+          "fma:003950",
+          "fma:004037",
+          "fma:004070",
+          "fma:004071"
+        ],
+        "positiveIds": [
+          "fma:068551"
+        ],
+        "negativeIds": [
+          "fma:113511"
+        ],
+        "eligibleCount": 493,
+        "candidateCount": 195,
+        "resultIds": [
+          "fma:004074",
+          "fma:004072",
+          "fma:004078",
+          "fma:004076",
+          "fma:004077",
+          "fma:004075",
+          "fma:004073",
+          "fma:006855",
+          "fma:004079",
+          "fma:004080",
+          "fma:006856",
+          "fma:006854",
+          "fma:074370",
+          "fma:148234",
+          "fma:115775",
+          "fma:122363",
+          "fma:122360",
+          "fma:148235",
+          "fma:122354",
+          "fma:115774"
+        ]
+      },
+      "checks": [
+        "actual module worker and Pages base",
+        "row identity",
+        "metadata-only session state",
+        "load coalescing",
+        "seed-sensitive results",
+        "determinism",
+        "positive idempotence and exclusion",
+        "negative exclusion",
+        "reset",
+        "seed edits",
+        "latest-request-wins",
+        "worker query errors",
+        "empty input",
+        "five seeds and twenty results"
+      ],
+      "uncaughtPageErrors": []
+    }
+  ]
+}
