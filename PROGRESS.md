@@ -2,10 +2,12 @@
 
 ## Current state — November 4, 2026
 
-Phase 4 source is integrated and verified. **PUBLICATION PENDING:** GitHub Pages accepted
-the tested artifact, but two deployment attempts timed out. Final signed-out desktop and
-mobile Chromium checks received HTTP 404. No verified live site, tag or GitHub Release.
-The repository remains PUBLIC. Human listening and preference remain **unmeasured**.
+Phase 4 source is integrated and verified. **PUBLICATION PENDING.** Two Pages attempts
+timed out. A third attempt reused their Pages deployment ID and received a cancelled
+status on its first poll. Signed-out desktop and mobile probes of the initial deployments
+received HTTP 404. The planned recovery sends the original verified bytes with a fresh
+delivery ID. Live browser verification, the tag and the GitHub Release remain pending.
+The repository is PUBLIC. Human listening and preference are **unmeasured**.
 
 | Phase | Implementation | Verification | Publication |
 | --- | --- | --- | --- |
@@ -33,12 +35,14 @@ web/Python checks, then uploaded artifact `13368122615` (16 files, 3,271,857 byt
 The [Phase 4 report](docs/phases/phase-4.md) records the separate deployment and live results.
 [Browser evidence](docs/phases/phase-4-browser.json) includes measured local timings. Both
 local and CI production flows passed; a live 404 cannot stand in for a verified public flow.
-The uploaded `build-info.json` identifies the tested merge, **not a live deployment**. When
-Pages can process deployments, retry only job `126909018013` from run `41923813385` and
-verify the real public identity and interaction flow before tagging. The Phase 4 report gives
-artifact retention and exact commands. Later evidence-only commits do not redeploy the site.
+The uploaded `build-info.json` identifies the integrated source. Evidence-only commit
+`341d8d0` records the initial attempts. A fresh loopback check of the retained artifact
+passed both Chromium viewports and matched all 16 file hashes. The manual recovery
+workflow checks the original tar digest, embedded build identity and product inputs
+before re-uploading the same tar. Its workflow SHA identifies the delivery attempt.
+Tag `f8c6260985bbb4de1a041e42e2b1959522aa88b6` only after both anonymous live
+journeys confirm that source, catalog and artifact on Pages.
 
 ## Phase boundary
 
-Stopped at the Phase 4 public-hosting blocker. No new product mode,
-playback, account integration or catalog acquisition is included.
+Phase 4 continues through the bounded Pages recovery and required live verification.
