@@ -17,17 +17,18 @@ Upstream license sources:
 
 No recordings, pretrained weights, third-party artwork, or analyzed track metadata are included in Phase 0. The original inline SVG wordmark is styled with CSS; fonts are supplied by the visitor's system. The supplied build-pack planning documents are imported as project notes, not as evidence that a catalog exists.
 
-Before Phase 1 exports any data, record its publication basis, exact license versions, attribution, source URLs and transformations following [the catalog policy](docs/CATALOG_POLICY.md). Each version must carry its own attribution and data notices. The suggested FMA source and CLAP model are candidates only; no model or recording license is declared accepted by this scaffold.
+Phase 1 records publication basis, exact license versions, attribution, source URLs and transformations under [the catalog policy](docs/CATALOG_POLICY.md). Each version carries its own attribution and data notices; the Phase 1 report identifies the actual accepted artifacts.
 
 ## Phase 1 model and offline software
 
-The pinned music encoder is [LAION larger_clap_music](https://huggingface.co/laion/larger_clap_music/tree/a0b4534a14f58e20944452dff00a22a06ce629d1),
-revision `a0b4534a14f58e20944452dff00a22a06ce629d1`. Its repository declares Apache License 2.0.
+The pinned encoder is [LAION larger_clap_general](https://huggingface.co/laion/larger_clap_general/tree/ada0c23a36c4e8582805bb38fec3905903f18b41),
+revision `ada0c23a36c4e8582805bb38fec3905903f18b41`. Its repository declares Apache License 2.0.
 Credit: Yusong Wu, Ke Chen, Tianyu Zhang, Yuchen Hui, Taylor Berg-Kirkpatrick and Shlomo Dubnov,
 “Large-scale Contrastive Language-Audio Pretraining with Feature Fusion and Keyword-to-Caption
 Augmentation.” The compatible audio processor comes from that same revision. Weights and processor
 runtime assets remain local; neither is distributed in the website. Model licensing does not supply
-rights to recordings or metadata.
+rights to recordings or metadata. The initial `larger_clap_music` candidate was rejected after
+a checkpoint initialization-state audit; its derived vectors are not public catalog data.
 
 The isolated offline environment locks PyTorch, Transformers, NumPy, SoundFile/libsndfile, soxr,
 librosa, huggingface-hub and their transitive dependencies. Those packages retain their bundled

@@ -39,7 +39,7 @@ function fixture(): ArtifactBundle {
 
   const processorSerialized = canonicalJson(processor)
   const configuration = {
-    encoder: { id: 'laion/larger_clap_music', revision: 'a0b4534a14f58e20944452dff00a22a06ce629d1', sourceUrl: 'https://example.org/model', license: modelLicense },
+    encoder: { id: 'laion/larger_clap_general', revision: 'ada0c23a36c4e8582805bb38fec3905903f18b41', sourceUrl: 'https://example.org/model', license: modelLicense },
     preprocessing: { sampleRateHz: 48000, channels: 1, decoder: { name: 'soundfile/libsndfile', version: '0.13.1/1.2.2' }, resampler: { name: 'soxr-HQ', version: '1.0.0' }, implementationVersion: 'song-neighbors-clap-v1', dependencyLockSha256: 'e'.repeat(64), runtimeLibraries, amplitudePolicy: 'Decode float32; mean channels in float64 then float32; soxr HQ resample to 48000 Hz; no loudness or peak normalization; zero-pad windows; processor padding=pad and truncation=rand_trunc on exactly 480000 samples (no crop).', processorConfigSha256: sha256(processorSerialized) },
     windowing: { version: 'fixed-starts-0-10-20-v1', durationSeconds: 10, selectionPolicy: 'Starts at 0, 10, and 20 seconds when start < decoded duration; analyzes at most first 30 seconds; no random crop.', shortAudioPolicy: 'Right zero-pad each partial 10-second window to 480000 samples; coverage excludes padding.' },
     aggregation: { version: 'mean-unit-windows-v1', method: 'Arithmetic mean of L2-normalized window embeddings, followed by L2 normalization.', windowNormalization: 'l2', finalNormalization: 'l2' },
@@ -59,9 +59,9 @@ function fixture(): ArtifactBundle {
     pipeline: { sourceCommit: 'c'.repeat(40), sourceTreeSha256: 'd'.repeat(64), dirty: false },
     runtime: { python: '3.12', platform: 'test', libraries: runtimeLibraries }, dependencyLockSha256: 'e'.repeat(64),
     encoderArtifacts: [
-      { path: 'config.json', sha256: '2d7722d338bb83ea8824272b1431f088954d3425d79eb3c2d39489478516dc03', bytes: 628 },
+      { path: 'config.json', sha256: '6268f76a067e3104bf9001e97d7dcc0fcfb16f3086cfb478ee72d95900d7fc1d', bytes: 643 },
       { path: 'preprocessor_config.json', sha256: '9739f58296aa6f9ac18008fd0150fb2649bc554985fbde86d0a4041c882ac753', bytes: 541 },
-      { path: 'pytorch_model.bin', sha256: '5c289311f4a030d768af7ffbfdecd01b008aa64824211899a4e59f4f9d154fd1', bytes: 776444665 },
+      { path: 'pytorch_model.bin', sha256: '314eb00cce6ad68d25237b8446b659ccdb136ed4672c1bca470f142f72455026', bytes: 776444665 },
     ],
     processorConfig: { id: configuration.encoder.id, revision: configuration.encoder.revision, value: processor, serialized: processorSerialized, sha256: sha256(processorSerialized), serialization: 'json-sort-keys-compact-utf8-no-newline' },
     configuration, configurationSha256,
@@ -108,6 +108,34 @@ describe('complete catalog artifact validation', () => {
     expect(validateArtifactBundle(bundle, { catalogVersion: 'isolated-test', manifestSha256: sha256(bundle.manifest) })).toMatchObject({ status: 'valid', trackCount: 2, artistCount: 2, dimension: 2, minimumNorm: 1, maximumNorm: 1 })
     expect(() => validateArtifactBundle(bundle, { manifestSha256: '0'.repeat(64) })).toThrow('Manifest hash mismatch')
     expect(() => validateArtifactBundle(bundle, { catalogVersion: 'wrong' })).toThrow('Catalog version mismatch')
+  })
+
+  it('rejects the withdrawn music revision and its checkpoint even with coherent hashes', () => {
+    for (const retainOriginalIdentity of [true, false]) {
+      const bundle = fixture()
+      const manifest = parse(bundle.manifest)
+      const build = parse(bundle.build)
+      if (retainOriginalIdentity) {
+        manifest.encoder.id = 'laion/larger_clap_music'
+        manifest.encoder.revision = 'a0b4534a14f58e20944452dff00a22a06ce629d1'
+        manifest.encoder.sourceUrl = 'https://huggingface.co/laion/larger_clap_music/tree/a0b4534a14f58e20944452dff00a22a06ce629d1'
+        build.configuration.encoder = manifest.encoder
+        build.processorConfig.id = manifest.encoder.id
+        build.processorConfig.revision = manifest.encoder.revision
+      }
+      build.encoderArtifacts.find((artifact: { path: string }) => artifact.path === 'config.json').sha256 = '2d7722d338bb83ea8824272b1431f088954d3425d79eb3c2d39489478516dc03'
+      build.encoderArtifacts.find((artifact: { path: string }) => artifact.path === 'config.json').bytes = 628
+      build.encoderArtifacts.find((artifact: { path: string }) => artifact.path === 'pytorch_model.bin').sha256 = '5c289311f4a030d768af7ffbfdecd01b008aa64824211899a4e59f4f9d154fd1'
+      build.configurationSha256 = sha256(canonicalJson(build.configuration))
+      for (const row of build.rows) {
+        row.configurationSha256 = build.configurationSha256
+        row.cacheKeySha256 = sha256(canonicalJson({ audioSha256: row.audioSha256, configurationSha256: build.configurationSha256 }))
+      }
+      bundle.manifest = encode(manifest)
+      bundle.build = encode(build)
+      rehash(bundle)
+      expect(() => validateArtifactBundle(bundle)).toThrow(retainOriginalIdentity ? 'Unsupported encoder revision' : 'Unsupported model artifacts')
+    }
   })
 
   it('rejects corrupt bytes, truncated rows, extra bytes, and nonfinite/zero/nonunit vectors', () => {

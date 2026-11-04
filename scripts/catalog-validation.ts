@@ -119,7 +119,7 @@ export function validateArtifactBundle(bundle: ArtifactBundle, expected?: { cata
   requireThat(canonicalJson(build.configuration) === canonicalJson(configuration), 'Manifest/build configuration mismatch')
   requireThat(sha256(canonicalJson(configuration)) === build.configurationSha256, 'Configuration hash mismatch')
   requireThat(manifest.windowing.version === 'fixed-starts-0-10-20-v1' && manifest.windowing.durationSeconds === 10 && manifest.aggregation.version === 'mean-unit-windows-v1' && manifest.aggregation.windowNormalization === 'l2', 'Unsupported analysis configuration')
-  requireThat(manifest.encoder.id === 'laion/larger_clap_music' && manifest.encoder.revision === 'a0b4534a14f58e20944452dff00a22a06ce629d1', 'Unsupported encoder revision')
+  requireThat(manifest.encoder.id === 'laion/larger_clap_general' && manifest.encoder.revision === 'ada0c23a36c4e8582805bb38fec3905903f18b41', 'Unsupported encoder revision')
   requireThat(manifest.preprocessing.sampleRateHz === 48000, 'Unsupported sample rate')
   requireThat(manifest.preprocessing.implementationVersion === 'song-neighbors-clap-v1', 'Unsupported pipeline implementation')
   requireThat(manifest.preprocessing.dependencyLockSha256 === build.dependencyLockSha256, 'Dependency lock mismatch')
@@ -147,13 +147,13 @@ export function validateArtifactBundle(bundle: ArtifactBundle, expected?: { cata
   requireThat(build.measured.trackCount === manifest.trackCount && build.measured.dimension === manifest.dimension && build.measured.artistCount === new Set(tracks.map((track) => track.artist)).size, 'Measured coverage mismatch')
   requireThat(build.rows.length === tracks.length, 'Build row count mismatch')
   requireThat(manifest.sources.every((source) => source.datasetVersion === build.sourceMetadata.datasetVersion), 'Metadata version mismatch')
-  const expectedArtifacts: Record<string, string> = {
-    'config.json': '2d7722d338bb83ea8824272b1431f088954d3425d79eb3c2d39489478516dc03',
-    'preprocessor_config.json': '9739f58296aa6f9ac18008fd0150fb2649bc554985fbde86d0a4041c882ac753',
-    'pytorch_model.bin': '5c289311f4a030d768af7ffbfdecd01b008aa64824211899a4e59f4f9d154fd1',
+  const expectedArtifacts: Record<string, { sha256: string; bytes: number }> = {
+    'config.json': { sha256: '6268f76a067e3104bf9001e97d7dcc0fcfb16f3086cfb478ee72d95900d7fc1d', bytes: 643 },
+    'preprocessor_config.json': { sha256: '9739f58296aa6f9ac18008fd0150fb2649bc554985fbde86d0a4041c882ac753', bytes: 541 },
+    'pytorch_model.bin': { sha256: '314eb00cce6ad68d25237b8446b659ccdb136ed4672c1bca470f142f72455026', bytes: 776444665 },
   }
   requireThat(new Set(build.encoderArtifacts.map((artifact) => artifact.path)).size === build.encoderArtifacts.length, 'Duplicate model artifact')
-  requireThat(build.encoderArtifacts.length === Object.keys(expectedArtifacts).length && build.encoderArtifacts.every((artifact) => expectedArtifacts[artifact.path] === artifact.sha256), 'Unsupported model artifacts')
+  requireThat(build.encoderArtifacts.length === Object.keys(expectedArtifacts).length && build.encoderArtifacts.every((artifact) => expectedArtifacts[artifact.path]?.sha256 === artifact.sha256 && expectedArtifacts[artifact.path]?.bytes === artifact.bytes), 'Unsupported model artifacts')
 
   requireThat(attribution.includes(manifest.encoder.license.attribution) && attribution.includes(manifest.encoder.license.url) && manifest.sources.every((source) => attribution.includes(source.metadataLicense.attribution) && attribution.includes(source.metadataLicense.url)), 'Model or metadata attribution is incomplete')
   const vectorView = new DataView(bundle.embeddings.buffer, bundle.embeddings.byteOffset, bundle.embeddings.byteLength)

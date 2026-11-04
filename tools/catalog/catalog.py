@@ -18,11 +18,13 @@ import tempfile
 from datetime import UTC, datetime
 from pathlib import Path
 
-MODEL_ID = "laion/larger_clap_music"
-MODEL_REVISION = "a0b4534a14f58e20944452dff00a22a06ce629d1"
-MODEL_WEIGHTS_SHA256 = "5c289311f4a030d768af7ffbfdecd01b008aa64824211899a4e59f4f9d154fd1"
+# The initial music artifact was rejected after initialization-state weights were found.
+# Publish only after the pinned replacement passes real inference and checkpoint verification.
+MODEL_ID = "laion/larger_clap_general"
+MODEL_REVISION = "ada0c23a36c4e8582805bb38fec3905903f18b41"
+MODEL_WEIGHTS_SHA256 = "314eb00cce6ad68d25237b8446b659ccdb136ed4672c1bca470f142f72455026"
 MODEL_ARTIFACT_HASHES = {
-    "config.json": "2d7722d338bb83ea8824272b1431f088954d3425d79eb3c2d39489478516dc03",
+    "config.json": "6268f76a067e3104bf9001e97d7dcc0fcfb16f3086cfb478ee72d95900d7fc1d",
     "preprocessor_config.json": "9739f58296aa6f9ac18008fd0150fb2649bc554985fbde86d0a4041c882ac753",
     "pytorch_model.bin": MODEL_WEIGHTS_SHA256,
 }

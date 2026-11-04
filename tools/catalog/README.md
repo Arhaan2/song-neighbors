@@ -43,14 +43,28 @@ uv run --project tools/catalog --locked --extra inference python tools/catalog/c
   --run smoke-40 --limit 40
 ```
 
-The model is `laion/larger_clap_music` revision
-`a0b4534a14f58e20944452dff00a22a06ce629d1`. The compatible audio processor is
+The replacement model pin is `laion/larger_clap_general` revision
+`ada0c23a36c4e8582805bb38fec3905903f18b41`. The compatible audio processor is
 `ClapFeatureExtractor` from **the same immutable revision**, used with `ClapModel`.
 The loader verifies SHA-256 for the exact configuration, processor file and checkpoint before
 reuse. `download-model` is the only inference CLI command that fetches network artifacts.
 Extraction uses `local_files_only=True`, CPU, evaluation/inference mode, deterministic Torch
 algorithms and four threads by default (`--threads N`). No GPU or paid API is needed.
 The model card declares Apache-2.0; no weights ship in the static catalog.
+
+Phase 1 started with `laion/larger_clap_music` revision
+`a0b4534a14f58e20944452dff00a22a06ce629d1`, then rejected that exact artifact. Its verified
+checkpoint contained all 253 bias tensors at zero, all 136 normalization tensors at initialization
+defaults, and a zero batch-normalization training counter; the resulting real audio forward passes
+were strongly concentrated. This is evidence against accepting that checkpoint as verified trained
+weights, beyond a musical-preference limitation. Outputs from the rejected artifact must not be
+published as the acoustic catalog. The new model revision creates different configuration/cache
+keys, so those outputs cannot be reused for the replacement.
+
+Before accepting the replacement, verify its exact artifact hashes, inspect for trained parameter
+state, run the real smoke on permitted audio, and inspect output variation. Structural validity and
+unique output bytes alone do not prove pretrained inference. The Phase 1 report records the actual
+replacement verification; the changed pin by itself is not a completed verification claim.
 
 The environment locks Torch 2.8.0, Transformers 4.57.1, NumPy 2.3.4, SoundFile 0.13.1,
 soxr 1.0.0, librosa 0.11.0 and huggingface-hub 0.36.0, plus exact transitive dependencies.
@@ -93,7 +107,7 @@ preserve their original extraction identities. Export does not relabel old infer
 ```sh
 uv run --project tools/catalog --locked python tools/catalog/catalog.py export \
   --selection .cache/catalog/selection-500.json --run catalog-500 \
-  --version fma-small-clap-v1 --activate
+  --version fma-small-clap-general-v1 --activate
 npm run validate:catalog -- --require-ready
 ```
 

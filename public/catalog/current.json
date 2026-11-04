@@ -1,5 +1,5 @@
 {
   "schemaVersion": 1,
   "status": "not-ready",
-  "reason": "No analyzed catalog has been published yet."
+  "reason": "The initial music checkpoint failed the pretrained-weight audit; a trained replacement is being verified."
 }
