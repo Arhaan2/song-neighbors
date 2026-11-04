@@ -1,0 +1,224 @@
+.song-search {
+  min-width: 0;
+}
+
+.song-search label,
+.song-search .examples-label {
+  display: block;
+  margin: 0 0 .5rem;
+  font-size: .875rem;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--ink);
+}
+
+.search-field {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-field input {
+  width: 100%;
+  min-width: 0;
+  min-height: 3rem;
+  padding: .625rem 2.75rem;
+  border: 1px solid var(--muted);
+  border-radius: .375rem;
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 1rem;
+  line-height: 1.35;
+}
+
+.search-field input::placeholder {
+  color: var(--muted);
+  opacity: 1;
+}
+
+.search-field input:focus-visible {
+  border-color: var(--accent);
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.search-icon {
+  position: absolute;
+  left: .875rem;
+  width: 1.2rem;
+  height: 1.2rem;
+  fill: none;
+  stroke: var(--ink);
+  stroke-linecap: round;
+  stroke-width: 1.7;
+  pointer-events: none;
+}
+
+.clear-search {
+  position: absolute;
+  right: .125rem;
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  border: 0;
+  border-radius: .25rem;
+  background: transparent;
+  color: var(--ink);
+  font-size: 1.375rem;
+}
+
+.song-search .search-help,
+.song-search .match-count,
+.song-search .no-match p {
+  margin-top: .5rem;
+  color: var(--muted);
+  font-size: .8125rem;
+  line-height: 1.45;
+}
+
+.song-search .catalog-examples,
+.song-search .search-matches {
+  margin-top: 1.125rem;
+}
+
+.song-search .touch-help {
+  display: none;
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .song-search .keyboard-help { display: none; }
+  .song-search .touch-help { display: inline; }
+}
+
+.song-search .example-list,
+.song-search .search-options {
+  padding: 0;
+  margin: .5rem 0 0;
+  border-block: 1px solid var(--line);
+  list-style: none;
+}
+
+.song-search .search-options {
+  max-height: min(20rem, 45vh);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.song-search li + li {
+  border-top: 1px solid var(--line);
+}
+
+.song-search .example-song,
+.song-search .search-option {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  width: 100%;
+  min-height: 3.5rem;
+  padding: .5rem .375rem;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--ink);
+  text-align: left;
+}
+
+.song-search .search-option {
+  padding: .625rem .5rem;
+}
+
+.pressing-mark {
+  flex: none;
+  width: 1.75rem;
+  height: 1.75rem;
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 2.4;
+}
+
+.song-search .track-text {
+  flex: 1;
+  display: grid;
+  min-width: 0;
+  gap: .125rem;
+  overflow-wrap: anywhere;
+  line-height: 1.3;
+}
+
+.song-search .track-text strong {
+  color: var(--ink);
+  font-size: .9375rem;
+  font-weight: 650;
+}
+
+.song-search .track-text span,
+.song-search .track-text small {
+  color: var(--muted);
+  font-size: .8125rem;
+}
+
+.song-search .track-text small {
+  font-size: .75rem;
+}
+
+.song-search .choice-mark {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 1.625rem;
+  height: 1.625rem;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  color: var(--ink);
+  font: 1.125rem/1 var(--mono);
+}
+
+.song-search [aria-disabled='true'] .choice-mark {
+  width: auto;
+  height: auto;
+  border: 0;
+  color: var(--muted);
+  font-family: inherit;
+  font-size: .75rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.song-search .example-song:focus-visible,
+.song-search .search-option.is-active {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+  background: var(--tint);
+}
+
+@media (hover: hover) {
+  .song-search .example-song:hover,
+  .song-search .clear-search:hover {
+    background: var(--paper);
+  }
+  .song-search .example-song:hover .choice-mark {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+}
+
+.song-search .example-song:active,
+.song-search .search-option[aria-disabled='false']:active,
+.song-search .clear-search:active {
+  background: var(--tint);
+}
+
+.song-search .no-match {
+  padding: .875rem 1rem;
+  border-inline-start: 2px solid var(--accent);
+  background: var(--paper);
+}
+
+.song-search .no-match strong {
+  color: var(--ink);
+  font-size: .9375rem;
+  font-weight: 650;
+}

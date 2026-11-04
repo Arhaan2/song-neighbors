@@ -2,6 +2,14 @@ import { useEffect, useId, useLayoutEffect, useMemo, useRef, useState } from 're
 import type { KeyboardEvent } from 'react'
 import type { CatalogTrack } from '../catalog/contract.ts'
 import { catalogExamples, recordingDescription, searchCatalog } from '../ui/search.ts'
+import './SongSearch.css'
+
+// Abstract pressing marks identify the three starter slots.
+const pressingMarks = [
+  'M2 30A28 28 0 0 1 30 2 M8 30A22 22 0 0 1 30 8 M14 30A16 16 0 0 1 30 14 M20 30A10 10 0 0 1 30 20 M26 30A4 4 0 0 1 30 26',
+  'M2 5C12 5 10 17 20 17H30 M2 11C12 11 10 23 20 23H30 M2 17C12 17 10 29 20 29H30 M10 3C18 4 16 11 24 11H30 M18 2C22 2 22 5 26 5H30',
+  'M2 28V16A14 14 0 0 1 30 16V28 M8 28V16A8 8 0 0 1 24 16V28 M14 28V16A2 2 0 0 1 18 16V28',
+]
 
 interface Props {
   tracks: readonly CatalogTrack[]
@@ -110,14 +118,19 @@ export function SongSearch({ tracks, selectedIds, onSelect }: Props) {
         aria-autocomplete="list" aria-expanded={showResults && results.length > 0}
         aria-controls={showResults && results.length ? `${id}-results` : undefined}
         aria-activedescendant={showResults && active >= 0 && results[active] ? optionId(active) : undefined}
-        aria-describedby={`${id}-help`} placeholder="Try Rolemusic or Bedoin Song" value={query}
+        aria-describedby={`${id}-help`} placeholder="Try Rolemusic" value={query}
         onChange={(event) => { setQuery(event.target.value); setOpen(true); setActive(-1); setAnnouncement('') }}
         onFocus={() => setOpen(true)} onKeyDown={onKeyDown} />
       {query && <button className="clear-search" type="button" aria-label="Clear search" onClick={() => {
         setQuery(''); setActive(-1); setOpen(false); input.current?.focus()
       }}>×</button>}
     </div>
-    <p id={`${id}-help`} className="search-help">{atLimit ? 'Five songs selected. Remove one to choose another.' : 'Search this catalog. Use ↑ ↓ and Enter to choose.'}</p>
+    <p id={`${id}-help`} className={atLimit || (showResults && results.length > 0) ? 'search-help' : 'sr-only'}>
+      {atLimit ? 'Five songs selected. Remove one to choose another.' : <>
+        <span className="keyboard-help">Use the arrow keys to browse and Enter to add.</span>
+        <span className="touch-help">Choose a match to add it.</span>
+      </>}
+    </p>
     {showResults && <div className="search-matches">
       {results.length > 0 ? <>
         <p className="match-count" role="status">{matches.length > results.length ? `Showing ${results.length} of ${matches.length} matches. Keep typing to narrow them down.` : `${matches.length} ${matches.length === 1 ? 'match' : 'matches'}`}</p>
@@ -139,10 +152,13 @@ export function SongSearch({ tracks, selectedIds, onSelect }: Props) {
       </div>}
     </div>}
     {!hasQuery && selectedIds.length === 0 && <div className="catalog-examples">
-      <p className="examples-label">New here? Start with a song from the catalog.</p>
+      <p className="examples-label">Or pick a starting track</p>
       <ul className="example-list">
-        {catalogExamples(tracks).map((track) => <li key={track.id}>
+        {catalogExamples(tracks).map((track, index) => <li key={track.id}>
           <button type="button" className="example-song" data-track-id={track.id} onClick={() => choose(track)} aria-label={`Select ${track.title} by ${track.artist}`}>
+            <svg className="pressing-mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+              <path d={pressingMarks[index]} />
+            </svg>
             <span className="track-text"><strong>{track.title}</strong><span>{track.artist}</span></span>
             <span className="choice-mark" aria-hidden="true">+</span>
           </button>

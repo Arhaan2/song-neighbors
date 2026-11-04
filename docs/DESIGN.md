@@ -97,3 +97,13 @@ Independent review reproduced an Escape → ArrowUp race: scrolling occurred bef
 remounted, leaving the active option clipped. Post-render keyboard scrolling fixes it and
 the browser regression checks active-row visibility. All four saved evidence images and
 the exact fix were independently inspected. [Phase 3 report](phases/phase-3.md) records checks.
+
+## Discovery redesign
+
+The screen answers “which recordings sound like the songs I picked?” The interaction is the same before and after the redesign: search or select a real starting track, choose Recommend, then refine individual results. On a wide screen, source tracks sit beside their ranked neighbors; on a phone they appear in selection order. A link after the last result returns focus to the starting point.
+
+The `design-taste-frontend` app draw selected **Accent ladder** (seed `412384280`, no redraws). The visual reference is a printed record sleeve: graphite ink on warm paper, with a vermilion accent for action and selection. The paired-record mark reappears in an original static SVG on the empty results panel. It makes no claim to depict any track’s album artwork. Once recommendations arrive, titles, artists and actual ranks replace the illustration. No font, image, audio or other third-party request was added.
+
+The `apple-design` pass kept native keyboard controls, focus return, 44px touch targets and reduced-motion behavior. Track titles can wrap, the fifth selection is marked in both text and a five-slot indicator, and secondary details remain available through a native disclosure. The visual inspection at 1440, 768 and 390 pixels found no failures. The inspector’s paper-color and masthead-size warnings reflect two intentional choices: the canvas matches the sleeve stock, and the title fits one line at those widths with search visible. System text fonts are deliberate, so the UI works offline without shipping a font.
+
+Independent before/after testing compared all 20 track IDs at each of four stages: one long-titled recording, that recording plus a second seed, positive feedback and negative feedback. All 80 positions matched the previous release. Enlarged text initially pushed the catalog counts outside the viewport; allowing the header and counts to wrap fixed it. Browser coverage now includes 200% text at 640, 390 and 320 CSS pixels, keyboard disclosure navigation, and returning from the end of the results.
