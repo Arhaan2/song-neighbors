@@ -1,37 +1,39 @@
 :root {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  color: #fff;
-  background: #000;
+  color-scheme: light;
+  --paper: #f7f6f3;
+  --surface: #fffefa;
+  --ink: #23241f;
+  --muted: #585b52;
+  --line: #d6d6c9;
+  --control: #86867b;
+  --accent: #a63720;
+  --accent-hover: #852b19;
+  --tint: #f6e8db;
+  --mono: ui-monospace, 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+  --display: Georgia, 'Times New Roman', serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+  color: var(--ink);
+  background: var(--paper);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color-scheme: dark;
-  --ground: #000;
-  --surface: #111;
-  --raised: #222;
-  --text: #fff;
-  --muted: #b4b4b4;
-  --faint: #949494;
-  --control: #595959;
-  --gap: 1rem;
 }
 * { box-sizing: border-box; }
-body { min-width: 20rem; margin: 0; font-size: 1rem; line-height: 1.5; }
+body { margin: 0; line-height: 1.5; }
+h1, h2, h3, p, dl, dt, dd { margin: 0; }
+ul, ol { margin: 0; padding: 0; }
 button, input, summary { font: inherit; }
-button, summary { touch-action: manipulation; }
-button { cursor: pointer; }
+button { color: inherit; cursor: pointer; }
+button, a, summary { touch-action: manipulation; }
 button:disabled, button[aria-disabled='true'] { cursor: default; }
-a { color: inherit; text-underline-offset: 0.25em; }
-a:hover { text-decoration-thickness: 2px; }
-:focus-visible { outline: 2px solid var(--text); outline-offset: 4px; }
-::selection { background: var(--text); color: var(--ground); }
-h1, h2, h3, p, dl, dd { margin: 0; }
-button, a { -webkit-tap-highlight-color: transparent; }
-.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+a { color: inherit; text-underline-offset: .2em; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+::selection { background: #f0c2a7; color: var(--ink); }
+.sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; animation: none !important; }
 }
 @media (prefers-contrast: more) {
-  :root { --muted: #fff; --faint: #fff; --control: #b4b4b4; }
+  :root { --muted: #32342a; --line: #808175; --control: #55564d; --accent: #7b210f; }
 }
