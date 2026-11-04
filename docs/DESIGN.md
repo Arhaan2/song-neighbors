@@ -1,4 +1,4 @@
-# Phase 0 interface decisions
+# Interface decisions
 
 Applied `apple-design` for predictable native interaction, typography, keyboard use, readable contrast, and reduced motion; applied `design-taste-frontend` app-screen guidance for composition.
 
@@ -64,3 +64,36 @@ Enter/Space disclosure, expanded/collapsed 320 px views with scrollWidth/clientW
 and an empty warning/error console. The final attribution path returned HTTP 200 with the exact
 manifest hash. Temporary viewport overrides were reset. Screenshots show only the limited status
 experience; no Phase 2/3 interaction is claimed.
+
+## Phase 3 complete discovery interface
+
+Both design skills were applied to the established **True-black flat**, seed **1484283753**,
+system-font direction; no redraw or remote font. The screen now asks: which songs sit near
+my current selection? Its own real objects supply the visual identity: the original paired
+record wordmark, selected-song chips, and ranked titles/artists. There is no album artwork.
+
+The 1100px no-sidebar frame holds a selector and wider results column, stacked below 880px.
+The selector uses ordinary document flow so a long search plus five chips cannot hide its
+action behind a sticky viewport. Search shows album/source IDs to distinguish recordings.
+Three first-visit tracks resolve from actual loaded metadata. Counts derive from that metadata.
+The single filled action is Recommend. Feedback is a separate labeled region with reset;
+negative/positive preferences never masquerade as additional selected seeds.
+
+Native controls, 44px touch targets, high-contrast focus, a skip link and live status announcements
+support navigation. Keyboard focus moves to surviving headings when a card/chip disappears.
+Only brief press feedback moves; reduced motion disables transitions so feedback is immediate. About/Catalog keeps attribution,
+excerpt/model/coverage details out of the main selection flow. No images or generated assets
+were needed, and no placeholders or fixture data enter the page.
+
+Before inspection: 0 failures, 1 unused-canvas warning (equal 170px desktop margins were
+misread as a sidebar). Final inspection: **0 failures, 0 warnings** at 1440/768/390px, with
+the established system-font allowance. Source design lint: 0 failures/warnings. No measured
+horizontal overflow or low contrast. Screenshots were opened and critiqued: controls and
+titles align, hierarchy favors the task, seeds/preferences remain visibly separate, and
+mobile retains full titles and actions. Initial empty right-column space is purposeful;
+the actual results fill that region after Recommend. The source rank is data, not decoration.
+
+Independent review reproduced an Escape → ArrowUp race: scrolling occurred before options
+remounted, leaving the active option clipped. Post-render keyboard scrolling fixes it and
+the browser regression checks active-row visibility. All four saved evidence images and
+the exact fix were independently inspected. [Phase 3 report](phases/phase-3.md) records checks.

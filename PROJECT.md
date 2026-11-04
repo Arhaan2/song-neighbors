@@ -47,8 +47,24 @@ are excluded. Exact CC0/CC BY recording grants and retained notices establish th
 publication basis; metadata, model and software notices remain separate.
 
 See [Phase 1 evidence](docs/phases/phase-1.md) for measured coverage, model audit, hashes, commands
-and limits. Phase 2 implements and verifies the pure ranking engine, browser loader, session helpers and worker client. The current public-facing screen still reports catalog availability and credits only; the complete interface is Phase 3. See [Phase 2 evidence](docs/phases/phase-2.md).
+and limits. Phase 2 implements and verifies the pure ranking engine, browser loader, session helpers and worker client. See [Phase 2 evidence](docs/phases/phase-2.md).
 The catalog coverage floor is an engineering scope choice, not evidence of listener preference.
+
+## Phase 3 interface status
+
+The complete responsive selection-to-recommendation interface is implemented and verified
+against the actual browser worker and unchanged real catalog. Users search titles/artists,
+disambiguate recordings, choose 1–5 seeds, request up to 20 neighbors, refine with positive
+or negative preferences, and reset while preserving their seeds. Editing seeds clears results
+and feedback; stale replies cannot repaint an old request. State lives only in memory.
+
+Real catalog starting points, coverage, attribution and excerpt limitations are visible.
+Loading, unavailable, retryable failure, no-match, empty and insufficient-result states are
+implemented. The build has one HTML entry with repository-relative assets/worker/catalog URLs.
+Chromium desktop/mobile, keyboard, reduced motion, refresh and recovery checks pass.
+See [Phase 3 report](docs/phases/phase-3.md) and [PR #3](https://github.com/Arhaan2/song-neighbors/pull/3)
+for tested code, independent review, evidence and integration history. No public deployment
+or Phase 4 evaluation/release has been performed.
 
 ## Initial ranking behavior
 

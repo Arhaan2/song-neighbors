@@ -1,8 +1,8 @@
 # Song Neighbors
 
-Find songs that fit the moment through audio similarity. The planned flow is to search an analyzed catalog, choose 1–5 songs, receive up to 20 neighbors, and refine the current session with **More like this** and **Not this mood**.
+Find songs that fit the moment through audio similarity. Search an analyzed catalog, choose 1–5 songs, receive up to 20 neighbors, and refine the current session with **More like this** and **Not this mood**.
 
-**Phase 2 browser engine complete, using 500 real recordings across 169 artist names and 512-dimensional audio embeddings.** The full search, selection and results interface remains Phase 3 work. No website has been deployed. V1 lists titles and artists without streaming accounts or playback. See the [Phase 2 evidence](docs/phases/phase-2.md) and [engine API/algorithm](src/recommend/README.md). The [Phase 1 evidence](docs/phases/phase-1.md) records the rejected initial music checkpoint and verified trained replacement.
+**Phase 3 interface complete, using 500 real recordings across 169 artist names and 512-dimensional audio embeddings.** Search, selection, recommendations and session refinement work in the browser. No website has been deployed. V1 lists titles and artists without streaming accounts or playback. See the [Phase 3 evidence](docs/phases/phase-3.md) and [engine API/algorithm](src/recommend/README.md). The [Phase 1 evidence](docs/phases/phase-1.md) records the rejected initial music checkpoint and verified trained replacement.
 
 ## Run locally
 
@@ -31,7 +31,15 @@ npm run typecheck
 npm test
 npm run validate:catalog -- --require-ready
 npm run build
+npx playwright install chromium
+npm run test:e2e
 ```
+
+The browser suite serves the production build at `127.0.0.1:4173/song-neighbors/` and fails
+if that port is occupied. Choose a free `PREVIEW_PORT` if necessary. For an intentionally
+already-running preview of this exact build, use `REUSE_PREVIEW=1`. An installed Chrome can
+be used with `PLAYWRIGHT_CHANNEL=chrome`; CI installs Playwright Chromium and its system
+dependencies. `CAPTURE_EVIDENCE=1` writes the four useful Phase 3 evidence images.
 
 Vitest exercises catalog integrity, exact ranking, feedback/reset and worker races using isolated mathematical fixtures kept outside `public/`, plus real-catalog smoke and NumPy score comparisons. The lightweight validator independently checks the committed real catalog. Neither unit tests nor coverage counts prove musical quality or human preference. Oxlint checks React/TypeScript code and hooks; strict TypeScript checks the application, tests, and build configuration.
 
@@ -55,7 +63,7 @@ GitHub Actions runs these lightweight checks on pushes and pull requests to `mai
 | --- | --- |
 | `src/catalog/` | Catalog contract and validated browser loading |
 | `src/recommend/` | Pure exact ranking, session state, worker protocol and client |
-| `src/components/` | Accessible UI components |
+| `src/components/`, `src/ui/` | Accessible UI, metadata search and race-safe memory-only controller |
 | `tests/` | Catalog, mathematics, session, worker and NumPy comparison tests |
 | `tools/catalog/` | Source audit, resumable CPU inference, export and capacity diagnostic |
 | `public/catalog/` | Ready pointer and validated immutable real catalog |

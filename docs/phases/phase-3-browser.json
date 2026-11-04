@@ -1,0 +1,190 @@
+{
+  "testedCode": "c161e2c",
+  "date": "2026-11-04",
+  "timezone": "America/Los_Angeles",
+  "browser": {
+    "name": "Chrome",
+    "version": "156.0.8078.80"
+  },
+  "baseURL": "http://127.0.0.1:4175/song-neighbors/",
+  "catalogVersion": "fma-small-clap-general-20261104",
+  "stats": {
+    "startTime": "2026-11-04T21:44:31.241Z",
+    "duration": 13755.881,
+    "expected": 12,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "cases": [
+    {
+      "name": "real catalog journey: selection, ranking, feedback, reset, edits and refresh",
+      "viewport": "desktop",
+      "status": "passed",
+      "durationMs": 1601,
+      "realResults": {
+        "seeds": [
+          "fma:045099",
+          "fma:003832",
+          "fma:003950",
+          "fma:004037",
+          "fma:004070"
+        ],
+        "baseline": [
+          "fma:004071",
+          "fma:006855",
+          "fma:004075",
+          "fma:004074",
+          "fma:004076",
+          "fma:004072",
+          "fma:045100",
+          "fma:006856",
+          "fma:004078",
+          "fma:004077",
+          "fma:004080",
+          "fma:006854",
+          "fma:122363",
+          "fma:004073",
+          "fma:148234",
+          "fma:074370",
+          "fma:122360",
+          "fma:004079",
+          "fma:115775",
+          "fma:148235"
+        ],
+        "rejected": "fma:004074",
+        "browser": "desktop"
+      }
+    },
+    {
+      "name": "keyboard, unsupported search, rapid input and reduced-motion responsive layout",
+      "viewport": "desktop",
+      "status": "passed",
+      "durationMs": 513
+    },
+    {
+      "name": "delayed result and delayed error cannot revive an edited selection",
+      "viewport": "desktop",
+      "status": "passed",
+      "durationMs": 2410
+    },
+    {
+      "name": "catalog loading, load failure, unavailable pointer and recovery",
+      "viewport": "desktop",
+      "status": "passed",
+      "durationMs": 579
+    },
+    {
+      "name": "query error and crashed worker can retry without losing seeds or preferences",
+      "viewport": "desktop",
+      "status": "passed",
+      "durationMs": 715
+    },
+    {
+      "name": "isolated presentation fixtures: insufficient results and no eligible results",
+      "viewport": "desktop",
+      "status": "passed",
+      "durationMs": 433
+    },
+    {
+      "name": "real catalog journey: selection, ranking, feedback, reset, edits and refresh",
+      "viewport": "mobile",
+      "status": "passed",
+      "durationMs": 1264,
+      "realResults": {
+        "seeds": [
+          "fma:045099",
+          "fma:003832",
+          "fma:003950",
+          "fma:004037",
+          "fma:004070"
+        ],
+        "baseline": [
+          "fma:004071",
+          "fma:006855",
+          "fma:004075",
+          "fma:004074",
+          "fma:004076",
+          "fma:004072",
+          "fma:045100",
+          "fma:006856",
+          "fma:004078",
+          "fma:004077",
+          "fma:004080",
+          "fma:006854",
+          "fma:122363",
+          "fma:004073",
+          "fma:148234",
+          "fma:074370",
+          "fma:122360",
+          "fma:004079",
+          "fma:115775",
+          "fma:148235"
+        ],
+        "rejected": "fma:004074",
+        "browser": "mobile"
+      }
+    },
+    {
+      "name": "keyboard, unsupported search, rapid input and reduced-motion responsive layout",
+      "viewport": "mobile",
+      "status": "passed",
+      "durationMs": 509
+    },
+    {
+      "name": "delayed result and delayed error cannot revive an edited selection",
+      "viewport": "mobile",
+      "status": "passed",
+      "durationMs": 2453
+    },
+    {
+      "name": "catalog loading, load failure, unavailable pointer and recovery",
+      "viewport": "mobile",
+      "status": "passed",
+      "durationMs": 622
+    },
+    {
+      "name": "query error and crashed worker can retry without losing seeds or preferences",
+      "viewport": "mobile",
+      "status": "passed",
+      "durationMs": 705
+    },
+    {
+      "name": "isolated presentation fixtures: insufficient results and no eligible results",
+      "viewport": "mobile",
+      "status": "passed",
+      "durationMs": 449
+    }
+  ],
+  "design": {
+    "findings": [],
+    "viewports": [
+      {
+        "width": 1440,
+        "height": 900,
+        "horizontalOverflow": 0,
+        "lowContrast": [],
+        "consoleErrors": []
+      },
+      {
+        "width": 768,
+        "height": 1024,
+        "horizontalOverflow": 0,
+        "lowContrast": [],
+        "consoleErrors": []
+      },
+      {
+        "width": 390,
+        "height": 844,
+        "horizontalOverflow": 0,
+        "lowContrast": [],
+        "consoleErrors": []
+      }
+    ]
+  },
+  "limits": [
+    "Desktop/mobile viewport emulation, not physical devices",
+    "Short/zero result presentation cases are isolated test-only reply shaping of actual ranked records; small-pool engine mathematics is covered by unit tests",
+    "Listening preference remains unmeasured"
+  ]
+}
