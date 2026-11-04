@@ -1,10 +1,18 @@
 # Song Neighbors Progress
 
-## Current state — November 4, 2026
+## Current site — November 4, 2026
+
+[The redesigned discovery interface is live](https://arhaan2.github.io/song-neighbors/). [PR #6](https://github.com/Arhaan2/song-neighbors/pull/6) merged as `3cd2af55a0a40da0171e16bd60f769b6c5034249`. The [main workflow](https://github.com/Arhaan2/song-neighbors/actions/runs/41936739134) passed web, catalog and Python checks, tested the production build in 18 Chromium cases, and deployed the tested Pages artifact. Its [live build identity](https://arhaan2.github.io/song-neighbors/build-info.json) names the same source and the unchanged catalog `fma-small-clap-general-20261104`.
+
+Separate signed-out Chromium desktop and mobile journeys each matched all 16 public files to workflow artifact `13373688657` and verified one- and five-song selection, ranking, both feedback actions, exact reset and refresh with no page or request errors. Independent before/after comparisons found identical results at all 80 ranked positions inspected. The original v0.1.0 tag remains on its historical source.
+
+[Desktop discovery](docs/phases/assets/redesign-discovery-desktop.png) · [Mobile results](docs/phases/assets/redesign-results-mobile.png) · [Design and review notes](docs/DESIGN.md#discovery-redesign)
+
+## Initial release — November 4, 2026
 
 **Phase 4 complete.** Song Neighbors v0.1.0 is published on GitHub Pages. Signed-out Chromium desktop and mobile
 journeys passed against the public site and matched all 16 files to the tested artifact.
-Live `build-info.json` identifies source `f8c6260985bbb4de1a041e42e2b1959522aa88b6` and
+At initial release, `build-info.json` identified source `f8c6260985bbb4de1a041e42e2b1959522aa88b6` and
 catalog `fma-small-clap-general-20261104`. The repository is PUBLIC. Human listening and
 preference are **unmeasured**. [Website](https://arhaan2.github.io/song-neighbors/) · [Live build identity](https://arhaan2.github.io/song-neighbors/build-info.json) · [Release v0.1.0](https://github.com/Arhaan2/song-neighbors/releases/tag/v0.1.0)
 
