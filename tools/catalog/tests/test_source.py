@@ -1,11 +1,13 @@
 """Isolated source-policy fixtures; no audio or production embeddings."""
 
+import sys
 import tempfile
 import unittest
 import zipfile
 from pathlib import Path
 from unittest.mock import patch
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from source import canonical_license, diverse_selection, public_page, read_members, record_for
 
 
@@ -117,6 +119,45 @@ class SourcePolicyTests(unittest.TestCase):
             record_for("12", {}, {**original, "album_id": "21088"})[1],
             "missing_required_album_credit",
         )
+
+    def test_completed_partial_download_is_verified_and_adopted_without_network(self):
+        import hashlib
+
+        from source import download
+
+        with tempfile.TemporaryDirectory() as tmp:
+            cache = Path(tmp)
+            partial = cache / "fma_metadata.zip.part"
+            partial.write_bytes(b"isolated complete-download fixture")
+            checksum = hashlib.sha1(partial.read_bytes()).hexdigest()
+            with (
+                patch("source.ARCHIVE_BYTES", {"metadata": partial.stat().st_size}),
+                patch("source.METADATA_SHA1", checksum),
+                patch("source.subprocess.run") as network,
+            ):
+                download("metadata", cache)
+                network.assert_not_called()
+            self.assertFalse(partial.exists())
+            self.assertEqual(
+                (cache / "fma_metadata.zip").read_bytes(), b"isolated complete-download fixture"
+            )
+
+    def test_corrupt_complete_partial_is_never_adopted(self):
+        from source import download
+
+        with tempfile.TemporaryDirectory() as tmp:
+            cache = Path(tmp)
+            partial = cache / "fma_metadata.zip.part"
+            partial.write_bytes(b"corrupt fixture")
+            with (
+                patch("source.ARCHIVE_BYTES", {"metadata": partial.stat().st_size}),
+                patch("source.subprocess.run") as network,
+            ):
+                with self.assertRaisesRegex(ValueError, "SHA-1 mismatch"):
+                    download("metadata", cache)
+                network.assert_not_called()
+            self.assertTrue(partial.exists())
+            self.assertFalse((cache / "fma_metadata.zip").exists())
 
     def test_joins_real_csv_header_shapes_by_id_not_position(self):
         with tempfile.TemporaryDirectory() as tmp:

@@ -18,6 +18,7 @@ from urllib.parse import urlsplit, urlunsplit
 
 METADATA_SHA1 = "f0df49ffe5f2a6008d7dc83c6915b31835dfe733"
 SMALL_SHA1 = "ade154f733639d52e35e32f5593efe5be76c6d70"
+ARCHIVE_BYTES = {"metadata": 358_412_441, "small": 7_679_594_875}
 DATASET_VERSION = "2017-05-09-rc1"
 POLICY_VERSION = "fma-explicit-cc0-by-v1"
 SOURCE = "https://github.com/mdeff/fma"
@@ -365,6 +366,13 @@ def download(kind: str, cache: Path) -> None:
         print(json.dumps({"file": name, "reused": True, "sha256": digest(target)}))
         return
     partial = cache / (name + ".part")
+    # A completed transfer can be interrupted before its final verification/rename.
+    # Verify and adopt it locally instead of requesting bytes beyond EOF (HTTP 416).
+    if partial.exists() and partial.stat().st_size == ARCHIVE_BYTES[kind]:
+        verify_archive(partial, expected)
+        partial.replace(target)
+        print(json.dumps({"file": name, "reused": True, "sha256": digest(target)}))
+        return
     required = 500_000_000 if kind == "metadata" else 9_000_000_000
     remaining = required - (partial.stat().st_size if partial.exists() else 0)
     if shutil.disk_usage(cache).free < max(remaining, 0) + 2_000_000_000:
