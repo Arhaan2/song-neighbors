@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vitest/config'
 import { catalogPointerSchema } from './src/catalog/contract.ts'
 import { validateArtifactBundle } from './scripts/catalog-validation.ts'
+import { releaseBuild } from './scripts/release-build.ts'
 
 // Validate committed public data at build time; runtime loading remains fail-closed.
 const catalogRoot = new URL('./public/catalog/', import.meta.url)
@@ -18,7 +19,8 @@ if (pointer.status === 'ready') {
 
 export default defineConfig({
   base: '/song-neighbors/',
-  plugins: [react()],
-  build: { manifest: true },
+  plugins: [react(), ...(pointer.status === 'ready' ? [releaseBuild(pointer)] : [])],
+  // Pages upload excludes hidden paths, so keep the verified manifest publishable.
+  build: { manifest: 'asset-manifest.json' },
   test: { include: ['tests/**/*.test.ts'], environment: 'node' },
 })

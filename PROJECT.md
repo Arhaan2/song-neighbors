@@ -63,8 +63,9 @@ Loading, unavailable, retryable failure, no-match, empty and insufficient-result
 implemented. The build has one HTML entry with repository-relative assets/worker/catalog URLs.
 Chromium desktop/mobile, keyboard, reduced motion, refresh and recovery checks pass.
 See [Phase 3 report](docs/phases/phase-3.md) and [PR #3](https://github.com/Arhaan2/song-neighbors/pull/3)
-for tested code, independent review, evidence and integration history. No public deployment
-or Phase 4 evaluation/release has been performed.
+for tested code, independent review, evidence and integration history. Phase 4 adds the release
+workflow, real-data evaluation and public verification; the [Phase 4 report](docs/phases/phase-4.md)
+and deployed `build-info.json` record the actual publication status and immutable identity.
 
 ## Initial ranking behavior
 

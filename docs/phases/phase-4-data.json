@@ -1,0 +1,945 @@
+{
+  "schemaVersion": 1,
+  "evaluatedAt": "2026-11-04T22:04:35.038Z",
+  "source": {
+    "head": "2e23ff3efadae99ff26050363cf429e95b9bc82f",
+    "codeState": "Working tree at execution; release build-info.json is the authoritative deployed source identity."
+  },
+  "status": "passed",
+  "interpretation": "Functional checks of genuine audio embeddings, not a listening study, preference score, or universal performance promise.",
+  "environment": {
+    "runtime": "v24.18.0",
+    "platform": "darwin",
+    "release": "25.6.0",
+    "architecture": "arm64",
+    "cpu": "Apple M4 Pro",
+    "logicalCpus": 14,
+    "timingScope": "Local Node process, in-memory committed catalog; no network, browser rendering, or device emulation. Browser loading/ranking observations are recorded separately."
+  },
+  "catalog": {
+    "version": "fma-small-clap-general-20261104",
+    "manifestSha256": "b57bda0fb968b5feb49bb4ad7f33ea61ff67647483f496b519edea85b576ae11",
+    "vectorSha256": "0b29eefec5e6f708f1be7bc2d25d5b3e4970b4f036e698c7ce8d775389aa9054",
+    "model": "laion/larger_clap_general",
+    "modelRevision": "ada0c23a36c4e8582805bb38fec3905903f18b41",
+    "dimension": 512,
+    "tracks": 500,
+    "distinctRecordingComponents": 500,
+    "artistDisplayNames": 169,
+    "sourceArtistIds": {
+      "count": 170,
+      "basis": "Phase 1 source audit, whose selected IDs match all active catalog IDs; source artist IDs are not fields of tracks.json."
+    },
+    "sourceGenres": {
+      "Folk": 71,
+      "Rock": 70,
+      "International": 51,
+      "Experimental": 71,
+      "Hip-Hop": 70,
+      "Electronic": 71,
+      "Instrumental": 70,
+      "Pop": 26
+    },
+    "clipCoverage": {
+      "describes": [
+        "available-audio-excerpt"
+      ],
+      "sourceDurationSeconds": {
+        "minimum": 29.976583333333334,
+        "median": 29.976583333333334,
+        "maximum": 30.002708333333334
+      },
+      "analyzedSeconds": {
+        "minimum": 29.976583333333338,
+        "median": 29.976583333333338,
+        "maximum": 30,
+        "total": 14993.349645833277
+      },
+      "totalWindows": 1500,
+      "partialFinalWindows": 293
+    },
+    "duplicateObservations": {
+      "identicalAudioHashes": 0,
+      "repeatedRecordingComponents": 0,
+      "sameTitleDifferentRecordings": [
+        {
+          "id": "fma:115817",
+          "title": "On Axis",
+          "artist": "PC-ONE"
+        },
+        {
+          "id": "fma:129970",
+          "title": "On Axis",
+          "artist": "Pipe Choir"
+        }
+      ],
+      "limitation": "No duplicate audio or recording components exist in this catalog. Real result uniqueness and same-title distinction are checked here; alias/hash transitivity and exclusions are covered by isolated engine unit fixtures, not fabricated real-data observations."
+    },
+    "validation": {
+      "status": "valid",
+      "catalogVersion": "fma-small-clap-general-20261104",
+      "trackCount": 500,
+      "artistCount": 169,
+      "dimension": 512,
+      "minimumNorm": 0.9999999942569094,
+      "maximumNorm": 1.0000000050878208
+    }
+  },
+  "payload": {
+    "files": {
+      "current.json": {
+        "rawBytes": 172,
+        "gzipBytes": 157
+      },
+      "manifest.json": {
+        "rawBytes": 3173,
+        "gzipBytes": 1746
+      },
+      "tracks.json": {
+        "rawBytes": 864444,
+        "gzipBytes": 59058
+      },
+      "embeddings.f32": {
+        "rawBytes": 1024000,
+        "gzipBytes": 948191
+      },
+      "build.json": {
+        "rawBytes": 331169,
+        "gzipBytes": 65340
+      },
+      "ATTRIBUTION.md": {
+        "rawBytes": 578195,
+        "gzipBytes": 25787
+      }
+    },
+    "runtimeRawBytes": 2222958,
+    "versionAndPointerRawBytes": 2801153,
+    "note": "Runtime catalog excludes optional attribution document. gzip sizes are local compression observations, not assertions about Pages transfer encoding. Frontend JS/CSS and build metadata are measured by the production artifact audit."
+  },
+  "timingsMs": {
+    "browserCompatibleCatalogValidationInNode": 35.998,
+    "engineInitialization": 5.298
+  },
+  "cases": [
+    {
+      "name": "Spell single seed",
+      "seeds": [
+        {
+          "id": "fma:045099",
+          "title": "Spell",
+          "artist": "Rolemusic"
+        }
+      ],
+      "eligibleCount": 499,
+      "candidateCount": 60,
+      "baseline": {
+        "seed": {
+          "id": "fma:045099",
+          "title": "Spell",
+          "artist": "Rolemusic"
+        },
+        "independentCosineOrderMatches": true,
+        "maximumCosineError": 1.3322676295501878e-15,
+        "resultIds": [
+          "fma:045100",
+          "fma:071506",
+          "fma:071508",
+          "fma:115812",
+          "fma:115811",
+          "fma:091163",
+          "fma:091157",
+          "fma:071512",
+          "fma:071503",
+          "fma:091162",
+          "fma:071514",
+          "fma:071511",
+          "fma:071515",
+          "fma:071507",
+          "fma:107425",
+          "fma:072068",
+          "fma:071513",
+          "fma:140135",
+          "fma:091160",
+          "fma:071510"
+        ]
+      },
+      "seedOnlyResultIds": [
+        "fma:045100",
+        "fma:071506",
+        "fma:071508",
+        "fma:115812",
+        "fma:115811",
+        "fma:091163",
+        "fma:091157",
+        "fma:071512",
+        "fma:071503",
+        "fma:091162",
+        "fma:071514",
+        "fma:071511",
+        "fma:071515",
+        "fma:071507",
+        "fma:107425",
+        "fma:072068",
+        "fma:071513",
+        "fma:140135",
+        "fma:091160",
+        "fma:071510"
+      ],
+      "firstFive": [
+        {
+          "id": "fma:045100",
+          "title": "Leafless Quince Tree",
+          "artist": "Rolemusic",
+          "score": 0.964205199149891
+        },
+        {
+          "id": "fma:071506",
+          "title": "Cloudy",
+          "artist": "Subway Sonicbeat",
+          "score": 0.8109664486322434
+        },
+        {
+          "id": "fma:071508",
+          "title": "Burn Down the Monostery",
+          "artist": "egr",
+          "score": 0.7669483827918773
+        },
+        {
+          "id": "fma:115812",
+          "title": "OST 02 Splash",
+          "artist": "sawsquarenoise",
+          "score": 0.7555161165907937
+        },
+        {
+          "id": "fma:115811",
+          "title": "OST 01 Tutorial",
+          "artist": "sawsquarenoise",
+          "score": 0.7461466012302472
+        }
+      ],
+      "baselineComparison": {
+        "sameOrderedList": true,
+        "sharedTop20Count": 20,
+        "explanation": "Baseline uses the first seed without diversity; product query uses all listed seeds and the default diversity heuristic."
+      },
+      "feedback": {
+        "positive": {
+          "id": "fma:045100",
+          "title": "Leafless Quince Tree",
+          "artist": "Rolemusic"
+        },
+        "negative": {
+          "id": "fma:071506",
+          "title": "Cloudy",
+          "artist": "Subway Sonicbeat"
+        },
+        "resultIds": [
+          "fma:071508",
+          "fma:115812",
+          "fma:115811",
+          "fma:091163",
+          "fma:091157",
+          "fma:071512",
+          "fma:091162",
+          "fma:071514",
+          "fma:071515",
+          "fma:071503",
+          "fma:071511",
+          "fma:071507",
+          "fma:107425",
+          "fma:072068",
+          "fma:071513",
+          "fma:091160",
+          "fma:071510",
+          "fma:140135",
+          "fma:072067",
+          "fma:131837"
+        ],
+        "eligibleCount": 497
+      },
+      "checks": {
+        "realTwentyResults": true,
+        "seedsAndFeedbackExcluded": true,
+        "uniqueRecordingComponents": true,
+        "duplicateSeedIdempotent": true,
+        "repeatedQueryStable": true,
+        "positiveIdempotent": true,
+        "opposingFeedbackReplaced": true,
+        "seedEditClearsFeedback": true,
+        "exactReset": true
+      },
+      "timingMs": {
+        "firstQuery": 5.082,
+        "repeatCount": 10,
+        "minimum": 3.405,
+        "median": 3.59,
+        "maximum": 3.731
+      }
+    },
+    {
+      "name": "Lior and Neil Halstead",
+      "seeds": [
+        {
+          "id": "fma:003832",
+          "title": "Bedoin Song",
+          "artist": "Lior"
+        },
+        {
+          "id": "fma:004037",
+          "title": "Oh! Mighty Engine",
+          "artist": "Neil Halstead"
+        }
+      ],
+      "eligibleCount": 498,
+      "candidateCount": 76,
+      "baseline": {
+        "seed": {
+          "id": "fma:003832",
+          "title": "Bedoin Song",
+          "artist": "Lior"
+        },
+        "independentCosineOrderMatches": true,
+        "maximumCosineError": 8.881784197001252e-16,
+        "resultIds": [
+          "fma:006855",
+          "fma:006856",
+          "fma:006854",
+          "fma:148234",
+          "fma:074370",
+          "fma:122363",
+          "fma:148235",
+          "fma:122360",
+          "fma:148231",
+          "fma:004037",
+          "fma:148233",
+          "fma:122356",
+          "fma:127266",
+          "fma:148187",
+          "fma:122353",
+          "fma:122365",
+          "fma:148216",
+          "fma:133835",
+          "fma:107577",
+          "fma:113281"
+        ]
+      },
+      "seedOnlyResultIds": [
+        "fma:006856",
+        "fma:006855",
+        "fma:115775",
+        "fma:006854",
+        "fma:122363",
+        "fma:148234",
+        "fma:074370",
+        "fma:148235",
+        "fma:122360",
+        "fma:148187",
+        "fma:115774",
+        "fma:148231",
+        "fma:122354",
+        "fma:113281",
+        "fma:122362",
+        "fma:132310",
+        "fma:148233",
+        "fma:122356",
+        "fma:127266",
+        "fma:133100"
+      ],
+      "firstFive": [
+        {
+          "id": "fma:006856",
+          "title": "Autumn Flow",
+          "artist": "Lior",
+          "score": 0.897276254331735
+        },
+        {
+          "id": "fma:006855",
+          "title": "This Old Love",
+          "artist": "Lior",
+          "score": 0.8498515253090739
+        },
+        {
+          "id": "fma:115775",
+          "title": "Vapour Trails",
+          "artist": "Jelsonic",
+          "score": 0.8214583223144025
+        },
+        {
+          "id": "fma:006854",
+          "title": "Lost in Your",
+          "artist": "Lior",
+          "score": 0.8193894585764177
+        },
+        {
+          "id": "fma:122363",
+          "title": "Bonfire Music",
+          "artist": "David Mumford",
+          "score": 0.8146507624237415
+        }
+      ],
+      "baselineComparison": {
+        "sameOrderedList": false,
+        "sharedTop20Count": 14,
+        "explanation": "Baseline uses the first seed without diversity; product query uses all listed seeds and the default diversity heuristic."
+      },
+      "feedback": {
+        "positive": {
+          "id": "fma:006856",
+          "title": "Autumn Flow",
+          "artist": "Lior"
+        },
+        "negative": {
+          "id": "fma:006855",
+          "title": "This Old Love",
+          "artist": "Lior"
+        },
+        "resultIds": [
+          "fma:006854",
+          "fma:122363",
+          "fma:148234",
+          "fma:115775",
+          "fma:148235",
+          "fma:122360",
+          "fma:074370",
+          "fma:148231",
+          "fma:148187",
+          "fma:122354",
+          "fma:115774",
+          "fma:113281",
+          "fma:122362",
+          "fma:148233",
+          "fma:132310",
+          "fma:127266",
+          "fma:122356",
+          "fma:122353",
+          "fma:133100",
+          "fma:124179"
+        ],
+        "eligibleCount": 496
+      },
+      "checks": {
+        "realTwentyResults": true,
+        "seedsAndFeedbackExcluded": true,
+        "uniqueRecordingComponents": true,
+        "duplicateSeedIdempotent": true,
+        "repeatedQueryStable": true,
+        "positiveIdempotent": true,
+        "opposingFeedbackReplaced": true,
+        "seedEditClearsFeedback": true,
+        "exactReset": true
+      },
+      "timingMs": {
+        "firstQuery": 4.418,
+        "repeatCount": 10,
+        "minimum": 4.414,
+        "median": 4.942,
+        "maximum": 4.996
+      }
+    },
+    {
+      "name": "Distinct On Axis recordings",
+      "seeds": [
+        {
+          "id": "fma:115817",
+          "title": "On Axis",
+          "artist": "PC-ONE"
+        },
+        {
+          "id": "fma:129970",
+          "title": "On Axis",
+          "artist": "Pipe Choir"
+        }
+      ],
+      "eligibleCount": 498,
+      "candidateCount": 109,
+      "baseline": {
+        "seed": {
+          "id": "fma:115817",
+          "title": "On Axis",
+          "artist": "PC-ONE"
+        },
+        "independentCosineOrderMatches": true,
+        "maximumCosineError": 8.881784197001252e-16,
+        "resultIds": [
+          "fma:115591",
+          "fma:118085",
+          "fma:061011",
+          "fma:115768",
+          "fma:115125",
+          "fma:122363",
+          "fma:124175",
+          "fma:148213",
+          "fma:118478",
+          "fma:118084",
+          "fma:133431",
+          "fma:148234",
+          "fma:122362",
+          "fma:152570",
+          "fma:122358",
+          "fma:004037",
+          "fma:050955",
+          "fma:148187",
+          "fma:122365",
+          "fma:127303"
+        ]
+      },
+      "seedOnlyResultIds": [
+        "fma:118084",
+        "fma:147295",
+        "fma:129969",
+        "fma:115591",
+        "fma:129968",
+        "fma:129962",
+        "fma:115125",
+        "fma:129972",
+        "fma:118085",
+        "fma:061011",
+        "fma:129268",
+        "fma:126295",
+        "fma:113512",
+        "fma:122358",
+        "fma:122363",
+        "fma:115768",
+        "fma:122365",
+        "fma:148234",
+        "fma:074370",
+        "fma:115772"
+      ],
+      "firstFive": [
+        {
+          "id": "fma:118084",
+          "title": "Only All",
+          "artist": "PC-ONE",
+          "score": 0.8102042680416364
+        },
+        {
+          "id": "fma:147295",
+          "title": "Meadow Siren",
+          "artist": "Greg Atkinson",
+          "score": 0.769988634606332
+        },
+        {
+          "id": "fma:129969",
+          "title": "Sonzis FM",
+          "artist": "Pipe Choir",
+          "score": 0.7554549336539631
+        },
+        {
+          "id": "fma:115591",
+          "title": "Coming Down",
+          "artist": "PC-ONE",
+          "score": 0.7420240168658134
+        },
+        {
+          "id": "fma:129968",
+          "title": "Infinite Light",
+          "artist": "Pipe Choir",
+          "score": 0.7308385870939491
+        }
+      ],
+      "baselineComparison": {
+        "sameOrderedList": false,
+        "sharedTop20Count": 10,
+        "explanation": "Baseline uses the first seed without diversity; product query uses all listed seeds and the default diversity heuristic."
+      },
+      "feedback": {
+        "positive": {
+          "id": "fma:118084",
+          "title": "Only All",
+          "artist": "PC-ONE"
+        },
+        "negative": {
+          "id": "fma:129969",
+          "title": "Sonzis FM",
+          "artist": "Pipe Choir"
+        },
+        "resultIds": [
+          "fma:147295",
+          "fma:115591",
+          "fma:129968",
+          "fma:115125",
+          "fma:129962",
+          "fma:118085",
+          "fma:061011",
+          "fma:122358",
+          "fma:129972",
+          "fma:129268",
+          "fma:126295",
+          "fma:122675",
+          "fma:115768",
+          "fma:122365",
+          "fma:122363",
+          "fma:113512",
+          "fma:107589",
+          "fma:107595",
+          "fma:074370",
+          "fma:148190"
+        ],
+        "eligibleCount": 496
+      },
+      "checks": {
+        "realTwentyResults": true,
+        "seedsAndFeedbackExcluded": true,
+        "uniqueRecordingComponents": true,
+        "duplicateSeedIdempotent": true,
+        "repeatedQueryStable": true,
+        "positiveIdempotent": true,
+        "opposingFeedbackReplaced": true,
+        "seedEditClearsFeedback": true,
+        "exactReset": true
+      },
+      "timingMs": {
+        "firstQuery": 7.315,
+        "repeatCount": 10,
+        "minimum": 6.835,
+        "median": 7.195,
+        "maximum": 7.295
+      }
+    },
+    {
+      "name": "Five artists",
+      "seeds": [
+        {
+          "id": "fma:045099",
+          "title": "Spell",
+          "artist": "Rolemusic"
+        },
+        {
+          "id": "fma:003832",
+          "title": "Bedoin Song",
+          "artist": "Lior"
+        },
+        {
+          "id": "fma:003950",
+          "title": "Click Click Bang Bang",
+          "artist": "Miss Derringer"
+        },
+        {
+          "id": "fma:004037",
+          "title": "Oh! Mighty Engine",
+          "artist": "Neil Halstead"
+        },
+        {
+          "id": "fma:004070",
+          "title": "Nuevos Ojos",
+          "artist": "Pistolera"
+        }
+      ],
+      "eligibleCount": 495,
+      "candidateCount": 194,
+      "baseline": {
+        "seed": {
+          "id": "fma:045099",
+          "title": "Spell",
+          "artist": "Rolemusic"
+        },
+        "independentCosineOrderMatches": true,
+        "maximumCosineError": 1.3322676295501878e-15,
+        "resultIds": [
+          "fma:045100",
+          "fma:071506",
+          "fma:071508",
+          "fma:115812",
+          "fma:115811",
+          "fma:091163",
+          "fma:091157",
+          "fma:071512",
+          "fma:071503",
+          "fma:091162",
+          "fma:071514",
+          "fma:071511",
+          "fma:071515",
+          "fma:071507",
+          "fma:107425",
+          "fma:072068",
+          "fma:071513",
+          "fma:140135",
+          "fma:091160",
+          "fma:071510"
+        ]
+      },
+      "seedOnlyResultIds": [
+        "fma:004071",
+        "fma:006855",
+        "fma:004075",
+        "fma:004074",
+        "fma:004076",
+        "fma:004072",
+        "fma:045100",
+        "fma:006856",
+        "fma:004078",
+        "fma:004077",
+        "fma:004080",
+        "fma:006854",
+        "fma:122363",
+        "fma:004073",
+        "fma:148234",
+        "fma:074370",
+        "fma:122360",
+        "fma:004079",
+        "fma:115775",
+        "fma:148235"
+      ],
+      "firstFive": [
+        {
+          "id": "fma:004071",
+          "title": "Mentirosas",
+          "artist": "Pistolera",
+          "score": 0.8151416855114266
+        },
+        {
+          "id": "fma:006855",
+          "title": "This Old Love",
+          "artist": "Lior",
+          "score": 0.780923364273411
+        },
+        {
+          "id": "fma:004075",
+          "title": "Un Momento",
+          "artist": "Pistolera",
+          "score": 0.768353882849515
+        },
+        {
+          "id": "fma:004074",
+          "title": "Vieja",
+          "artist": "Pistolera",
+          "score": 0.7671898656517095
+        },
+        {
+          "id": "fma:004076",
+          "title": "No te Olvidare",
+          "artist": "Pistolera",
+          "score": 0.7665294681300867
+        }
+      ],
+      "baselineComparison": {
+        "sameOrderedList": false,
+        "sharedTop20Count": 1,
+        "explanation": "Baseline uses the first seed without diversity; product query uses all listed seeds and the default diversity heuristic."
+      },
+      "feedback": {
+        "positive": {
+          "id": "fma:004071",
+          "title": "Mentirosas",
+          "artist": "Pistolera"
+        },
+        "negative": {
+          "id": "fma:004074",
+          "title": "Vieja",
+          "artist": "Pistolera"
+        },
+        "resultIds": [
+          "fma:004075",
+          "fma:004076",
+          "fma:004072",
+          "fma:004078",
+          "fma:004080",
+          "fma:004077",
+          "fma:006855",
+          "fma:004073",
+          "fma:004079",
+          "fma:006856",
+          "fma:006854",
+          "fma:045100",
+          "fma:074370",
+          "fma:122360",
+          "fma:122363",
+          "fma:148234",
+          "fma:148235",
+          "fma:127266",
+          "fma:115775",
+          "fma:148187"
+        ],
+        "eligibleCount": 493
+      },
+      "checks": {
+        "realTwentyResults": true,
+        "seedsAndFeedbackExcluded": true,
+        "uniqueRecordingComponents": true,
+        "duplicateSeedIdempotent": true,
+        "repeatedQueryStable": true,
+        "positiveIdempotent": true,
+        "opposingFeedbackReplaced": true,
+        "seedEditClearsFeedback": true,
+        "exactReset": true
+      },
+      "timingMs": {
+        "firstQuery": 13.778,
+        "repeatCount": 10,
+        "minimum": 20.082,
+        "median": 20.129,
+        "maximum": 21.711
+      }
+    },
+    {
+      "name": "Field-recording excerpts",
+      "seeds": [
+        {
+          "id": "fma:068551",
+          "title": "Crowd Walla",
+          "artist": "gelo-papas"
+        },
+        {
+          "id": "fma:068579",
+          "title": "Train Station Lobby Ambience with a PA Announcer, Belgrade, Serbia",
+          "artist": "Tomlija"
+        }
+      ],
+      "eligibleCount": 498,
+      "candidateCount": 83,
+      "baseline": {
+        "seed": {
+          "id": "fma:068551",
+          "title": "Crowd Walla",
+          "artist": "gelo-papas"
+        },
+        "independentCosineOrderMatches": true,
+        "maximumCosineError": 5.551115123125783e-16,
+        "resultIds": [
+          "fma:068543",
+          "fma:068538",
+          "fma:068540",
+          "fma:068579",
+          "fma:068541",
+          "fma:068539",
+          "fma:068549",
+          "fma:006680",
+          "fma:068573",
+          "fma:006675",
+          "fma:007554",
+          "fma:006679",
+          "fma:007548",
+          "fma:006677",
+          "fma:042761",
+          "fma:006674",
+          "fma:107584",
+          "fma:121312",
+          "fma:098575",
+          "fma:118489"
+        ]
+      },
+      "seedOnlyResultIds": [
+        "fma:068543",
+        "fma:068538",
+        "fma:068540",
+        "fma:068541",
+        "fma:068549",
+        "fma:068539",
+        "fma:006680",
+        "fma:068573",
+        "fma:007554",
+        "fma:006675",
+        "fma:007548",
+        "fma:145917",
+        "fma:115764",
+        "fma:006679",
+        "fma:146019",
+        "fma:146020",
+        "fma:107584",
+        "fma:006677",
+        "fma:006674",
+        "fma:042761"
+      ],
+      "firstFive": [
+        {
+          "id": "fma:068543",
+          "title": "Ste 029 Crowd Noise 3",
+          "artist": "Corsica S",
+          "score": 0.8295430195466258
+        },
+        {
+          "id": "fma:068538",
+          "title": "Crowd Long",
+          "artist": "Audionautics",
+          "score": 0.7513780518018377
+        },
+        {
+          "id": "fma:068540",
+          "title": "Murmur",
+          "artist": "Benboncan",
+          "score": 0.742788409966186
+        },
+        {
+          "id": "fma:068541",
+          "title": "Small Group Walla",
+          "artist": "Corsica S",
+          "score": 0.7119344937682266
+        },
+        {
+          "id": "fma:068549",
+          "title": "Walla Market Croatian",
+          "artist": "elektroproleter",
+          "score": 0.6430499556326038
+        }
+      ],
+      "baselineComparison": {
+        "sameOrderedList": false,
+        "sharedTop20Count": 16,
+        "explanation": "Baseline uses the first seed without diversity; product query uses all listed seeds and the default diversity heuristic."
+      },
+      "feedback": {
+        "positive": {
+          "id": "fma:068543",
+          "title": "Ste 029 Crowd Noise 3",
+          "artist": "Corsica S"
+        },
+        "negative": {
+          "id": "fma:068538",
+          "title": "Crowd Long",
+          "artist": "Audionautics"
+        },
+        "resultIds": [
+          "fma:068540",
+          "fma:068541",
+          "fma:068549",
+          "fma:068539",
+          "fma:006680",
+          "fma:068573",
+          "fma:007554",
+          "fma:006675",
+          "fma:007548",
+          "fma:146020",
+          "fma:115764",
+          "fma:107584",
+          "fma:145917",
+          "fma:006679",
+          "fma:006674",
+          "fma:146019",
+          "fma:006677",
+          "fma:146018",
+          "fma:121312",
+          "fma:149778"
+        ],
+        "eligibleCount": 496
+      },
+      "checks": {
+        "realTwentyResults": true,
+        "seedsAndFeedbackExcluded": true,
+        "uniqueRecordingComponents": true,
+        "duplicateSeedIdempotent": true,
+        "repeatedQueryStable": true,
+        "positiveIdempotent": true,
+        "opposingFeedbackReplaced": true,
+        "seedEditClearsFeedback": true,
+        "exactReset": true
+      },
+      "timingMs": {
+        "firstQuery": 7.865,
+        "repeatCount": 10,
+        "minimum": 5.046,
+        "median": 5.058,
+        "maximum": 5.07
+      }
+    }
+  ],
+  "humanListening": {
+    "soundsSimilar": "unmeasured",
+    "wantToHearNow": "unmeasured",
+    "ratingsCollected": 0
+  },
+  "limitations": [
+    "Prepared catalog includes experimental and field-recording excerpts as well as songs.",
+    "Audio similarity and heuristic ranking do not establish musical satisfaction.",
+    "Whole-song coverage, exhaustive duplicate recognition and performance on larger catalogs are unmeasured."
+  ]
+}
