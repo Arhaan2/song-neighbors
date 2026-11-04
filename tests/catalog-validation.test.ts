@@ -11,6 +11,7 @@ import type { ArtifactBundle } from '../scripts/catalog-validation.ts'
 const encode = (value: unknown) => new TextEncoder().encode(`${JSON.stringify(value)}\n`)
 const parse = (value: Uint8Array) => JSON.parse(new TextDecoder().decode(value))
 const license = { statement: 'Attribution', url: 'https://creativecommons.org/licenses/by/4.0/', attribution: 'Synthetic test attribution only' }
+const runtimeLibraries = { torch: '2.8.0', transformers: '4.57.1', numpy: '2.3.4', soundfile: '0.13.1', soxr: '1.0.0', librosa: '0.11.0', 'huggingface-hub': '0.36.0' }
 const modelLicense = { statement: 'Apache-2.0', url: 'https://www.apache.org/licenses/LICENSE-2.0', attribution: 'Fixture model' }
 function fixture(): ArtifactBundle {
   const processor = {
@@ -39,7 +40,7 @@ function fixture(): ArtifactBundle {
   const processorSerialized = canonicalJson(processor)
   const configuration = {
     encoder: { id: 'laion/larger_clap_music', revision: 'a0b4534a14f58e20944452dff00a22a06ce629d1', sourceUrl: 'https://example.org/model', license: modelLicense },
-    preprocessing: { sampleRateHz: 48000, channels: 1, decoder: { name: 'fixture', version: '1' }, resampler: { name: 'fixture', version: '1' }, implementationVersion: 'song-neighbors-clap-v1', dependencyLockSha256: 'e'.repeat(64), runtimeLibraries: { test: '1' }, amplitudePolicy: 'Decode float32; mean channels in float64 then float32; soxr HQ resample to 48000 Hz; no loudness or peak normalization; zero-pad windows; processor padding=pad and truncation=rand_trunc on exactly 480000 samples (no crop).', processorConfigSha256: sha256(processorSerialized) },
+    preprocessing: { sampleRateHz: 48000, channels: 1, decoder: { name: 'soundfile/libsndfile', version: '0.13.1/1.2.2' }, resampler: { name: 'soxr-HQ', version: '1.0.0' }, implementationVersion: 'song-neighbors-clap-v1', dependencyLockSha256: 'e'.repeat(64), runtimeLibraries, amplitudePolicy: 'Decode float32; mean channels in float64 then float32; soxr HQ resample to 48000 Hz; no loudness or peak normalization; zero-pad windows; processor padding=pad and truncation=rand_trunc on exactly 480000 samples (no crop).', processorConfigSha256: sha256(processorSerialized) },
     windowing: { version: 'fixed-starts-0-10-20-v1', durationSeconds: 10, selectionPolicy: 'Starts at 0, 10, and 20 seconds when start < decoded duration; analyzes at most first 30 seconds; no random crop.', shortAudioPolicy: 'Right zero-pad each partial 10-second window to 480000 samples; coverage excludes padding.' },
     aggregation: { version: 'mean-unit-windows-v1', method: 'Arithmetic mean of L2-normalized window embeddings, followed by L2 normalization.', windowNormalization: 'l2', finalNormalization: 'l2' },
   }
@@ -56,7 +57,7 @@ function fixture(): ArtifactBundle {
   const build = {
     schemaVersion: 1,
     pipeline: { sourceCommit: 'c'.repeat(40), sourceTreeSha256: 'd'.repeat(64), dirty: false },
-    runtime: { python: '3.12', platform: 'test', libraries: { test: '1' } }, dependencyLockSha256: 'e'.repeat(64),
+    runtime: { python: '3.12', platform: 'test', libraries: runtimeLibraries }, dependencyLockSha256: 'e'.repeat(64),
     encoderArtifacts: [
       { path: 'config.json', sha256: '2d7722d338bb83ea8824272b1431f088954d3425d79eb3c2d39489478516dc03', bytes: 628 },
       { path: 'preprocessor_config.json', sha256: '9739f58296aa6f9ac18008fd0150fb2649bc554985fbde86d0a4041c882ac753', bytes: 541 },
@@ -161,6 +162,35 @@ describe('complete catalog artifact validation', () => {
       const bundle = fixture()
       edit(bundle, 'build', mutation)
       expect(() => validateArtifactBundle(bundle)).toThrow()
+    }
+  })
+
+  it('rejects unsupported decoder/resampler/library identities even when all configuration hashes agree', () => {
+    const mutations = [
+      (preprocessing: ReturnType<typeof parse>) => { preprocessing.decoder.name = 'ffmpeg' },
+      (preprocessing: ReturnType<typeof parse>) => { preprocessing.decoder.version = '0.99.0/1.2.2' },
+      (preprocessing: ReturnType<typeof parse>) => { preprocessing.decoder.version = '0.13.1/' },
+      (preprocessing: ReturnType<typeof parse>) => { preprocessing.resampler.name = 'linear' },
+      (preprocessing: ReturnType<typeof parse>) => { preprocessing.resampler.version = '9.9.9' },
+      (preprocessing: ReturnType<typeof parse>) => { preprocessing.runtimeLibraries.transformers = '99.0.0' },
+      (preprocessing: ReturnType<typeof parse>) => { delete preprocessing.runtimeLibraries.librosa },
+    ]
+    for (const mutation of mutations) {
+      const bundle = fixture()
+      const manifest = parse(bundle.manifest)
+      const build = parse(bundle.build)
+      mutation(manifest.preprocessing)
+      build.configuration.preprocessing = manifest.preprocessing
+      build.runtime.libraries = manifest.preprocessing.runtimeLibraries
+      build.configurationSha256 = sha256(canonicalJson(build.configuration))
+      for (const row of build.rows) {
+        row.configurationSha256 = build.configurationSha256
+        row.cacheKeySha256 = sha256(canonicalJson({ audioSha256: row.audioSha256, configurationSha256: build.configurationSha256 }))
+      }
+      bundle.manifest = encode(manifest)
+      bundle.build = encode(build)
+      rehash(bundle)
+      expect(() => validateArtifactBundle(bundle)).toThrow(/Unsupported (decoder|resampler|runtime)/)
     }
   })
 

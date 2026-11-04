@@ -124,6 +124,19 @@ export function validateArtifactBundle(bundle: ArtifactBundle, expected?: { cata
   requireThat(manifest.preprocessing.implementationVersion === 'song-neighbors-clap-v1', 'Unsupported pipeline implementation')
   requireThat(manifest.preprocessing.dependencyLockSha256 === build.dependencyLockSha256, 'Dependency lock mismatch')
   requireThat(canonicalJson(manifest.preprocessing.runtimeLibraries) === canonicalJson(build.runtime.libraries), 'Runtime libraries mismatch')
+  const supportedLibraries = {
+    torch: '2.8.0',
+    transformers: '4.57.1',
+    numpy: '2.3.4',
+    soundfile: '0.13.1',
+    soxr: '1.0.0',
+    librosa: '0.11.0',
+    'huggingface-hub': '0.36.0',
+  }
+  requireThat(canonicalJson(manifest.preprocessing.runtimeLibraries) === canonicalJson(supportedLibraries), 'Unsupported runtime library versions')
+  const decoderVersion = manifest.preprocessing.decoder.version.split('/')
+  requireThat(manifest.preprocessing.decoder.name === 'soundfile/libsndfile' && decoderVersion.length === 2 && decoderVersion[0] === supportedLibraries.soundfile && Boolean(decoderVersion[1]?.trim()), 'Unsupported decoder identity')
+  requireThat(manifest.preprocessing.resampler.name === 'soxr-HQ' && manifest.preprocessing.resampler.version === supportedLibraries.soxr, 'Unsupported resampler identity')
   requireThat(manifest.preprocessing.amplitudePolicy === 'Decode float32; mean channels in float64 then float32; soxr HQ resample to 48000 Hz; no loudness or peak normalization; zero-pad windows; processor padding=pad and truncation=rand_trunc on exactly 480000 samples (no crop).', 'Unsupported amplitude policy')
   requireThat(manifest.windowing.selectionPolicy === 'Starts at 0, 10, and 20 seconds when start < decoded duration; analyzes at most first 30 seconds; no random crop.' && manifest.windowing.shortAudioPolicy === 'Right zero-pad each partial 10-second window to 480000 samples; coverage excludes padding.' && manifest.aggregation.method === 'Arithmetic mean of L2-normalized window embeddings, followed by L2 normalization.', 'Unsupported policy semantics')
   requireThat(build.processorConfig.id === manifest.encoder.id && build.processorConfig.revision === manifest.encoder.revision, 'Processor/model revision mismatch')
