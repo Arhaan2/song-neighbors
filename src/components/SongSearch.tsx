@@ -1,4 +1,4 @@
-import { useId, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useId, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import type { KeyboardEvent } from 'react'
 import type { CatalogTrack } from '../catalog/contract.ts'
 import { catalogExamples, recordingDescription, searchCatalog } from '../ui/search.ts'
@@ -15,6 +15,9 @@ export function SongSearch({ tracks, selectedIds, onSelect }: Props) {
   const [active, setActive] = useState(-1)
   const [announcement, setAnnouncement] = useState('')
   const input = useRef<HTMLInputElement>(null)
+  const container = useRef<HTMLDivElement>(null)
+  const outsidePointer = useRef<number | null>(null)
+  const pendingBlur = useRef(false)
   const scrollActive = useRef(false)
   const id = useId()
   const matches = useMemo(() => searchCatalog(tracks, query), [tracks, query])
@@ -24,6 +27,43 @@ export function SongSearch({ tracks, selectedIds, onSelect }: Props) {
   const hasQuery = query.trim().length > 0
   const showResults = open && hasQuery
   const optionId = (index: number) => `${id}-option-${index}`
+  useEffect(() => {
+    const finishPointer = () => {
+      outsidePointer.current = null
+      if (pendingBlur.current && !container.current?.contains(document.activeElement)) {
+        setOpen(false)
+        setActive(-1)
+      }
+      pendingBlur.current = false
+    }
+    const pointerDown = (event: PointerEvent) => {
+      if (!event.isPrimary || event.button !== 0) return
+      outsidePointer.current = container.current?.contains(event.target as Node) ? null : event.pointerId
+    }
+    const pointerCancel = (event: PointerEvent) => {
+      if (outsidePointer.current === event.pointerId) finishPointer()
+    }
+    // In-flow results must stay put between press and release: removing them on blur
+    // moves controls below the search away from the pointer before their click lands.
+    // Touch may dispatch compatibility mouse/focus events after pointerup in a later
+    // task, so only click (whose target is settled) or cancellation ends the deferral.
+    document.addEventListener('pointerdown', pointerDown, true)
+    document.addEventListener('pointercancel', pointerCancel, true)
+    document.addEventListener('click', finishPointer, true)
+    document.addEventListener('keydown', finishPointer, true)
+    document.addEventListener('dragend', finishPointer, true)
+    window.addEventListener('blur', finishPointer)
+    return () => {
+      document.removeEventListener('pointerdown', pointerDown, true)
+      document.removeEventListener('pointercancel', pointerCancel, true)
+      document.removeEventListener('click', finishPointer, true)
+      document.removeEventListener('keydown', finishPointer, true)
+      document.removeEventListener('dragend', finishPointer, true)
+      window.removeEventListener('blur', finishPointer)
+      outsidePointer.current = null
+      pendingBlur.current = false
+    }
+  }, [])
   useLayoutEffect(() => {
     if (showResults && active >= 0 && scrollActive.current) {
       document.getElementById(`${id}-option-${active}`)?.scrollIntoView({ block: 'nearest', behavior: 'auto' })
@@ -57,8 +97,11 @@ export function SongSearch({ tracks, selectedIds, onSelect }: Props) {
       choose(results[active])
     }
   }
-  return <div className="song-search" onBlur={(event) => {
-    if (!event.currentTarget.contains(event.relatedTarget)) { setOpen(false); setActive(-1) }
+  return <div ref={container} className="song-search" onBlur={(event) => {
+    if (!event.currentTarget.contains(event.relatedTarget)) {
+      if (outsidePointer.current !== null) pendingBlur.current = true
+      else { setOpen(false); setActive(-1) }
+    }
   }}>
     <label htmlFor={id}>Search songs or artists</label>
     <div className="search-field">

@@ -207,6 +207,47 @@ test('keyboard, unsupported search, rapid input and reduced-motion responsive la
   expect(await page.evaluate(() => matchMedia('(prefers-reduced-motion: reduce)').matches)).toBe(true)
 })
 
+test('outside controls keep their pointer target while search loses focus', async ({ page }, info) => {
+  await ready(page)
+  const input = page.getByRole('combobox')
+  const summary = page.locator('summary').filter({ hasText: 'About Song Neighbors & the catalog' })
+  const details = page.locator('details').filter({ has: summary })
+  for (const query of ['zzzz-unavailable-song-zzzz', 'On Axis']) {
+    await input.fill(query)
+    await expect(page.locator('.search-matches')).toBeVisible()
+    await summary.scrollIntoViewIfNeeded()
+    const target = await summary.boundingBox()
+    expect(target).not.toBeNull()
+    await page.mouse.move(target!.x + target!.width / 2, target!.y + target!.height / 2)
+    await page.mouse.down()
+    // Hold beyond the next task/frame: blur must not remove the in-flow panel yet.
+    await page.waitForTimeout(200)
+    await expect(page.locator('.search-matches')).toBeVisible()
+    const held = await summary.boundingBox()
+    expect(held!.y).toBeCloseTo(target!.y, 1)
+    await page.mouse.up()
+    await expect(details).toHaveAttribute('open', '')
+    await expect(page.locator('.search-matches')).toHaveCount(0)
+    await summary.click()
+    await expect(details).not.toHaveAttribute('open', '')
+  }
+  // Focus navigation has no held pointer and closes the panel immediately.
+  await input.fill('On Axis')
+  await input.press('Tab') // Clear-search button remains inside the search component.
+  await page.keyboard.press('Tab')
+  await expect(summary).toBeFocused()
+  await expect(page.locator('.search-matches')).toHaveCount(0)
+  await page.keyboard.press('Enter')
+  await expect(details).toHaveAttribute('open', '')
+  if (info.project.use.hasTouch) {
+    await summary.tap()
+    await input.fill('zzzz-unavailable-song-zzzz')
+    await summary.tap()
+    await expect(details).toHaveAttribute('open', '')
+    await expect(page.locator('.search-matches')).toHaveCount(0)
+  }
+})
+
 test('delayed result and delayed error cannot revive an edited selection', async ({ page }) => {
   await observeWorker(page)
   await ready(page)
