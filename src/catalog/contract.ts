@@ -51,6 +51,9 @@ export const catalogManifestSchema = z.strictObject({
   }),
   preprocessing: z.strictObject({
     sampleRateHz: positiveInteger,
+    implementationVersion: text,
+    dependencyLockSha256: sha256,
+    runtimeLibraries: z.record(text, text),
     channels: z.literal(1),
     decoder: softwareSchema,
     resampler: softwareSchema,

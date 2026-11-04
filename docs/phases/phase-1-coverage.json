@@ -1,0 +1,148 @@
+{
+  "schemaVersion": 1,
+  "catalogVersion": "fma-small-clap-general-20261104",
+  "manifestSha256": "b57bda0fb968b5feb49bb4ad7f33ea61ff67647483f496b519edea85b576ae11",
+  "diagnosticDisclaimer": "Phase 1 offline capacity diagnostic only: arithmetic mean of five seed cosine scores. This is not the Phase 2 production recommendation engine, a musical-quality evaluation, or a public acoustic-demo pass. The 100-recording/10-artist floor is an engineering scope choice, not proof of musical quality.",
+  "selectionPolicy": "First five stable-ID-ordered distinct recordings with different artist display names; next two eligible recordings are explicit positive/negative exclusions. Exclude their exact audio hashes and verified recording groups. Rank remaining rows by arithmetic mean seed cosine, break ties by stable ID, and deduplicate exact audio hashes and verified recording groups.",
+  "counts": {
+    "analyzedTracks": 500,
+    "distinctRecordings": 500,
+    "distinctAudioHashes": 500,
+    "distinctArtistDisplayNames": 169,
+    "dimension": 512,
+    "candidatesAfterExclusions": 493,
+    "distinctCandidatesAfterExclusions": 493,
+    "seedCount": 5,
+    "furtherExplicitExclusionCount": 2,
+    "resultCount": 20
+  },
+  "publicBetaCoverageFloor": {
+    "minimumDistinctRecordings": 100,
+    "minimumArtists": 10,
+    "fiveSeedTwentyResultCasePassed": true,
+    "passed": true
+  },
+  "seeds": [
+    {
+      "id": "fma:003832",
+      "artist": "Lior"
+    },
+    {
+      "id": "fma:003950",
+      "artist": "Miss Derringer"
+    },
+    {
+      "id": "fma:004037",
+      "artist": "Neil Halstead"
+    },
+    {
+      "id": "fma:004070",
+      "artist": "Pistolera"
+    },
+    {
+      "id": "fma:006674",
+      "artist": "Jarrod Fowler"
+    }
+  ],
+  "furtherExplicitExclusions": [
+    {
+      "id": "fma:004071",
+      "role": "positive-feedback-exclusion"
+    },
+    {
+      "id": "fma:004072",
+      "role": "negative-feedback-exclusion"
+    }
+  ],
+  "excludedIds": [
+    "fma:003832",
+    "fma:003950",
+    "fma:004037",
+    "fma:004070",
+    "fma:004071",
+    "fma:004072",
+    "fma:006674"
+  ],
+  "results": [
+    {
+      "id": "fma:122360",
+      "score": 0.590771964797974
+    },
+    {
+      "id": "fma:004076",
+      "score": 0.5596795147726864
+    },
+    {
+      "id": "fma:006856",
+      "score": 0.5507409645758441
+    },
+    {
+      "id": "fma:006855",
+      "score": 0.5493262379192522
+    },
+    {
+      "id": "fma:006854",
+      "score": 0.5486453955509678
+    },
+    {
+      "id": "fma:122363",
+      "score": 0.542586276131184
+    },
+    {
+      "id": "fma:074370",
+      "score": 0.5377429475767954
+    },
+    {
+      "id": "fma:127266",
+      "score": 0.5365538600723453
+    },
+    {
+      "id": "fma:118496",
+      "score": 0.5346157014743413
+    },
+    {
+      "id": "fma:004075",
+      "score": 0.5313713578668449
+    },
+    {
+      "id": "fma:122355",
+      "score": 0.5273910307165701
+    },
+    {
+      "id": "fma:148234",
+      "score": 0.5258103236801194
+    },
+    {
+      "id": "fma:133835",
+      "score": 0.5245935704554966
+    },
+    {
+      "id": "fma:118504",
+      "score": 0.5133484081502542
+    },
+    {
+      "id": "fma:004078",
+      "score": 0.513221443883043
+    },
+    {
+      "id": "fma:004080",
+      "score": 0.5105206785524031
+    },
+    {
+      "id": "fma:148235",
+      "score": 0.5098420278714048
+    },
+    {
+      "id": "fma:004074",
+      "score": 0.5047586268337654
+    },
+    {
+      "id": "fma:122358",
+      "score": 0.5001715317933785
+    },
+    {
+      "id": "fma:148233",
+      "score": 0.49868215067992205
+    }
+  ]
+}

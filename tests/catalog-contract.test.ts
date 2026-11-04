@@ -24,6 +24,9 @@ const manifest = () => ({
   encoder: { id: 'test/encoder', revision: 'b'.repeat(40), sourceUrl: 'https://example.org/model', license },
   preprocessing: {
     sampleRateHz: 48000,
+    implementationVersion: 'schema-fixture',
+    dependencyLockSha256: digest,
+    runtimeLibraries: { fixture: '1' },
     channels: 1,
     decoder: { name: 'test-decoder', version: '1' },
     resampler: { name: 'test-resampler', version: '1' },
@@ -60,9 +63,9 @@ const track = (id = 'test:fixture', row = 0) => ({
 })
 
 describe('catalog contract', () => {
-  it('keeps the committed catalog explicitly unavailable, without guessed release fields', () => {
+  it('validates the committed pointer and rejects guessed fields on an unavailable catalog', () => {
     const current: unknown = JSON.parse(readFileSync(new URL('../public/catalog/current.json', import.meta.url), 'utf8'))
-    expect(catalogPointerSchema.parse(current)).toMatchObject({ status: 'not-ready' })
+    expect(['ready', 'not-ready']).toContain(catalogPointerSchema.parse(current).status)
     expect(catalogPointerSchema.safeParse({ schemaVersion: 1, status: 'not-ready', reason: 'Pending', dimension: 512 }).success).toBe(false)
   })
 

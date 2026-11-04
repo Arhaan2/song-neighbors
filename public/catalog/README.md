@@ -1,8 +1,15 @@
 # Public catalog exports
 
-`current.json` intentionally says `not-ready`. No audio has been analyzed in Phase 0.
-There are no song records, vectors, dimensions, or release manifests to download yet.
+`current.json` selects `fma-small-clap-general-20261104`: 500 genuine audio embeddings across
+169 artist names, measured at 512 dimensions. Its immutable directory contains exactly
+`manifest.json`, `tracks.json`, `embeddings.f32`, `build.json`, and `ATTRIBUTION.md`.
 
-Phase 1 will export immutable version directories under this folder. See
-[`docs/CATALOG_CONTRACT.md`](../../docs/CATALOG_CONTRACT.md) for the complete contract.
-Raw audio, model weights, local paths and private source manifests never belong here.
+The pinned trained model is `laion/larger_clap_general` revision
+`ada0c23a36c4e8582805bb38fec3905903f18b41`. The initial music checkpoint was rejected; none of
+its vectors are published. Run `npm run validate:catalog -- --require-ready` to verify all bytes,
+configuration, rows and provenance without downloading audio or model weights.
+
+See [the contract](../../docs/CATALOG_CONTRACT.md), [Phase 1 evidence](../../docs/phases/phase-1.md)
+and [recording credits](fma-small-clap-general-20261104/ATTRIBUTION.md). Recording-derived artifacts
+retain their per-record terms; the application's MIT license does not relicense them. Raw audio,
+model weights, caches, local paths and private source manifests never belong here.

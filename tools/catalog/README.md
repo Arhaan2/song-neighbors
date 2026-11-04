@@ -1,42 +1,148 @@
-# Offline catalog tools
+# Offline audio catalog
 
-This is an isolated, uv-managed Python 3.12 project. Phase 0 establishes its interpreter,
-lockfile, and development tooling. **No acquisition, inference, or export pipeline exists yet.**
-No encoder weights or audio dependencies are installed. Their versions must be selected with
-actual checkpoint compatibility during Phase 1.
+The pipeline acquires official FMA-small metadata/audio, applies the narrow record-level policy,
+and runs genuine CPU CLAP inference. Heavy dependencies are an **optional** `inference` extra;
+ordinary web CI validates the committed export without downloading music or model weights.
+Run these commands from the repository root with Python 3.12, uv, curl, and Node 24 available.
+All downloaded files, models, raw excerpts, run reports, and embedding caches stay in `.cache/`.
 
-From the repository root:
+## Acquire and inspect before inference
 
 ```sh
 uv sync --project tools/catalog --locked
-uv run --project tools/catalog --locked ruff check tools/catalog
-uv run --project tools/catalog --locked ruff format --check tools/catalog
+uv run --project tools/catalog --locked python tools/catalog/source.py download metadata --cache .cache/catalog
+uv run --project tools/catalog --locked python tools/catalog/source.py inspect \
+  --metadata-archive .cache/catalog/fma_metadata.zip --limit 500 \
+  --selection .cache/catalog/selection-500.json --report .cache/catalog/source-report.json
 ```
 
-The environment lives at `tools/catalog/.venv`. The lockfile is committed; the environment,
-Python bytecode, downloaded weights and data are ignored. Ruff currently checks configuration;
-Python source and behavioral tests arrive with the Phase 1 pipeline, so a successful Ruff run
-is **not** evidence that inference or export works.
+`source.py` verifies the upstream SHA-1, hashes the exact archive with SHA-256, joins actual
+small-subset IDs to raw record license URLs, preserves attribution/copyright statements, and
+writes inclusion/exclusion evidence. `tracks.csv` license labels alone are insufficient to infer
+license versions. Inspect the report before the larger download. The only audio archive supported
+by the downloader is the approximately 7.2 GiB **small** archive; no full/larger datasets or remote
+ZIP range infrastructure is used. Downloads resume through curl and require disk-space reserves.
 
-Python 3.12 is a conservative initial compatibility target, not proof of support by the future
-encoder stack. `uv` may install its managed interpreter if 3.12 is absent. No global package
-installation is required. For a project-local cache, set `UV_CACHE_DIR` to `.cache/uv` under the
-repository; use `UV_PYTHON_INSTALL_DIR` under `.cache/python` if keeping managed interpreters
-project-local is desired too.
+```sh
+uv run --project tools/catalog --locked python tools/catalog/source.py download small --cache .cache/catalog
+uv run --project tools/catalog --locked python tools/catalog/source.py extract \
+  --audio-archive .cache/catalog/fma_small.zip --selection .cache/catalog/selection-500.json \
+  --output .cache/catalog/fma_small
+```
 
-## Phase 1 handoff
+Only selected eligible clips are extracted. Stable recording IDs are `fma:` followed by the
+six-digit zero-padded FMA track ID. Artist/title text never determines recording identity.
 
-1. Read `docs/CATALOG_POLICY.md` and inspect permitted source metadata before choosing audio.
-2. Resolve compatible inference dependencies here with `uv add`, recording official sources.
-3. Pin the actual encoder's immutable revision and verify its redistribution terms separately.
-4. Prove real extraction on 30–50 permitted tracks; derive dimension from the returned tensor.
-5. Implement incremental cache identity from audio hash, encoder revision, processor config,
-   window policy and aggregation version; reject incompatible cache entries.
-6. Export and independently validate the contract in `docs/CATALOG_CONTRACT.md`, including
-   hashes, finite normalized values, contiguous row mapping, provenance and attribution.
-7. Run a real inference smoke and record exact commands and observations in the Phase 1 report.
+## Pin and run the model
 
-Do not add audio extraction to the web CI job. No placeholder CLI claims to perform these steps.
+```sh
+uv sync --project tools/catalog --locked --extra inference
+uv run --project tools/catalog --locked --extra inference python tools/catalog/catalog.py download-model
+uv run --project tools/catalog --locked --extra inference python tools/catalog/catalog.py extract \
+  --selection .cache/catalog/selection-500.json --audio-root .cache/catalog/fma_small \
+  --run smoke-40 --limit 40
+```
 
-Tooling sources: [uv project guide](https://docs.astral.sh/uv/guides/projects/) and
-[Ruff's project-local installation](https://docs.astral.sh/ruff/installation/).
+The replacement model pin is `laion/larger_clap_general` revision
+`ada0c23a36c4e8582805bb38fec3905903f18b41`. The compatible audio processor is
+`ClapFeatureExtractor` from **the same immutable revision**, used with `ClapModel`.
+The loader verifies SHA-256 for the exact configuration, processor file and checkpoint before
+reuse. `download-model` is the only inference CLI command that fetches network artifacts.
+Extraction uses `local_files_only=True`, CPU, evaluation/inference mode, deterministic Torch
+algorithms and four threads by default (`--threads N`). No GPU or paid API is needed.
+The model card declares Apache-2.0; no weights ship in the static catalog.
+
+Phase 1 started with `laion/larger_clap_music` revision
+`a0b4534a14f58e20944452dff00a22a06ce629d1`, then rejected that exact artifact. Its verified
+checkpoint contained all 253 bias tensors at zero, all 136 normalization tensors at initialization
+defaults, and a zero batch-normalization training counter; the resulting real audio forward passes
+were strongly concentrated. This is evidence against accepting that checkpoint as verified trained
+weights, beyond a musical-preference limitation. Outputs from the rejected artifact must not be
+published as the acoustic catalog. The new model revision creates different configuration/cache
+keys, so those outputs cannot be reused for the replacement.
+
+Before accepting the replacement, verify its exact artifact hashes, inspect for trained parameter
+state, run the real smoke on permitted audio, and inspect output variation. Structural validity and
+unique output bytes alone do not prove pretrained inference. The Phase 1 report records the actual
+replacement verification; the changed pin by itself is not a completed verification claim.
+
+The environment locks Torch 2.8.0, Transformers 4.57.1, NumPy 2.3.4, SoundFile 0.13.1,
+soxr 1.0.0, librosa 0.11.0 and huggingface-hub 0.36.0, plus exact transitive dependencies.
+CPU inference is the default even where the optional Linux Torch wheel includes CUDA libraries.
+
+SoundFile/libsndfile decodes float32; channels are averaged in float64 then converted to float32;
+soxr HQ resamples to 48 kHz. There is no peak/loudness normalization. Windows start at 0, 10 and
+20 seconds when that start exists, and analyze at most the first 30 seconds of the available
+excerpt. Partial windows are right zero-padded to exactly 480,000 samples. The pinned processor
+receives exactly ten seconds with `padding="pad"`; its `rand_trunc` setting performs no crop at
+this exact length. Actual unpadded window bounds and decoded duration are saved per recording.
+Each window embedding is L2 normalized; the arithmetic mean is then L2 normalized and serialized
+as little-endian float32. Dimension is measured from actual returned tensors, never assigned
+from the checkpoint configuration. Available excerpts do not establish whole-song coverage.
+
+After the real smoke passes, expand using the same selection and compatible cache:
+
+```sh
+uv run --project tools/catalog --locked --extra inference python tools/catalog/catalog.py extract \
+  --selection .cache/catalog/selection-500.json --audio-root .cache/catalog/fma_small --run catalog-500
+```
+
+Each successful per-audio cache entry is written atomically. Cache identity is SHA-256 over the
+source-audio SHA-256 and complete configuration SHA-256 (immutable encoder, processor hash,
+decoder/resampler/runtime versions, full dependency-lock digest, implementation version, window
+and aggregation policies).
+Invalid/truncated/mismatched cache entries are recomputed; corrupt vectors never become results.
+Rerun the same extraction command after interruption: valid entries are reused, missing entries
+are inferred, and failed files are retried. Run reports checkpoint after each recording and return
+a nonzero exit code when any file fails. Detailed local error messages stay local; public evidence
+contains source IDs and error categories only. Original extraction source/lock identities remain
+attached to cache entries across subsequent reuse.
+
+## Export and verify
+
+Commit the tested pipeline before the final extraction/export when possible. Run records preserve
+the actual source commit, source-file digest and dirty status at extraction time; cached rows also
+preserve their original extraction identities. Export does not relabel old inference as new code.
+
+```sh
+uv run --project tools/catalog --locked python tools/catalog/catalog.py export \
+  --selection .cache/catalog/selection-500.json --run catalog-500 \
+  --version fma-small-clap-general-v1 --activate
+npm run validate:catalog -- --require-ready
+```
+
+Export includes only successfully analyzed records, sorted by stable ID, with corresponding
+vector bytes in exactly that order. Exact duplicate audio hashes are rejected. It writes a staged
+version, calls the independent Node validator on its exact bytes, then atomically moves the
+validated version into place. `--activate` updates the current pointer only afterward. Existing
+catalog versions cannot be overwritten. A failed validator does not change the active catalog.
+No synthetic fallback or empty success export exists. Five artifacts comprise each version:
+`manifest.json`, `tracks.json`, `embeddings.f32`, `build.json`, and `ATTRIBUTION.md`.
+
+`build.json` includes canonical processor JSON/value, artifact hashes, runtime/lock identity,
+complete configuration, source metadata hash/version, inclusion policy and exclusion counts,
+measured coverage, and per-row audio/config/cache/vector hashes, norms and original extraction
+identity. Canonical JSON is sorted-key, compact UTF-8 without newline; integral floats become
+integers. Ordinary JSON files add a final LF, while embedded processor/config hashing does not.
+The manifest hashes exact exported bytes; the current pointer hashes the manifest, avoiding
+circular hashes. Raw audio, local paths, private manifests, artwork and weights are never exported.
+
+The catalog's validity and its beta coverage are separate checks. The beta engineering floor is
+100 distinct eligible recordings across 10 artists plus a demonstrated five-seed/twenty-result
+case after exclusions; passing integrity checks alone does not claim this floor or musical quality.
+See `docs/phases/phase-1.md` for **actual** counts and verification evidence.
+
+## Lightweight targeted tests
+
+```sh
+uv run --project tools/catalog --locked python -m unittest discover -s tools/catalog/tests -v
+uv run --project tools/catalog --locked ruff check tools/catalog
+uv run --project tools/catalog --locked ruff format --check tools/catalog
+npm run validate:catalog
+```
+
+Python unit tests use explicitly isolated mathematical fixtures and mocked inference to exercise
+failure recovery, cache compatibility, atomic replacement and license rejection. They do not
+establish real inference. The separately recorded real smoke must do that. The Node validator
+rejects unknown/incompatible configuration, missing provenance, mismatched row counts/hashes,
+nonfinite/zero/non-normalized vectors and incorrect byte counts without loading Torch.

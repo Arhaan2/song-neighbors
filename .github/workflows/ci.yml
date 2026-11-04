@@ -1,4 +1,4 @@
-name: Foundation CI
+name: Catalog CI
 
 on:
   push:
@@ -29,10 +29,11 @@ jobs:
       - run: npm run lint
       - run: npm run typecheck
       - run: npm test
+      - run: npm run validate:catalog
       - run: npm run build
 
-  python-foundation:
-    name: Python foundation (no audio extraction)
+  python-catalog:
+    name: Python pipeline (no audio extraction)
     runs-on: ubuntu-latest
     timeout-minutes: 10
     defaults:
@@ -49,3 +50,4 @@ jobs:
       - run: uv sync --locked
       - run: uv run --locked ruff check .
       - run: uv run --locked ruff format --check .
+      - run: uv run --locked python -m unittest discover -s tests -v
