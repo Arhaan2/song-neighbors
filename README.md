@@ -2,7 +2,7 @@
 
 Find songs that fit the moment through audio similarity. The planned flow is to search an analyzed catalog, choose 1–5 songs, receive up to 20 neighbors, and refine the current session with **More like this** and **Not this mood**.
 
-**Phase 1 catalog complete: 500 real recordings across 169 artist names, with 512-dimensional audio embeddings.** Search and recommendation controls remain later-phase work. No website has been deployed. V1 lists titles and artists without streaming accounts or playback. See the [Phase 1 evidence](docs/phases/phase-1.md), including the rejected initial music checkpoint and verified trained replacement.
+**Phase 2 browser engine complete, using 500 real recordings across 169 artist names and 512-dimensional audio embeddings.** The full search, selection and results interface remains Phase 3 work. No website has been deployed. V1 lists titles and artists without streaming accounts or playback. See the [Phase 2 evidence](docs/phases/phase-2.md) and [engine API/algorithm](src/recommend/README.md). The [Phase 1 evidence](docs/phases/phase-1.md) records the rejected initial music checkpoint and verified trained replacement.
 
 ## Run locally
 
@@ -20,7 +20,7 @@ npm run build
 npm run preview -- --host 127.0.0.1 --port 4173 --strictPort
 ```
 
-Open `http://127.0.0.1:4173/song-neighbors/`. Vite's base is set to the actual repository slug; future catalog fetches must use `import.meta.env.BASE_URL`, and workers must use Vite's module URL convention. There is no Pages deployment workflow in this phase.
+Open `http://127.0.0.1:4173/song-neighbors/`. Vite's base is set to the actual repository slug; catalog fetches use `import.meta.env.BASE_URL`, and workers use Vite's module URL convention. There is no Pages deployment workflow in this phase.
 
 ## Verify
 
@@ -33,7 +33,7 @@ npm run validate:catalog -- --require-ready
 npm run build
 ```
 
-Vitest exercises contract and validator failure cases using isolated synthetic fixtures, kept outside `public/`. The lightweight validator independently checks the committed real catalog. Neither unit tests nor coverage counts prove musical quality or human preference. Oxlint checks React/TypeScript code and hooks; strict TypeScript checks the application, tests, and build configuration.
+Vitest exercises catalog integrity, exact ranking, feedback/reset and worker races using isolated mathematical fixtures kept outside `public/`, plus real-catalog smoke and NumPy score comparisons. The lightweight validator independently checks the committed real catalog. Neither unit tests nor coverage counts prove musical quality or human preference. Oxlint checks React/TypeScript code and hooks; strict TypeScript checks the application, tests, and build configuration.
 
 The offline Python pipeline is separate:
 
@@ -53,10 +53,10 @@ GitHub Actions runs these lightweight checks on pushes and pull requests to `mai
 
 | Path | Responsibility |
 | --- | --- |
-| `src/catalog/` | Catalog contract and future browser loading/search |
-| `src/recommend/` | Future pure ranking logic and worker |
+| `src/catalog/` | Catalog contract and validated browser loading |
+| `src/recommend/` | Pure exact ranking, session state, worker protocol and client |
 | `src/components/` | Accessible UI components |
-| `tests/` | Contract and artifact-validator invariant tests |
+| `tests/` | Catalog, mathematics, session, worker and NumPy comparison tests |
 | `tools/catalog/` | Source audit, resumable CPU inference, export and capacity diagnostic |
 | `public/catalog/` | Ready pointer and validated immutable real catalog |
 | `docs/phases/` | Verification evidence and phase handoffs |

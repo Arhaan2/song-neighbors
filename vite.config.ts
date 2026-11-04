@@ -4,7 +4,7 @@ import { defineConfig } from 'vitest/config'
 import { catalogPointerSchema } from './src/catalog/contract.ts'
 import { validateArtifactBundle } from './scripts/catalog-validation.ts'
 
-// Build-time status only. Runtime catalog loading and recommendations belong to later phases.
+// The public screen remains the Phase 1 status view until Phase 3.
 const catalogRoot = new URL('./public/catalog/', import.meta.url)
 const pointer = catalogPointerSchema.parse(JSON.parse(readFileSync(new URL('current.json', catalogRoot), 'utf8')))
 const summary = (() => {
@@ -22,5 +22,13 @@ export default defineConfig({
   base: '/song-neighbors/',
   plugins: [react()],
   define: { __CATALOG_SUMMARY__: JSON.stringify(summary) },
+  // Ship a callable engine entry for production-worker verification before the Phase 3 UI.
+  build: {
+    manifest: true,
+    rolldownOptions: {
+      input: { main: 'index.html', 'recommendation-engine': 'src/recommend/browser.ts' },
+      preserveEntrySignatures: 'strict',
+    },
+  },
   test: { include: ['tests/**/*.test.ts'], environment: 'node' },
 })
