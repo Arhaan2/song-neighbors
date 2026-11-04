@@ -1,10 +1,21 @@
 [project]
 name = "song-neighbors-catalog"
-version = "0.0.0"
-description = "Offline catalog tooling for Song Neighbors; Phase 0 foundation only"
+version = "0.1.0"
+description = "Offline reproducible audio catalog tooling for Song Neighbors"
 readme = "README.md"
 requires-python = ">=3.12,<3.13"
 dependencies = []
+
+[project.optional-dependencies]
+inference = [
+    "torch==2.8.0",
+    "transformers==4.57.1",
+    "numpy==2.3.4",
+    "soundfile==0.13.1",
+    "soxr==1.0.0",
+    "librosa==0.11.0",
+    "huggingface-hub==0.36.0",
+]
 
 [tool.uv]
 package = false

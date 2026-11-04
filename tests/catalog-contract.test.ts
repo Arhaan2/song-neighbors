@@ -24,6 +24,9 @@ const manifest = () => ({
   encoder: { id: 'test/encoder', revision: 'b'.repeat(40), sourceUrl: 'https://example.org/model', license },
   preprocessing: {
     sampleRateHz: 48000,
+    implementationVersion: 'schema-fixture',
+    dependencyLockSha256: digest,
+    runtimeLibraries: { fixture: '1' },
     channels: 1,
     decoder: { name: 'test-decoder', version: '1' },
     resampler: { name: 'test-resampler', version: '1' },

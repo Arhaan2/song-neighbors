@@ -44,3 +44,55 @@ Reject nonfinite or zero vectors. Normalize as specified. Store stable row order
 Prove real extraction on 30–50 tracks, then expand toward approximately 500 as source diversity and resources allow. Record actual track/artist counts and the range of sounds represented. The scoped public-beta floor is 100 distinct eligible recordings across at least 10 artists, plus a demonstrated five-seed/twenty-result flow after exclusions. This is an engineering threshold, not a quality guarantee. Below it, report a technical prototype with beta coverage pending and continue independent work. Neither floor nor target is a quota to fill with fabricated records.
 
 Mainstream song coverage is not established by this dataset choice. The UI must distinguish an unsupported title from an indexed song. Do not substitute artist names, genre tags, language-model guesses, or random vectors while labeling the result acoustic similarity.
+
+## Phase 1 implementation of the allowlist
+
+`tools/catalog/source.py` first verifies the metadata ZIP against the upstream rc1 SHA-1,
+then joins the **8,000 IDs explicitly labeled `small`** in `tracks.csv` to `raw_tracks.csv`.
+The processed CSV drops `license_url`, original track URLs, and copyright notices. Its
+license title alone is therefore insufficient. The raw per-record URL supplies the exact
+license identity; an original title such as `Attribution` is retained without inventing a
+version. Missing joins, unknown URLs, missing public source pages and incomplete credit
+are exclusions, recorded by ID and reason.
+
+The versioned allowlist `fma-explicit-cc0-by-v1` accepts only these exact unported license
+paths at `creativecommons.org`: `/publicdomain/zero/1.0/` and `/licenses/by/1.0/`,
+`/licenses/by/2.0/`, `/licenses/by/2.5/`, `/licenses/by/3.0/`, `/licenses/by/4.0/`.
+Source HTTP URLs may be canonicalized to HTTPS; the original URL is retained in the
+publication-basis text. No jurisdiction, version, query-string permission, NC, ND, or SA
+variant is inferred or mapped. This URL allowlist is a project decision, not an assertion
+that other licenses are unusable.
+
+For included records, the source grant authorizes transformation and sharing, with the
+applicable attribution requirements retained. Every recording receives its title, artist,
+source page, original license statement, exact license URL, supplied copyright and
+contributor notices, and an explicit excerpt-to-numerical-embedding transformation notice.
+The [CC BY legal terms](https://creativecommons.org/licenses/by/4.0/legalcode.en) and
+[CC0 legal terms](https://creativecommons.org/publicdomain/zero/1.0/legalcode.en) are distinct
+from the application's MIT license. The derived publication relies on those explicit
+grants, not on the absence of audio files. No endorsement is implied.
+
+FMA's upstream statement that the dataset is intended for research is retained in the
+provenance and notices. FMA metadata selection/normalization is separately credited under
+CC BY 4.0. Original code, model weights, metadata, and recording-derived catalog data have
+separate notices. Source URLs document the dated dataset records; later site migrations
+may make those original pages unavailable. The reproducible archive identity and exact
+raw per-record evidence remain the provenance, not an assumption about a current webpage.
+
+The source audit also reads supplied per-record copyright/contributor/information notices.
+Contradictory NC/ND/SA notices and mixed underlying license versions fail closed. Literal `null`
+is missing text, not a notice. The immutable metadata review adds conservative exclusions for
+album IDs `6467` (NC), `21277` (conflicting version), `9016` (unresolved notification request),
+`22899` (unresolved credit-in-title request), and artist IDs `21128` (noncommercial language),
+`19498` (project permission request), `2008` (unclear commercial-use terms). These decisions are
+bound to the exact verified rc1 archive, not reusable judgments about those artists or current
+licenses. No messages were sent to source artists.
+
+Required credits from album notices are retained: album links are included, the specified
+artist/title/album-link request is recorded for albums `21088`, `21112`, `21295`, `21296`,
+`21299`, `21808`, `22283`, `22293`, `22333`, `22342`, and album `13303` carries
+“Producer: Tricky Diesel.” Per-track artist-supplied attribution wording is preserved.
+Mixed compilation notices are evaluated by named track, so a restriction on another track
+or on unshipped artwork does not silently change an included recording's explicit license.
+The complete counted selection and per-record exclusions are in
+[the source audit](phases/phase-1-source-audit.json).

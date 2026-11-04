@@ -1,8 +1,9 @@
 # Static catalog contract, schema 1
 
-Phase 0 defines the contract, not a catalog. The executable structural schemas and inferred
-TypeScript types are in `src/catalog/contract.ts`. No dimension, model revision, track count or
-license clearance has been measured yet. Schema fixtures in `tests/` are not production data.
+The executable structural schemas and inferred
+TypeScript types are in `src/catalog/contract.ts`; the artifact validator is
+`scripts/catalog-validation.ts`. Schema fixtures in `tests/` are not production data.
+Actual catalog identity and verification are recorded in `docs/phases/phase-1.md`.
 
 ## Files and activation
 
@@ -39,7 +40,7 @@ The schema requires:
 | `schemaVersion`, `catalogVersion`, `createdAt` | Contract version, immutable export identity and UTC ISO timestamp. |
 | `trackCount`, `dimension` | Positive integers derived from validated output; dimension comes from actual inference. |
 | `encoder` | Exact model ID, immutable lowercase 40/64-hex commit revision, authoritative HTTPS source URL, model license statement/URL/attribution. Never a mutable branch or tag. |
-| `preprocessing` | Sample rate, mono channel count, decoder and resampler names/versions, amplitude policy and exact processor-config SHA-256. |
+| `preprocessing` | Sample rate, mono channel count, decoder and resampler names/versions, amplitude policy, exact processor-config SHA-256, implementation version, runtime libraries and full dependency-lock SHA-256. |
 | `windowing` | Version, window duration, deterministic position selection and short-audio policy. |
 | `aggregation` | Version, exact pooling method, per-window normalization (`none` or `l2`), final `l2` normalization. |
 | `vectors` | `float32`, `little`, `row-major`, `l2`, and positive norm tolerance at most `0.001`. |
@@ -124,3 +125,27 @@ those gates pass, the checked-in pointer remains `not-ready` and no song can be 
 
 Dependency reference: [Zod 4](https://zod.dev/) supports strict runtime schemas and inferred types;
 its official documentation requires TypeScript 5.5+ with strict mode enabled.
+
+## Phase 1 build record and validator
+
+`buildSchema` in `scripts/catalog-validation.ts` defines the concrete strict `build.json` shape.
+It binds extraction-time pipeline commit/source digest/dirty status, Python/platform/libraries,
+full dependency lock, verified model artifact hashes, canonical processor value and serialization,
+complete configuration/hash, metadata archive hashes/version, inclusion-policy exclusion counts,
+and measured counts/dimension. Every row records source audio/configuration/cache/vector hashes,
+float32 norm, and its original extraction commit/source/lock identity. Cache reuse never relabels
+old inference as a new extraction. Config and processor JSON use sorted keys, compact UTF-8,
+no newline, and integral numbers serialized as integers.
+
+`npm run validate:catalog` inspects every committed version and the current pointer using only
+Node and web dependencies. It verifies exact file bytes/hashes, strict schemas, public-safe values,
+allowlisted recording licenses, sorted row alignment, source membership, per-row identity, pinned
+model/processor and fixed analysis policy, complete attribution, finite nonzero normalized vectors,
+and duplicate source-audio hashes. It never repairs or substitutes data. `--require-ready` additionally
+fails if no ready catalog exists; the ordinary command explicitly reports not-ready without claiming
+a real-data pass. `--root <path> --version <version>` validates a staged export before activation.
+
+The Python exporter stages five files, invokes this validator, atomically publishes the immutable
+version, then optionally updates the pointer. A failed validation cannot activate a new catalog.
+Existing version names cannot be overwritten. Required web CI validates exports; inference and
+source/model downloads are excluded from CI.

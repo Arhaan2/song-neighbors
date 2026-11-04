@@ -6,10 +6,11 @@
   "scripts": {
     "dev": "vite",
     "build": "npm run typecheck && vite build",
-    "lint": "oxlint --deny-warnings src tests vite.config.ts",
+    "lint": "oxlint --deny-warnings src tests scripts vite.config.ts",
     "typecheck": "tsc -b",
     "test": "vitest run",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "validate:catalog": "node scripts/validate-catalog.ts"
   },
   "dependencies": {
     "react": "^19.3.1",
