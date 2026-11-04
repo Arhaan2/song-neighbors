@@ -1,9 +1,10 @@
 # Phase 4 — public beta release
 
-November 4, 2026 (America/Los_Angeles). **Verification/publication in progress.**
-Initial tested state is the Phase 4 working tree based on `2e23ff3efadae99ff26050363cf429e95b9bc82f`.
-This report will record the exact tested/deployed commit after live verification; build metadata,
-not this document's own commit, is authoritative. No release tag has been created yet.
+November 4, 2026 (America/Los_Angeles). **Implementation and local/CI verification complete;
+PUBLICATION PENDING.** Reviewed release code `f257b652f905293b3c9ea47a7ca3cf756fd345c6`
+was integrated as `f8c6260985bbb4de1a041e42e2b1959522aa88b6`. Their Git trees match.
+The main workflow's clean artifact identifies the latter SHA; a verified live site is required
+before this revision can be tagged. The evidence commit is separate from the workflow source.
 
 ## Preflight and ownership
 
@@ -98,9 +99,71 @@ PREVIEW_PORT=4178 PLAYWRIGHT_CHANNEL=chrome npm run test:e2e
 ```
 
 Python checks from `tools/catalog`: `uv run --locked ruff check .`, `uv run --locked ruff
-format --check .`, `uv run --locked python -m unittest discover -s tests -v`. The final CI
-also repeats the full suite on clean Linux checkouts. Public integration/deployment and live
-verification are still pending at the time of this source commit.
+format --check .`, `uv run --locked python -m unittest discover -s tests -v`. PR and main CI repeated the gates on clean Linux checkouts. See [browser and file evidence](phase-4-browser.json).
+
+## Public integration and hosting
+
+[PR #4](https://github.com/Arhaan2/song-neighbors/pull/4) integrated the reviewed head after
+[PR workflow 41923580521](https://github.com/Arhaan2/song-neighbors/actions/runs/41923580521)
+passed; PR configure/upload/deploy were skipped. The integrated [main workflow 41923813385](https://github.com/Arhaan2/song-neighbors/actions/runs/41923813385)
+passed web (including 16/16 Chromium cases in 24.7 s) and Python checks. It uploaded
+`github-pages` artifact **13368122615**, SHA-256 of the archive
+`4a244a04ef90a530bc71060de3e470e507bd45880a695a20edcfd37b83c2d97b`, 1,241,526 bytes
+compressed / 3,271,857 bytes across 16 unpacked files. The downloaded artifact's 15 non-identity
+files are byte-identical to the clean local candidate. Only `build-info.json` differs, correctly
+identifying the merge commit. Artifact metadata is not proof the public URL works.
+
+The repository and Pages site configuration remain public, HTTPS enforced, `build_type: workflow`;
+the `github-pages` environment allows main. [First deploy job](https://github.com/Arhaan2/song-neighbors/actions/runs/41923813385/job/126903498137)
+created the Pages deployment at 22:17:52 UTC. GitHub reported `deployment_queued` then
+`updating_pages` until the job timed out, cancelling deployment at 22:27:52 UTC. The service
+reported `deployment_cancelled`; no artifact/permission failure was returned. A [deploy-only retry](https://github.com/Arhaan2/song-neighbors/actions/runs/41923813385/job/126909018013)
+reused the same artifact ID and digest (environment deployment `7559586372`, following
+`7559377173`). Pages accepted it at 22:28:41 UTC but returned an empty status while polling;
+at 22:38:39 UTC the second job also timed out and cancelled. Workflow attempt 2 finished
+**cancelled**, not successful. The official [Pages deployment limit](https://docs.github.com/en/pages/getting-started-with-github-pages/github-pages-limits) is ten minutes.
+Neither job reported an invalid artifact or missing permission; no evidence supported another
+application change or a third immediate retry.
+
+Anonymous Chromium probes on the [actual Pages URL](https://arhaan2.github.io/song-neighbors/)
+during the retry and again after the terminal cancellation returned GitHub's **HTTP 404** on
+both viewports; the final `build-info.json` request also returned 404. The app, worker and
+catalog were not available there, so **no verified live source/catalog, tag or GitHub Release**
+is claimed. Local and CI verification are complete; **PUBLICATION PENDING**. The public
+repository still has no `v0.1.0` tag. Source release notes are ready in [RELEASE_NOTES.md](../RELEASE_NOTES.md).
+
+**Smallest unblock:** when Pages can process the deployment, rerun only its job:
+`gh run rerun --repo Arhaan2/song-neighbors --job 126909018013`. This reuses the verified
+artifact until November 5, 2026, 2:17 p.m. Pacific (22:17 UTC). If that artifact expires,
+rerun the original workflow run `41923813385` at its original SHA to validate/build/test and
+upload the same integrated source again. If Pages continues to stall, the two linked job logs,
+environment deployment IDs and artifact digest identify the case for GitHub Support. After a
+successful deployment, run the live check below, then tag only the exact live-confirmed SHA.
+The later evidence-only commit does not change what was tested and must not be tagged instead.
+
+The clean local candidate at `f257b652f905293b3c9ea47a7ca3cf756fd345c6` also passed the two
+focused anonymous release journeys with `sourceDirty: false`; each compared all 16 file hashes.
+Navigation to enabled search was **233 ms desktop / 146 ms mobile**. Click to 20 rendered
+cards was **67/58 ms desktop** and **64/59 ms mobile** for one/five seeds respectively.
+[Desktop](assets/phase-4-local-desktop.png) and [mobile](assets/phase-4-local-mobile.png)
+screenshots show the locally verified release candidate, not the public Pages URL.
+These single unthrottled localhost measurements include Playwright actionability, assertion
+polling and rendering; they are not public network timings or guarantees.
+
+For an independent live check, download the workflow's `github-pages` artifact and unpack
+its `artifact.tar` into a temporary directory. Confirm `build-info.json` matches the workflow
+source and catalog. Point the focused test at those exact downloaded bytes:
+
+```sh
+RELEASE_ARTIFACT_DIR="$artifact_directory" \
+RELEASE_BASE_URL=https://arhaan2.github.io/song-neighbors/ \
+PLAYWRIGHT_CHANNEL=chrome npm run test:e2e -- tests/e2e/release.spec.ts
+```
+
+The browser contexts start without cookies or stored identity. They must load the real worker
+and catalog, render results and both feedback directions, reset exactly, clear state on refresh,
+fetch attribution, and match all public file hashes. An HTTP 200 on just the landing page is
+insufficient. Do not tag until both browser cases pass against the intended deployment.
 
 ## Human listening and limitations
 

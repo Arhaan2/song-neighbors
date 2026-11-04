@@ -1,0 +1,479 @@
+{
+  "localFullSuite": {
+    "stats": {
+      "startTime": "2026-11-04T22:13:43.368Z",
+      "duration": 17199.37,
+      "expected": 16,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "observations": [
+      {
+        "project": "desktop",
+        "url": "http://127.0.0.1:4178/song-neighbors/",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "browser": "156.0.8078.80",
+        "identity": {
+          "schemaVersion": 1,
+          "sourceSha": "2e23ff3efadae99ff26050363cf429e95b9bc82f",
+          "sourceDirty": true,
+          "catalogVersion": "fma-small-clap-general-20261104",
+          "catalogManifestSha256": "b57bda0fb968b5feb49bb4ad7f33ea61ff67647483f496b519edea85b576ae11",
+          "basePath": "/song-neighbors/"
+        },
+        "navigationToReadyMs": 134.01695799999925,
+        "clickTo20VisibleMs": [
+          59.29945800000041,
+          58.71162499999991
+        ],
+        "timingNote": "Single unthrottled run; wall time includes Playwright actions/assertion polling, worker validation, network and rendering. Not a universal latency promise.",
+        "seeds": [
+          "fma:045099",
+          "fma:003832",
+          "fma:003950",
+          "fma:004037",
+          "fma:004070"
+        ],
+        "baseline": [
+          "fma:004071",
+          "fma:006855",
+          "fma:004075",
+          "fma:004074",
+          "fma:004076",
+          "fma:004072",
+          "fma:045100",
+          "fma:006856",
+          "fma:004078",
+          "fma:004077",
+          "fma:004080",
+          "fma:006854",
+          "fma:122363",
+          "fma:004073",
+          "fma:148234",
+          "fma:074370",
+          "fma:122360",
+          "fma:004079",
+          "fma:115775",
+          "fma:148235"
+        ],
+        "positive": "fma:004071",
+        "rejected": "fma:004074",
+        "comparedArtifactFiles": 16,
+        "anonymousContext": true,
+        "resetExact": true,
+        "refreshCleared": true,
+        "errors": [],
+        "failed": [],
+        "requestedUrls": [
+          "http://127.0.0.1:4178/song-neighbors/",
+          "http://127.0.0.1:4178/song-neighbors/assets/index-BKBPVX1B.css",
+          "http://127.0.0.1:4178/song-neighbors/assets/index-ugoifDOh.js",
+          "http://127.0.0.1:4178/song-neighbors/assets/recommend.worker-BUQyE7PA.js",
+          "http://127.0.0.1:4178/song-neighbors/catalog/current.json",
+          "http://127.0.0.1:4178/song-neighbors/catalog/fma-small-clap-general-20261104/manifest.json",
+          "http://127.0.0.1:4178/song-neighbors/catalog/fma-small-clap-general-20261104/tracks.json",
+          "http://127.0.0.1:4178/song-neighbors/catalog/fma-small-clap-general-20261104/embeddings.f32",
+          "http://127.0.0.1:4178/song-neighbors/catalog/fma-small-clap-general-20261104/build.json"
+        ]
+      },
+      {
+        "project": "mobile",
+        "url": "http://127.0.0.1:4178/song-neighbors/",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "browser": "156.0.8078.80",
+        "identity": {
+          "schemaVersion": 1,
+          "sourceSha": "2e23ff3efadae99ff26050363cf429e95b9bc82f",
+          "sourceDirty": true,
+          "catalogVersion": "fma-small-clap-general-20261104",
+          "catalogManifestSha256": "b57bda0fb968b5feb49bb4ad7f33ea61ff67647483f496b519edea85b576ae11",
+          "basePath": "/song-neighbors/"
+        },
+        "navigationToReadyMs": 135.60504200000014,
+        "clickTo20VisibleMs": [
+          58.11554200000046,
+          56.31883300000027
+        ],
+        "timingNote": "Single unthrottled run; wall time includes Playwright actions/assertion polling, worker validation, network and rendering. Not a universal latency promise.",
+        "seeds": [
+          "fma:045099",
+          "fma:003832",
+          "fma:003950",
+          "fma:004037",
+          "fma:004070"
+        ],
+        "baseline": [
+          "fma:004071",
+          "fma:006855",
+          "fma:004075",
+          "fma:004074",
+          "fma:004076",
+          "fma:004072",
+          "fma:045100",
+          "fma:006856",
+          "fma:004078",
+          "fma:004077",
+          "fma:004080",
+          "fma:006854",
+          "fma:122363",
+          "fma:004073",
+          "fma:148234",
+          "fma:074370",
+          "fma:122360",
+          "fma:004079",
+          "fma:115775",
+          "fma:148235"
+        ],
+        "positive": "fma:004071",
+        "rejected": "fma:004074",
+        "comparedArtifactFiles": 16,
+        "anonymousContext": true,
+        "resetExact": true,
+        "refreshCleared": true,
+        "errors": [],
+        "failed": [],
+        "requestedUrls": [
+          "http://127.0.0.1:4178/song-neighbors/",
+          "http://127.0.0.1:4178/song-neighbors/assets/index-BKBPVX1B.css",
+          "http://127.0.0.1:4178/song-neighbors/assets/index-ugoifDOh.js",
+          "http://127.0.0.1:4178/song-neighbors/assets/recommend.worker-BUQyE7PA.js",
+          "http://127.0.0.1:4178/song-neighbors/catalog/current.json",
+          "http://127.0.0.1:4178/song-neighbors/catalog/fma-small-clap-general-20261104/manifest.json",
+          "http://127.0.0.1:4178/song-neighbors/catalog/fma-small-clap-general-20261104/tracks.json",
+          "http://127.0.0.1:4178/song-neighbors/catalog/fma-small-clap-general-20261104/embeddings.f32",
+          "http://127.0.0.1:4178/song-neighbors/catalog/fma-small-clap-general-20261104/build.json"
+        ]
+      }
+    ]
+  },
+  "localCleanCandidate": {
+    "stats": {
+      "startTime": "2026-11-04T22:15:39.127Z",
+      "duration": 4473.535,
+      "expected": 2,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "observations": [
+      {
+        "project": "desktop",
+        "url": "http://127.0.0.1:4176/song-neighbors/",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "browser": "156.0.8078.80",
+        "identity": {
+          "schemaVersion": 1,
+          "sourceSha": "f257b652f905293b3c9ea47a7ca3cf756fd345c6",
+          "sourceDirty": false,
+          "catalogVersion": "fma-small-clap-general-20261104",
+          "catalogManifestSha256": "b57bda0fb968b5feb49bb4ad7f33ea61ff67647483f496b519edea85b576ae11",
+          "basePath": "/song-neighbors/"
+        },
+        "navigationToReadyMs": 233.46562500000005,
+        "clickTo20VisibleMs": [
+          67.35500000000002,
+          58.40079199999991
+        ],
+        "timingNote": "Single unthrottled run; wall time includes Playwright actions/assertion polling, worker validation, network and rendering. Not a universal latency promise.",
+        "seeds": [
+          "fma:045099",
+          "fma:003832",
+          "fma:003950",
+          "fma:004037",
+          "fma:004070"
+        ],
+        "baseline": [
+          "fma:004071",
+          "fma:006855",
+          "fma:004075",
+          "fma:004074",
+          "fma:004076",
+          "fma:004072",
+          "fma:045100",
+          "fma:006856",
+          "fma:004078",
+          "fma:004077",
+          "fma:004080",
+          "fma:006854",
+          "fma:122363",
+          "fma:004073",
+          "fma:148234",
+          "fma:074370",
+          "fma:122360",
+          "fma:004079",
+          "fma:115775",
+          "fma:148235"
+        ],
+        "positive": "fma:004071",
+        "rejected": "fma:004074",
+        "comparedArtifactFiles": 16,
+        "anonymousContext": true,
+        "resetExact": true,
+        "refreshCleared": true,
+        "errors": [],
+        "failed": [],
+        "requestedUrls": [
+          "http://127.0.0.1:4176/song-neighbors/",
+          "http://127.0.0.1:4176/song-neighbors/assets/index-BKBPVX1B.css",
+          "http://127.0.0.1:4176/song-neighbors/assets/index-ugoifDOh.js",
+          "http://127.0.0.1:4176/song-neighbors/assets/recommend.worker-BUQyE7PA.js",
+          "http://127.0.0.1:4176/song-neighbors/catalog/current.json",
+          "http://127.0.0.1:4176/song-neighbors/catalog/fma-small-clap-general-20261104/manifest.json",
+          "http://127.0.0.1:4176/song-neighbors/catalog/fma-small-clap-general-20261104/tracks.json",
+          "http://127.0.0.1:4176/song-neighbors/catalog/fma-small-clap-general-20261104/embeddings.f32",
+          "http://127.0.0.1:4176/song-neighbors/catalog/fma-small-clap-general-20261104/build.json"
+        ],
+        "screenshot": "assets/phase-4-local-desktop.png"
+      },
+      {
+        "project": "mobile",
+        "url": "http://127.0.0.1:4176/song-neighbors/",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "browser": "156.0.8078.80",
+        "identity": {
+          "schemaVersion": 1,
+          "sourceSha": "f257b652f905293b3c9ea47a7ca3cf756fd345c6",
+          "sourceDirty": false,
+          "catalogVersion": "fma-small-clap-general-20261104",
+          "catalogManifestSha256": "b57bda0fb968b5feb49bb4ad7f33ea61ff67647483f496b519edea85b576ae11",
+          "basePath": "/song-neighbors/"
+        },
+        "navigationToReadyMs": 145.61629200000004,
+        "clickTo20VisibleMs": [
+          63.940916000000016,
+          58.815207999999984
+        ],
+        "timingNote": "Single unthrottled run; wall time includes Playwright actions/assertion polling, worker validation, network and rendering. Not a universal latency promise.",
+        "seeds": [
+          "fma:045099",
+          "fma:003832",
+          "fma:003950",
+          "fma:004037",
+          "fma:004070"
+        ],
+        "baseline": [
+          "fma:004071",
+          "fma:006855",
+          "fma:004075",
+          "fma:004074",
+          "fma:004076",
+          "fma:004072",
+          "fma:045100",
+          "fma:006856",
+          "fma:004078",
+          "fma:004077",
+          "fma:004080",
+          "fma:006854",
+          "fma:122363",
+          "fma:004073",
+          "fma:148234",
+          "fma:074370",
+          "fma:122360",
+          "fma:004079",
+          "fma:115775",
+          "fma:148235"
+        ],
+        "positive": "fma:004071",
+        "rejected": "fma:004074",
+        "comparedArtifactFiles": 16,
+        "anonymousContext": true,
+        "resetExact": true,
+        "refreshCleared": true,
+        "errors": [],
+        "failed": [],
+        "requestedUrls": [
+          "http://127.0.0.1:4176/song-neighbors/",
+          "http://127.0.0.1:4176/song-neighbors/assets/index-BKBPVX1B.css",
+          "http://127.0.0.1:4176/song-neighbors/assets/index-ugoifDOh.js",
+          "http://127.0.0.1:4176/song-neighbors/assets/recommend.worker-BUQyE7PA.js",
+          "http://127.0.0.1:4176/song-neighbors/catalog/current.json",
+          "http://127.0.0.1:4176/song-neighbors/catalog/fma-small-clap-general-20261104/manifest.json",
+          "http://127.0.0.1:4176/song-neighbors/catalog/fma-small-clap-general-20261104/tracks.json",
+          "http://127.0.0.1:4176/song-neighbors/catalog/fma-small-clap-general-20261104/embeddings.f32",
+          "http://127.0.0.1:4176/song-neighbors/catalog/fma-small-clap-general-20261104/build.json"
+        ],
+        "screenshot": "assets/phase-4-local-mobile.png"
+      }
+    ]
+  },
+  "workflowArtifact": {
+    "totalBytes": 3271857,
+    "fileCount": 16,
+    "files": [
+      {
+        "path": "LICENSE.txt",
+        "bytes": 1072,
+        "sha256": "7c3234840a155c9006bfecf386e4fd481e7174023327640c870427452e9c00c8"
+      },
+      {
+        "path": "THIRD_PARTY_LICENSES.txt",
+        "bytes": 4388,
+        "sha256": "35aaba155dc11b44533ced66fe7a9ea8ff29dc0310244a13fd5e7c20baf40082"
+      },
+      {
+        "path": "THIRD_PARTY_NOTICES.md",
+        "bytes": 5307,
+        "sha256": "fe535a804d2d720d60fc191da44fa43326f5b7963e8bf9ece1aff8ece64a5a9c"
+      },
+      {
+        "path": "asset-manifest.json",
+        "bytes": 252,
+        "sha256": "81b6dcbc5c239b8e4c9eacee14dd4ef5759bacbc6dd27821797f45893e6b9181"
+      },
+      {
+        "path": "assets/index-BKBPVX1B.css",
+        "bytes": 9935,
+        "sha256": "ddc7ae73975733a1fd29b183c060fde3b2da23c6ff8875a5c7210ce10d5f1175"
+      },
+      {
+        "path": "assets/index-ugoifDOh.js",
+        "bytes": 336208,
+        "sha256": "44a093cdc5bdd6b09a808315aa0149aab0f0df3a92c8b8f18fc1ef51e07c19cd"
+      },
+      {
+        "path": "assets/recommend.worker-BUQyE7PA.js",
+        "bytes": 111049,
+        "sha256": "5340dc2dede50e163454f3d4dda674fee980e2af3566772e2ba28fa3f1c6e3d8"
+      },
+      {
+        "path": "build-info.json",
+        "bytes": 292,
+        "sha256": "364815a94d678fd0a2a86bf2d7fe9e6dc2ca876963d9983d132b757e6c994574"
+      },
+      {
+        "path": "catalog/README.md",
+        "bytes": 1361,
+        "sha256": "a536597f2130f4b273aac655c3f4718dc3c51672099ce9c347597d72d5c6b7b1"
+      },
+      {
+        "path": "catalog/current.json",
+        "bytes": 172,
+        "sha256": "11af300741e34589de3086489c05b7b8ffc7b6959f5f3ffaa08df252f9b4451c"
+      },
+      {
+        "path": "catalog/fma-small-clap-general-20261104/ATTRIBUTION.md",
+        "bytes": 578195,
+        "sha256": "84f78b50a8135da5484d444ff7c7c31fa7ae914ed0a7b1346e82b8fce871e981"
+      },
+      {
+        "path": "catalog/fma-small-clap-general-20261104/build.json",
+        "bytes": 331169,
+        "sha256": "f7dce8ea9a4a0c3e65a744832a9e6a38982d945cf71fed2a2f3bddd31531a166"
+      },
+      {
+        "path": "catalog/fma-small-clap-general-20261104/embeddings.f32",
+        "bytes": 1024000,
+        "sha256": "0b29eefec5e6f708f1be7bc2d25d5b3e4970b4f036e698c7ce8d775389aa9054"
+      },
+      {
+        "path": "catalog/fma-small-clap-general-20261104/manifest.json",
+        "bytes": 3173,
+        "sha256": "b57bda0fb968b5feb49bb4ad7f33ea61ff67647483f496b519edea85b576ae11"
+      },
+      {
+        "path": "catalog/fma-small-clap-general-20261104/tracks.json",
+        "bytes": 864444,
+        "sha256": "0c057dfd8a53e14f04a4f19471e4aea22761b43e60b0b13c9eeee3dfd421284f"
+      },
+      {
+        "path": "index.html",
+        "bytes": 840,
+        "sha256": "534c4027d25766059fb7f4c425d4be90833085f33fbb887ed5ac375677ac52bf"
+      }
+    ]
+  },
+  "liveAttemptDuringPublication": {
+    "stats": {
+      "startTime": "2026-11-04T22:30:20.360Z",
+      "duration": 12780.908000000001,
+      "expected": 0,
+      "skipped": 0,
+      "unexpected": 2,
+      "flaky": 0
+    },
+    "url": "https://arhaan2.github.io/song-neighbors/",
+    "observations": [
+      {
+        "viewport": "1440x900",
+        "anonymous": true,
+        "documentHttpStatus": 404
+      },
+      {
+        "viewport": "390x844",
+        "anonymous": true,
+        "documentHttpStatus": 404
+      }
+    ],
+    "productFlow": "Could not start: GitHub Pages returned its own 404 to both contexts during the deployment-only retry."
+  },
+  "liveFinalAttempt": {
+    "url": "https://arhaan2.github.io/song-neighbors/",
+    "stats": {
+      "startTime": "2026-11-04T22:39:08.539Z",
+      "duration": 12972.96,
+      "expected": 0,
+      "skipped": 0,
+      "unexpected": 2,
+      "flaky": 0
+    },
+    "observations": [
+      {
+        "project": "desktop",
+        "viewport": "1440x900",
+        "freshAnonymousChromium": true,
+        "documentHttpStatus": 404,
+        "page": "GitHub Pages 404",
+        "productSearchAvailable": false
+      },
+      {
+        "project": "mobile",
+        "viewport": "390x844",
+        "freshAnonymousChromium": true,
+        "documentHttpStatus": 404,
+        "page": "GitHub Pages 404",
+        "productSearchAvailable": false
+      }
+    ],
+    "buildInfoHttpStatus": 404,
+    "verifiedLiveSource": null,
+    "verifiedLiveCatalog": null,
+    "releaseTag": null,
+    "status": "PUBLICATION PENDING",
+    "explanation": "GitHub Pages did not serve the product. Public selection, ranking, refinement, reset, refresh and file hashes could not be verified."
+  },
+  "workflow": {
+    "run": 41923813385,
+    "sourceSha": "f8c6260985bbb4de1a041e42e2b1959522aa88b6",
+    "artifactId": 13368122615,
+    "archiveSha256": "4a244a04ef90a530bc71060de3e470e507bd45880a695a20edcfd37b83c2d97b",
+    "archiveBytes": 1241526,
+    "artifactExpiresUtc": "2026-11-05T22:17:41Z",
+    "attempts": [
+      {
+        "attempt": 1,
+        "deployJob": 126903498137,
+        "environmentDeployment": 7559377173,
+        "outcome": "cancelled at 10-minute timeout while updating_pages"
+      },
+      {
+        "attempt": 2,
+        "deployJob": 126909018013,
+        "environmentDeployment": 7559586372,
+        "outcome": "deploy-only retry cancelled at 10-minute timeout; Pages returned empty polling status"
+      }
+    ]
+  }
+}
