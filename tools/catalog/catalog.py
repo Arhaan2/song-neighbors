@@ -15,6 +15,7 @@ import struct
 import subprocess
 import sys
 import tempfile
+import time
 from datetime import UTC, datetime
 from pathlib import Path
 
@@ -362,8 +363,13 @@ def extract(args):
     artifacts = model_artifacts(model_dir)
     config, processor = load_configuration(model_dir)
     config_sha = sha(canonical(config))
+    started = time.monotonic()
     run = {
         "schemaVersion": 1,
+        "startedAt": datetime.now(UTC).isoformat(),
+        "status": "running",
+        "requestedCount": len(records),
+        "elapsedSeconds": 0,
         "configuration": config,
         "configurationSha256": config_sha,
         "processorConfig": processor,
@@ -384,22 +390,30 @@ def extract(args):
     encoder = None
     seen = set()
     report = args.cache / "runs" / (args.run + ".json")
+    write_json(report, run)
     for record in records:
         identifier = record.get("id", "missing-id")
+        stage = "source-policy"
+        audio_sha = None
+        key = None
         try:
             if identifier in seen:
                 raise ValueError("Duplicate stable ID in selection")
             seen.add(identifier)
             eligible_record(record)
+            stage = "source-audio"
             path = safe_audio_path(args.audio_root, record["audioPath"])
             audio_sha = file_sha(path)
             key = cache_key(audio_sha, config_sha)
             entry_path = args.cache / "embeddings" / (key + ".json")
+            stage = "cache-validation"
             entry = load_cache(entry_path, audio_sha, config_sha)
             reused = entry is not None
             if entry is None:
                 if encoder is None:
+                    stage = "model-initialization"
                     encoder = Encoder(model_dir, args.threads)
+                stage = "decode-or-inference"
                 vector, coverage = encoder.extract(path)
                 entry = {
                     "schemaVersion": 1,
@@ -413,7 +427,9 @@ def extract(args):
                     "coverage": coverage,
                     "vectorSha256": sha(vector_bytes(vector)),
                 }
+                stage = "inferred-vector-validation"
                 validate_entry(entry, audio_sha, config_sha)
+                stage = "cache-write"
                 write_json(entry_path, entry)
             run["cacheHits" if reused else "inferred"] += 1
             run["rows"].append({"id": identifier, "audioSha256": audio_sha, "cacheKeySha256": key})
@@ -429,14 +445,44 @@ def extract(args):
             )
         except (OSError, ValueError, RuntimeError, KeyError, TypeError) as error:
             # Exception messages can include local/private paths; only type is public-safe.
-            run["failures"].append({"id": identifier, "reason": type(error).__name__})
+            category = (
+                "missing-audio"
+                if stage == "source-audio" and isinstance(error, FileNotFoundError)
+                else stage
+            )
+            failure = {
+                "id": identifier,
+                "stage": stage,
+                "category": category,
+                "reason": type(error).__name__,
+            }
+            if audio_sha is not None:
+                failure["audioSha256"] = audio_sha
+            if key is not None:
+                failure["cacheKeySha256"] = key
+            run["failures"].append(failure)
             print(
-                json.dumps({"id": identifier, "status": "failed", "reason": type(error).__name__}),
+                json.dumps(
+                    {
+                        "id": identifier,
+                        "status": "failed",
+                        "category": category,
+                        "reason": type(error).__name__,
+                    }
+                ),
                 flush=True,
             )
             print(f"{identifier}: {error}", file=sys.stderr)
+        except KeyboardInterrupt:
+            run["status"] = "interrupted"
+            raise
         finally:
+            run["elapsedSeconds"] = round(time.monotonic() - started, 6)
             write_json(report, run)
+    run["status"] = "failed" if run["failures"] else "complete"
+    run["completedAt"] = datetime.now(UTC).isoformat()
+    run["elapsedSeconds"] = round(time.monotonic() - started, 6)
+    write_json(report, run)
     print(
         json.dumps(
             {

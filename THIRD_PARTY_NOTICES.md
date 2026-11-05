@@ -15,9 +15,9 @@ Upstream license sources:
 - [Ruff](https://github.com/astral-sh/ruff/blob/main/LICENSE)
 - [DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/LICENSE)
 
-The public beta ships numerical embeddings of music, experimental and field-recording excerpts, selected metadata and per-record attribution for catalog `fma-small-clap-general-20261104`. It does not distribute raw recordings, pretrained weights or third-party artwork. The original inline SVG wordmark is styled with CSS; fonts are supplied by the visitor's system. The supplied build-pack planning documents remain project notes; actual catalog and release evidence is recorded separately in `docs/phases/`.
+The public beta ships numerical embeddings of music, experimental and field-recording excerpts, selected metadata and per-record attribution for the version identified by [the active catalog pointer](https://arhaan2.github.io/song-neighbors/catalog/current.json). [The generated catalog notice](https://arhaan2.github.io/song-neighbors/catalog/README.md) gives its actual count, encoder and attribution link. It does not distribute raw recordings, pretrained weights or third-party artwork. The original inline SVG wordmark is styled with CSS; fonts are supplied by the visitor's system. The supplied build-pack planning documents remain project notes; actual catalog and release evidence is recorded separately in `docs/phases/`.
 
-Phase 1 records publication basis, exact license versions, attribution, source URLs and transformations under [the catalog policy](https://github.com/Arhaan2/song-neighbors/blob/main/docs/CATALOG_POLICY.md). Each version carries its own attribution and data notices; the Phase 1 report identifies the actual accepted artifacts.
+Each published catalog records publication basis, exact license versions, attribution, source URLs and transformations under [the catalog policy](https://github.com/Arhaan2/song-neighbors/blob/main/docs/CATALOG_POLICY.md). Each version carries its own attribution and data notices; the phase reports identify the actual accepted artifacts.
 
 ## Model and offline software
 
@@ -41,7 +41,7 @@ build record. Original pipeline and validator code use the repository MIT licens
 [FMA rc1 metadata](https://github.com/mdeff/fma#acknowledgments-and-licenses) is CC BY 4.0:
 Michaël Defferrard, Kirell Benzi, Pierre Vandergheynst and Xavier Bresson, *FMA: A Dataset for Music
 Analysis*, ISMIR 2017. Song Neighbors selects and normalizes metadata and joins raw license/source
-fields to the small-subset IDs. FMA states that the dataset is intended for research; that statement
+fields to stable recording IDs in the selected cumulative FMA subset. FMA states that the dataset is intended for research; that statement
 is retained separately from each explicit recording grant.
 
 Recording permissions come from the exact per-record CC0 or CC BY license and supplied source

@@ -31,7 +31,7 @@ export const buildSchema = z.strictObject({
   }),
   configurationSha256: digest,
   sourceMetadata: z.strictObject({ archiveSha256: digest, archiveSha1: z.string().regex(/^[a-f0-9]{40}$/), datasetVersion: text }),
-  inclusionPolicy: z.strictObject({ version: text, exclusionCounts: z.record(text, count) }),
+  inclusionPolicy: z.strictObject({ version: text, exclusionCounts: z.record(text, count), expandedReviewVersion: z.literal('fma-rc1-expanded-notice-review-v1').optional() }),
   rows: z.array(z.strictObject({
     id: text,
     audioSha256: digest,
@@ -76,7 +76,7 @@ function decode(bytes: Uint8Array): string {
   return new TextDecoder('utf-8', { fatal: true }).decode(bytes)
 }
 
-function publicSafe(value: unknown): void {
+export function publicSafe(value: unknown): void {
   if (typeof value === 'string') {
     requireThat(!/(?:\/Users\/|\/home\/|\/private\/|\/tmp\/|[A-Za-z]:\\|file:\/\/)/i.test(value), 'Local path in public artifact')
     for (const match of value.matchAll(/https?:\/\/[^\s<>"\])]+/g)) {

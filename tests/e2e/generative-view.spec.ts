@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test'
-import { readFileSync } from 'node:fs'
+import { activeTestCatalog } from '../fixtures/active-catalog.ts'
 
-const tracks = JSON.parse(readFileSync('public/catalog/fma-small-clap-general-20261104/tracks.json', 'utf8')) as { id: string; title: string; artist: string }[]
+const { tracks } = activeTestCatalog()
 const seeds = ['fma:045099', 'fma:003832', 'fma:003950', 'fma:004037', 'fma:004070']
 
 test('generated views follow real results; plain view and reset preserve rank and composition', async ({ page }) => {

@@ -1,6 +1,5 @@
-import { readFileSync } from 'node:fs'
 import { describe, expect, it, vi } from 'vitest'
-import { catalogManifestSchema } from '../src/catalog/contract.ts'
+import { activeTestCatalog } from './fixtures/active-catalog.ts'
 import { RecommendationWorkerError } from '../src/recommend/client.ts'
 import { createRecommendationEngine, type RecommendationResult } from '../src/recommend/engine.ts'
 import type { CatalogSummary } from '../src/recommend/protocol.ts'
@@ -18,9 +17,7 @@ const fixture = rankingFixture([
   { id: 'test:g', vector: [0.6, -0.8] },
 ])
 const engine = createRecommendationEngine(fixture)
-const manifest = catalogManifestSchema.parse(JSON.parse(readFileSync(
-  new URL('../public/catalog/fma-small-clap-general-20261104/manifest.json', import.meta.url), 'utf8',
-)))
+const { manifest } = activeTestCatalog()
 const catalog: CatalogSummary = { manifest, tracks: [...fixture.tracks] }
 
 function deferred<T>() {

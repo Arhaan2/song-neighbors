@@ -8,6 +8,7 @@ import { validateCatalogData } from '../src/catalog/load.ts'
 import { createRecommendationEngine, type RecommendationResult, type SessionState } from '../src/recommend/engine.ts'
 import { addNegative, addPositive, createSession, editSeeds, resetRefinement } from '../src/recommend/session.ts'
 import { validateArtifactBundle } from './catalog-validation.ts'
+import { historicalCatalogVersion, validateCatalogRelease } from './catalog-release-evidence.ts'
 
 // This executable evaluates committed real vectors; it neither runs inference nor rates music.
 const catalogRoot = new URL('../public/catalog/', import.meta.url)
@@ -22,6 +23,7 @@ const bundle = {
   embeddings: read('embeddings.f32'), attribution: read('ATTRIBUTION.md'), build: read('build.json'),
 }
 const validation = validateArtifactBundle(bundle, pointer)
+const releaseEvidence = validateCatalogRelease(bundle)
 const validationStart = performance.now()
 const catalog = await validateCatalogData(bundle, pointer)
 const catalogValidationMs = performance.now() - validationStart
@@ -79,7 +81,21 @@ const seedSets = [
   { name: 'Five artists', seedIds: ['fma:045099', 'fma:003832', 'fma:003950', 'fma:004037', 'fma:004070'] },
   { name: 'Field-recording excerpts', seedIds: ['fma:068551', 'fma:068579'] },
 ]
-const cases = seedSets.map(({ name, seedIds }) => {
+const historicalTracks = JSON.parse(readFileSync(new URL(`${historicalCatalogVersion}/tracks.json`, catalogRoot), 'utf8')) as { id: string }[]
+const historicalIds = new Set(historicalTracks.map((track) => track.id))
+if (releaseEvidence.kind === 'expanded') {
+  const addition = tracks.find((track) => !historicalIds.has(track.id))
+  assert.ok(addition, 'Expansion evaluation must exercise a newly analyzed addition')
+  seedSets.push({ name: 'Newly analyzed addition', seedIds: [addition.id] })
+}
+const cases = seedSets.map(({ name, seedIds: requestedSeedIds }) => {
+  const unavailableSeedIds = requestedSeedIds.filter((id) => !byId.has(id))
+  const seedIds = requestedSeedIds.filter((id) => byId.has(id))
+  for (let remaining = unavailableSeedIds.length; remaining > 0; remaining--) {
+    const replacement = tracks.find((track) => !seedIds.includes(track.id) && !seedIds.some((id) => byId.get(id)!.artist === track.artist))
+    assert.ok(replacement, 'Not enough distinct artists to replace an excluded regression seed')
+    seedIds.push(replacement.id)
+  }
   seedIds.forEach(identity)
   const state = createSession(engine, seedIds)
   const firstStart = performance.now()
@@ -117,7 +133,7 @@ const cases = seedSets.map(({ name, seedIds }) => {
     return performance.now() - start
   })
   return {
-    name, seeds: seedIds.map(identity), eligibleCount: result.eligibleCount, candidateCount: result.candidateCount,
+    name, requestedSeedIds, unavailableSeedIds, seeds: seedIds.map(identity), eligibleCount: result.eligibleCount, candidateCount: result.candidateCount,
     baseline: { seed: identity(seedIds[0]!), independentCosineOrderMatches: true, maximumCosineError, resultIds: ids(baseline) },
     seedOnlyResultIds: ids(result), firstFive: result.recommendations.slice(0, 5).map((item) => ({ ...identity(item.id), score: item.score })),
     baselineComparison: {
@@ -131,13 +147,11 @@ const cases = seedSets.map(({ name, seedIds }) => {
   }
 })
 
-assert.notEqual(engine.recordingKey('fma:115817'), engine.recordingKey('fma:129970'), 'Same title does not imply same recording')
+const sameTitleIds = ['fma:115817', 'fma:129970'].filter((id) => byId.has(id))
+if (sameTitleIds.length === 2) assert.notEqual(engine.recordingKey(sameTitleIds[0]!), engine.recordingKey(sameTitleIds[1]!), 'Same title does not imply same recording')
 assert.throws(() => engine.query({ seedIds: tracks.slice(0, 6).map((track) => track.id) }), /at most five/)
 assert.deepEqual(engine.query(createSession(engine)).recommendations, [])
-const sourceAudit = JSON.parse(readFileSync(new URL('../docs/phases/phase-1-source-audit.json', import.meta.url), 'utf8')) as {
-  selectedIds: string[]; selectedArtistCount: number; selectedGenreCounts: Record<string, number>
-}
-assert.deepEqual([...sourceAudit.selectedIds].sort(), tracks.map((track) => track.id), 'Source audit selected IDs match active catalog')
+const historicalGenres = releaseEvidence.kind === 'historical' ? JSON.parse(readFileSync(new URL('../docs/phases/phase-1-source-audit.json', import.meta.url), 'utf8')).selectedGenreCounts : null
 const coverage = tracks.map((track) => track.coverage.analyzedWindows.reduce((total, window) => total + window.endSeconds - window.startSeconds, 0))
 const durations = tracks.map((track) => track.coverage.sourceDurationSeconds)
 const payloadFiles = { 'current.json': pointerBytes, 'manifest.json': bundle.manifest, 'tracks.json': bundle.tracks, 'embeddings.f32': bundle.embeddings, 'build.json': bundle.build, 'ATTRIBUTION.md': bundle.attribution }
@@ -154,10 +168,11 @@ const output = {
     version: pointer.catalogVersion, manifestSha256: pointer.manifestSha256, vectorSha256: manifest.files.embeddings.sha256,
     model: manifest.encoder.id, modelRevision: manifest.encoder.revision, dimension, tracks: tracks.length, distinctRecordingComponents: recordingCount,
     artistDisplayNames: new Set(tracks.map((track) => track.artist)).size,
-    sourceArtistIds: { count: sourceAudit.selectedArtistCount, basis: 'Phase 1 source audit, whose selected IDs match all active catalog IDs; source artist IDs are not fields of tracks.json.' },
-    sourceGenres: sourceAudit.selectedGenreCounts,
+    sourceArtistIds: { count: releaseEvidence.sourceArtistIds, basis: releaseEvidence.kind === 'historical' ? 'Exact historical manifest and matching Phase 1 audit IDs.' : 'Approved Phase 5A source artist IDs restricted to the exact verified exported selection.' },
+    sourceGenres: historicalGenres ?? { status: 'unmeasured-for-effective-selection', basis: 'Phase 5A candidate genre counts are not relabeled as post-exclusion publication counts.' },
+    releaseEvidence,
     clipCoverage: { describes: [...new Set(tracks.map((track) => track.coverage.describes))], sourceDurationSeconds: { minimum: Math.min(...durations), median: median(durations), maximum: Math.max(...durations) }, analyzedSeconds: { minimum: Math.min(...coverage), median: median(coverage), maximum: Math.max(...coverage), total: coverage.reduce((a, b) => a + b, 0) }, totalWindows: tracks.reduce((total, track) => total + track.coverage.analyzedWindows.length, 0), partialFinalWindows: tracks.filter((track) => track.coverage.analyzedWindows.some((window) => window.endSeconds - window.startSeconds < 10)).length },
-    duplicateObservations: { identicalAudioHashes: tracks.length - new Set(tracks.map((track) => track.provenance.audioSha256)).size, repeatedRecordingComponents: tracks.length - recordingCount, sameTitleDifferentRecordings: ['fma:115817', 'fma:129970'].map(identity), limitation: 'No duplicate audio or recording components exist in this catalog. Real result uniqueness and same-title distinction are checked here; alias/hash transitivity and exclusions are covered by isolated engine unit fixtures, not fabricated real-data observations.' },
+    duplicateObservations: { identicalAudioHashes: tracks.length - new Set(tracks.map((track) => track.provenance.audioSha256)).size, repeatedRecordingComponents: tracks.length - recordingCount, sameTitleDifferentRecordings: sameTitleIds.map(identity), limitation: 'No duplicate audio or recording components exist in this catalog. Real result uniqueness and same-title distinction are checked here; alias/hash transitivity and exclusions are covered by isolated engine unit fixtures, not fabricated real-data observations.' },
     validation,
   },
   payload: {

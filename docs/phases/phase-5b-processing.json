@@ -1,0 +1,71 @@
+{
+  "schemaVersion": 1,
+  "kind": "phase-5b-preparation-status-not-expanded-release-evidence",
+  "date": "2026-11-05",
+  "candidate": {
+    "manifestSha256": "89aa9fe44bfd6c90c3a1fe16dcc536d30066e17b28de8cc9ec45eea15224358f",
+    "total": 4925,
+    "clearedExisting": 493,
+    "additions": 4432,
+    "sourceArtistIds": 756,
+    "artistDisplayNames": 754,
+    "planningShortfall": 75
+  },
+  "compatibility": {
+    "configurationSha256": "df676ec4a59e37f6abff6084a2a5ea1d9f175a9c953e8864afe531f5bddfe2eb",
+    "baselinePreflightCacheHits": 500,
+    "inferencePerformed": false
+  },
+  "materializedSelectionSha256": "f43f7385252cbb095af91429c199df58cd5fff95a5d20c3142bd725835b5ea01",
+  "additionsSelectionSha256": "7b134a7f7705a2b751e85129581289baffdfb7c4ef33bb40d98639c03ca31160",
+  "storage": {
+    "archiveBytes": 100306112191,
+    "suppliedCardFreeBytes": 62488444928,
+    "localFreeBytesAtInspection": 33595289600,
+    "archivePlanningFreeGiB": 100,
+    "localPlanningFreeGiB": 8,
+    "downloadStarted": false,
+    "cardWritten": false
+  },
+  "boundedBaselineCheck": {
+    "records": 493,
+    "cacheHits": 493,
+    "inferred": 0,
+    "failures": 0,
+    "elapsedSeconds": 1.09229,
+    "runSha256": "d0d8adba46cdabb3c2d830b1848c20c031d95560057b9bdde98e55216375546f",
+    "validatedExportRows": 493,
+    "artistDisplayNames": 168,
+    "sourceArtistIds": 169,
+    "activated": false,
+    "scope": "Ignored cleared-baseline verification only; not effective expansion selection or new-audio smoke"
+  },
+  "additionProcessing": {
+    "downloaded": 0,
+    "decoded": 0,
+    "inferred": 0,
+    "exported": 0,
+    "published": 0,
+    "audioAvailability": "unverified",
+    "deduplication": "unverified",
+    "inferenceDurationEstimate": "unavailable"
+  },
+  "publication": {
+    "catalogVersion": "fma-small-clap-general-20261104",
+    "manifestSha256": "b57bda0fb968b5feb49bb4ad7f33ea61ff67647483f496b519edea85b576ae11",
+    "recordings": 500,
+    "sourceArtistIds": 170,
+    "artistDisplayNames": 169,
+    "changed": false,
+    "futureHeldCount": 7
+  },
+  "remaining": [
+    "sufficient archive storage",
+    "verified large acquisition and selected extraction",
+    "real addition smoke and resumability",
+    "full inference and deduplication",
+    "expanded receipt/export and local activation",
+    "expanded product/performance verification and public release"
+  ],
+  "humanListening": "unmeasured"
+}

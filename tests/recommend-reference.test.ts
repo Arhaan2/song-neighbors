@@ -1,6 +1,6 @@
 import { readFile } from 'node:fs/promises'
 import { expect, it } from 'vitest'
-import { loadCatalog } from '../src/catalog/load.ts'
+import { sha256Bytes, validateCatalogData } from '../src/catalog/load.ts'
 import { createRecommendationEngine } from '../src/recommend/engine.ts'
 import reference from './fixtures/numpy-scores.json'
 import { rankingFixture } from './fixtures/ranking.ts'
@@ -26,9 +26,15 @@ it('agrees with the independent NumPy score oracle within 1e-12 (not a quality b
     compare(y.recommendations.find((entry) => entry.id === id)?.score, expected.cosineY)
     compare(blend.recommendations.find((entry) => entry.id === id)?.score, expected.blend)
   }
-  const diskRoot = new URL('../public/catalog/', import.meta.url)
-  const fetcher = (async (url: string | URL | Request) => new Response(await readFile(new URL(new URL(String(url)).pathname.replace('/catalog/', ''), diskRoot)))) as typeof fetch
-  const catalog = await loadCatalog('https://example.com/catalog/', fetcher)
+  // The independent NumPy oracle is intentionally historical. Adding current candidates
+  // can change top results; it must not silently replace these fixed measured pairs.
+  const diskRoot = new URL(`../public/catalog/${reference.catalogVersion}/`, import.meta.url)
+  const [manifest, tracks, embeddings, build] = await Promise.all(
+    ['manifest.json', 'tracks.json', 'embeddings.f32', 'build.json'].map(name => readFile(new URL(name, diskRoot))),
+  )
+  const catalog = await validateCatalogData({ manifest: manifest!, tracks: tracks!, embeddings: embeddings!, build: build! }, {
+    catalogVersion: reference.catalogVersion, manifestSha256: await sha256Bytes(manifest!),
+  })
   expect(catalog.manifest.catalogVersion).toBe(reference.catalogVersion)
   expect(catalog.manifest.files.embeddings.sha256).toBe(reference.vectorSha256)
   // Isolate fixed pairs so the oracle covers scores regardless of top-20 eligibility.

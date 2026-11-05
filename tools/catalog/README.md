@@ -194,3 +194,33 @@ source audio and cached vector bytes without instantiating the encoder or inferr
 A nonzero result is a Phase 5B prerequisite failure, with public-safe categories and local stderr
 details. `delivery.py` measures existing formats and candidate text to estimate expanded sizes;
 its output is not a catalog and generates no vectors.
+
+
+## Phase 5B release evidence and resume
+
+[Execution report](../../docs/phases/phase-5b.md) · [Exact resume/runbook commands](../../docs/PHASE_5B.md)
+
+Extraction checkpoints now include requested count, running/interrupted/failed/complete status,
+UTC timestamps, elapsed seconds, and public-safe failure stage/category. Decode and inference errors
+share the explicitly named `decode-or-inference` stage; detailed exception text remains local stderr.
+Each successful cache entry is atomic. Interrupted runs retain completed rows and resume by
+revalidating source/config hashes; save the run JSON under another name before retrying when its
+attempt history is needed. Timing includes model initialization but excludes the preceding artifact
+and configuration preflight. This instrumentation does not change model, processor, decoding,
+preprocessing, aggregation, normalization, lock or cache keys.
+
+`processing_evidence.py` creates `docs/catalog/releases/<version>.json` from the approved original
+candidate selection, effective selection, final extraction run and exported catalog. Optional
+failure/duplicate exclusions must reference saved actual runs. The separate TypeScript verifier
+reconstructs the original selection and rejects omitted/unexpected/held IDs, altered provenance,
+incompatible runs, unattempted exclusions and invalid duplicate choices. The historical baseline
+exception is pinned to its exact manifest. Release evaluation continues to check independent cosine,
+determinism, seed/feedback exclusions, identity and reset using the actual active catalog.
+
+The Vite production build emits only validated active catalog files and a generated coverage
+notice. Historical files remain available for regression tests without shipping alongside the next
+catalog. The strict artifact audit remains unchanged. Ordinary frontend checks never run inference.
+
+At the first Phase 5B execution, metadata materialization and 500-entry preflight passed. A bounded
+493-record cleared-baseline check reused existing real caches with zero inference; this is not the
+required 40-addition smoke. Large acquisition and the expanded release require sufficient storage.
