@@ -2,12 +2,28 @@ import { test, expect } from '@playwright/test'
 import { createHash } from 'node:crypto'
 import { readFileSync, readdirSync } from 'node:fs'
 import { join, relative } from 'node:path'
+import { catalogMetadataSchema, catalogPointerSchema, catalogTracksSchema } from '../../src/catalog/contract.ts'
+import { validateCatalogData } from '../../src/catalog/load.ts'
+import { createRecommendationEngine } from '../../src/recommend/engine.ts'
+import { historicalCatalogVersion, validateCatalogRelease } from '../../scripts/catalog-release-evidence.ts'
 
 const artifactRoot = process.env.RELEASE_ARTIFACT_DIR ?? 'dist'
 const expectedBuild = JSON.parse(readFileSync(join(artifactRoot, 'build-info.json'), 'utf8'))
-const pointer = JSON.parse(readFileSync(join(artifactRoot, 'catalog/current.json'), 'utf8'))
-const tracks = JSON.parse(readFileSync(join(artifactRoot, 'catalog', pointer.catalogVersion, 'tracks.json'), 'utf8')) as { id: string; title: string; artist: string }[]
-const seeds = ['fma:045099', 'fma:003832', 'fma:003950', 'fma:004037', 'fma:004070']
+const pointer = catalogPointerSchema.parse(JSON.parse(readFileSync(join(artifactRoot, 'catalog/current.json'), 'utf8')))
+if (pointer.status !== 'ready') throw new Error('Release browser verification requires a ready catalog')
+const read = (name: string) => readFileSync(join(artifactRoot, 'catalog', pointer.catalogVersion, name))
+const bundle = {
+  manifest: read('manifest.json'), tracks: read('tracks.json'), embeddings: read('embeddings.f32'),
+  build: read('build.json'), attribution: read('ATTRIBUTION.md'),
+}
+const { manifest, tracks } = catalogMetadataSchema.parse({ manifest: JSON.parse(bundle.manifest.toString('utf8')), tracks: JSON.parse(bundle.tracks.toString('utf8')) })
+const releaseEvidence = validateCatalogRelease(bundle)
+const engine = validateCatalogData(bundle, pointer).then(createRecommendationEngine)
+// This baseline is intentionally historical: it identifies genuine additions, not the active fixtures.
+const historicalIds = new Set(catalogTracksSchema.parse(JSON.parse(readFileSync(`public/catalog/${historicalCatalogVersion}/tracks.json`, 'utf8'))).map(track => track.id))
+const addition = tracks.find(track => !historicalIds.has(track.id))
+if (releaseEvidence.kind === 'expanded' && !addition) throw new Error('Expanded release must exercise a genuinely new recording')
+const seeds = [addition?.id ?? 'fma:045099', 'fma:003832', 'fma:003950', 'fma:004037', 'fma:004070']
 
 test('public release: anonymous real product flow and exact artifact identity', async ({ page, context }, info) => {
   test.setTimeout(60_000) // Public HTTP checks include every released artifact file.
@@ -34,12 +50,20 @@ test('public release: anonymous real product flow and exact artifact identity', 
       await page.getByRole('button', { name: 'Recommend', exact: true }).click()
       await expect(page.getByTestId('recommendation-card')).toHaveCount(20)
       rankTimes.push(performance.now() - rankStart)
-      if (index === 0) expect((await ids())[0]).toBe('fma:045100')
+      expect(await ids()).toEqual((await engine).query({ seedIds: seeds.slice(0, index + 1) }).recommendations.map(row => row.id))
     }
   }
   await page.getByRole('combobox').fill('')
   const baseline = await ids()
   expect(new Set(baseline).size).toBe(20)
+  const adaptive = page.getByTestId('discovery-composition')
+  await expect(adaptive).toHaveAttribute('data-stage', 'blend')
+  await page.getByRole('button', { name: 'Plain list', exact: true }).click()
+  await expect(adaptive).toHaveCount(0)
+  expect(await ids()).toEqual(baseline)
+  await page.getByRole('button', { name: 'Adaptive', exact: true }).click()
+  await expect(adaptive).toHaveAttribute('data-stage', 'blend')
+  expect(await ids()).toEqual(baseline)
   expect(baseline.some(id => seeds.includes(id))).toBe(false)
   await page.getByTestId('recommendation-card').first().getByRole('button', { name: /More like this/ }).click()
   await expect(page.getByTestId('feedback-positive')).toBeVisible()
@@ -78,6 +102,18 @@ test('public release: anonymous real product flow and exact artifact identity', 
     }
   }
   collect(artifactRoot)
+  const shippedVersions = new Set(artifactFiles.flatMap(file => file.startsWith('catalog/') && file.split('/').length > 2 ? [file.split('/')[1]] : []))
+  expect([...shippedVersions]).toEqual([pointer.catalogVersion])
+  // Preview servers may send the SPA shell with HTTP 200 for missing files. Require
+  // that obsolete catalog URLs return only a missing response or that exact shell.
+  for (const entry of readdirSync('public/catalog', { withFileTypes: true })) {
+    if (!entry.isDirectory() || entry.name === pointer.catalogVersion) continue
+    for (const name of ['manifest.json', 'tracks.json', 'embeddings.f32', 'build.json', 'ATTRIBUTION.md']) {
+      const response = await context.request.get(`catalog/${entry.name}/${name}`)
+      if (response.ok()) expect(await response.body()).toEqual(readFileSync(join(artifactRoot, 'index.html')))
+      else expect(response.status()).toBe(404)
+    }
+  }
   for (const file of artifactFiles) {
     const response = await context.request.get(file)
     expect(response.ok(), file).toBe(true)
@@ -94,6 +130,8 @@ test('public release: anonymous real product flow and exact artifact identity', 
     url: info.project.use.baseURL, viewport: info.project.use.viewport, browser: page.context().browser()?.version(),
     identity: liveBuild, navigationToReadyMs, clickTo20VisibleMs: rankTimes,
     timingNote: 'Single unthrottled run; wall time includes Playwright actions/assertion polling, worker validation, network and rendering. Not a universal latency promise.',
+    catalogVersion: manifest.catalogVersion, trackCount: manifest.trackCount, releaseEvidence,
+    expandedSeedVerified: releaseEvidence.kind === 'expanded', newRecordingSeed: addition?.id ?? null,
     seeds, baseline, positive: baseline[0], rejected, comparedArtifactFiles: artifactFiles.length,
     anonymousContext: true, resetExact: true, refreshCleared: true, errors, failed, requestedUrls: [...new Set(urls)],
   }, null, 2), contentType: 'application/json' })

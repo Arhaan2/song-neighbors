@@ -1,9 +1,8 @@
-import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
-import { catalogTracksSchema } from '../src/catalog/contract.ts'
+import { activeTestCatalog } from './fixtures/active-catalog.ts'
 import { catalogExamples, normalizeSearch, recordingDescription, searchCatalog } from '../src/ui/search.ts'
 
-const tracks = catalogTracksSchema.parse(JSON.parse(readFileSync(new URL('../public/catalog/fma-small-clap-general-20261104/tracks.json', import.meta.url), 'utf8')))
+const { tracks } = activeTestCatalog()
 
 describe('catalog search', () => {
   it('normalizes accents, case, punctuation, and whitespace without dropping non-Latin letters', () => {
@@ -16,7 +15,7 @@ describe('catalog search', () => {
     expect(searchCatalog(tracks, '   ')).toEqual([])
   })
   it('keeps distinct real same-title recordings with album and stable ID disambiguation', () => {
-    const matches = searchCatalog(tracks, 'On Axis')
+    const matches = searchCatalog(tracks, 'On Axis').filter(track => ['fma:115817', 'fma:129970'].includes(track.id))
     expect(matches.map((track) => track.id).sort()).toEqual(['fma:115817', 'fma:129970'])
     expect(matches.map(recordingDescription)).toEqual(['Wilderness · FMA:115817', 'Pipe Choir · FMA:129970'])
   })

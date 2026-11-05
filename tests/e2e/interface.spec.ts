@@ -1,9 +1,10 @@
 import { test, expect, type Page } from '@playwright/test'
-import { readFileSync } from 'node:fs'
-import type { CatalogTrack } from '../../src/catalog/contract.ts'
+import { createRecommendationEngine } from '../../src/recommend/engine.ts'
+import { activeTestCatalog, validatedActiveTestCatalog } from '../fixtures/active-catalog.ts'
 import type { WorkerRequest, WorkerResponse } from '../../src/recommend/protocol.ts'
 
-const tracks = JSON.parse(readFileSync('public/catalog/fma-small-clap-general-20261104/tracks.json', 'utf8')) as CatalogTrack[]
+const { tracks } = activeTestCatalog()
+const engine = validatedActiveTestCatalog().then(createRecommendationEngine)
 const byId = new Map(tracks.map(track => [track.id, track]))
 const seeds = ['fma:045099', 'fma:003832', 'fma:003950', 'fma:004037', 'fma:004070']
 
@@ -100,9 +101,8 @@ test('real catalog journey: selection, ranking, feedback, reset, edits and refre
   await expect(page.getByTestId('seed-chip')).toHaveCount(1)
   await page.getByTestId('seed-chip').getByRole('button').click()
   await page.getByRole('combobox').fill('On Axis')
-  await expect(page.getByRole('option')).toHaveCount(2)
-  await expect(page.getByRole('option').first()).toContainText('Wilderness')
-  await expect(page.getByRole('option').last()).toContainText('Pipe Choir')
+  await expect(page.locator('[role="option"][data-track-id="fma:115817"]')).toContainText('Wilderness')
+  await expect(page.locator('[role="option"][data-track-id="fma:129970"]')).toContainText('Pipe Choir')
   for (const id of seeds) await add(page, id)
   await expect(page.getByTestId('seed-chip')).toHaveCount(5)
   await page.getByRole('combobox').fill('Leafless Quince Tree')
@@ -184,7 +184,8 @@ test('keyboard, unsupported search, rapid input and reduced-motion responsive la
   await input.fill('Lior')
   await input.fill('Rolemusic')
   await input.fill('On Axis')
-  await expect(page.getByRole('option')).toHaveCount(2)
+  await expect(page.locator('[role="option"][data-track-id="fma:115817"]')).toBeVisible()
+  await expect(page.locator('[role="option"][data-track-id="fma:129970"]')).toBeVisible()
   await input.press('ArrowDown')
   await expect(input).toHaveAttribute('aria-activedescendant', /.+/)
   await input.press('Escape')
@@ -199,7 +200,7 @@ test('keyboard, unsupported search, rapid input and reduced-motion responsive la
   expect(await page.evaluate(() => document.activeElement?.tagName)).not.toBe('BODY')
   await add(page, seeds[0]!)
   await recommend(page)
-  expect((await resultIds(page))[0]).toBe('fma:045100')
+  expect(await resultIds(page)).toEqual((await engine).query({ seedIds: [seeds[0]!] }).recommendations.map(row => row.id))
   for (const width of [320, 768]) {
     await page.setViewportSize({ width, height: 900 })
     await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true)

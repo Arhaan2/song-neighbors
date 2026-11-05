@@ -1,6 +1,9 @@
 # Phase 5B — acquire, analyze and publish the reviewed expansion
 
-These commands are the **next phase**, not actions performed in Phase 5A. Run from the verified
+Phase 5B release preparation is implemented; expanded audio acquisition remains pending storage.
+The 64 GB card inspected during execution had 58.20 GiB free, below the 93.42 GiB archive size;
+no large download or new-audio inference was started. See [execution evidence](phases/phase-5b.md).
+The commands below resume the authorized work. Run from the verified
 Song Neighbors repository root, on a new short `codex/` branch after fetching main. Preserve existing release tags/history and the active catalog until the reviewed replacement is ready. The candidate manifest is metadata
 eligibility, not a claim that its recordings decode, infer, or survive exact-audio deduplication.
 
@@ -68,6 +71,11 @@ Field Recordings remain flagged for bounded listening inspection. Ambient, instr
 experimental music are not excluded by those labels. Do not fill failures with unreviewed tracks
 or relax the artist cap merely to claim 5,000 songs.
 
+Materialization assumes the historical baseline is still active. After local activation, preserve
+and reuse the already hash-verified original selections; do not regenerate a different plan from
+the new pointer. To reproduce later from scratch, supply `--catalog-root` with a private copy of
+the historical catalog and its original pointer, whose exact manifest digest is in the candidate.
+
 ## Acquire and extract additions
 
 ```sh
@@ -88,53 +96,78 @@ Retain a failed archive for diagnosis instead of treating it as verified or swit
 
 ## Real smoke, then full compatible extraction
 
-The 40-record smoke below comes from **additions**, ensuring it cannot consist solely of baseline
-cache hits. Review decoding failures, real output dimension/norms/variation, actual coverage and
-source content. Stop on unexplained errors. A deliberate interruption and rerun must reuse valid
-entries; retry the same command, not a newly generated selection.
+The 40-record smoke comes from **additions**. It cannot consist solely of baseline cache hits.
+On its first execution, interrupt with Ctrl-C after at least one but fewer than 40 completed rows:
 
 ```sh
+uv run --project tools/catalog --locked --extra inference python tools/catalog/catalog.py extract \
+  --selection .cache/catalog/phase-5b-additions.json --audio-root .cache/catalog/fma_small \
+  --run phase5b-smoke --limit 40
+```
+
+Save the interrupted checkpoint before resuming the identical command. If resuming an already
+verified addition smoke, preserve its prior evidence and reuse genuine caches without recomputation.
+Do not overwrite a saved interruption with a completed run.
+
+```sh
+cp -n .cache/catalog/runs/phase5b-smoke.json .cache/catalog/runs/phase5b-smoke-interrupted.json
 uv run --project tools/catalog --locked --extra inference python tools/catalog/catalog.py extract \
   --selection .cache/catalog/phase-5b-additions.json --audio-root .cache/catalog/fma_small \
   --run phase5b-smoke --limit 40
 uv run --project tools/catalog --locked --extra inference python tools/catalog/catalog.py export \
   --selection .cache/catalog/phase-5b-additions.json --run phase5b-smoke \
   --version phase5b-smoke --output .cache/catalog/phase5b-smoke-export
+```
+
+The smoke version is immutable; inspect an existing verified export instead of overwriting it.
+Inspect the completed run and saved interruption: only addition IDs, zero final failures, 40
+successful rows, compatible cache hits for the interrupted successes, measured 512 dimensions,
+positive decoded coverage, finite/nonzero/unit vectors and more than one vector hash. The export's
+validator checks structure, hashes, dimensions and norms; compare vector hashes and coverage in its
+build/tracks files as the remaining real-output checks. Record any actual listening separately from
+source metadata flags. Stop on unexplained errors.
+
+Save timing evidence before another run overwrites its checkpoint. Estimate remaining duration from
+actual newly inferred rows and elapsed seconds, separating cache-hit work and model startup. Do not
+estimate inference throughput from a baseline-only cache check. Once this smoke passes:
+
+```sh
 uv run --project tools/catalog --locked --extra inference python tools/catalog/catalog.py extract \
   --selection .cache/catalog/phase-5a-selection.json --audio-root .cache/catalog/fma_small \
   --run phase5b-expansion
 ```
 
-Expect cache hits for all policy-cleared baseline IDs in the selection plus successful smoke hits; do not promise every new recording succeeds.
-The run report records actual successes, cache hits and failures and returns nonzero on failures.
-Record successful decoding/inference counts separately. Exact duplicate audio hashes block export;
-review their IDs and provenance, make a new explicitly documented effective selection if needed,
-and rerun extraction using its new hash (compatible entries still reuse). Preserve original
-candidate manifest and report failure/deduplication shortfalls; do not claim the target was attained
-before the successful export exists. Compute time must be estimated from the actual new smoke on
-the selected host; Phase 5A performed no new inference timing experiment.
+Expect cache hits for the 493 cleared baseline IDs plus successful smoke entries, not guaranteed
+success for every addition. The report records successful rows, cache hits, inferred rows, failures,
+status and elapsed time, and returns nonzero on failure. Record stages separately. Preserve each
+failed run under a new name before retrying; valid entries remain resumable.
 
-## Publication preparation that must happen in Phase 5B
+Exact duplicate audio hashes block export. Review their IDs/provenance and any actual processing
+failures, preserve the original candidate manifest, and create an explicit effective selection if
+needed. It must retain original metadata/policy and stable sorted IDs. Use the same effective
+selection for final extraction and export; compatible entries still reuse. Keep every exclusion's
+saved original-selection processing evidence for the receipt described below. Never fill a failure
+with an unreviewed recording or claim 4,925 successes from metadata alone.
 
-Before activation, make these focused existing-gate updates and review them independently:
+## Implemented publication preparation and remaining measurements
 
-1. Replace `scripts/evaluate-release.ts`'s hardcoded Phase 1 audit/500-ID comparison with evidence
-   for the actual successfully exported catalog. Keep old-catalog fixtures explicitly historical;
-   update active-catalog assertions in `tests/catalog-load.test.ts` and active browser fixture
-   readers. Preserve ranking weights, session behavior, all original recording identities and
-   original regression cases. Do not assert that adding candidates preserves all top-20 results.
-2. `scripts/audit-release.ts` currently permits artifacts from only the active version, while Vite
-   copies historical versions too. Preserve the old catalog/release in repository history and stage **only the new active version**
-   for the website, so the newly reviewed publication does not also redistribute held records in
-   an old catalog directory. Keep the strict artifact allowlist. Do not delete or rewrite release
-   tags/history. Never broadly allow arbitrary public files.
-3. Measure the actual expanded browser cold load, validation, metadata clone to the main thread,
-   peak memory and five-seed/refined queries on desktop and mobile. Keep the worker architecture.
-   Sequential per-row WebCrypto calls, transient Float64 duplication, and full metadata cloning
-   warrant measurement. Optimize only demonstrated bottlenecks; do not weaken integrity checks.
-4. Update public catalog coverage/notices and project evidence to actual successful counts. Export
-   an immutable version, inspect failures and exact duplicate checks, and run all gates before
-   switching the pointer. No audio, models, local evidence, caches or credentials may enter Git.
+The release evaluator now checks the active catalog against either the hash-pinned historical
+500-record release or independent Phase 5B candidate/processing evidence. It reconstructs the
+approved selection, verifies the exact successful IDs and source metadata, and checks documented
+failure/duplicate exclusions. A count alone cannot authorize a catalog. Active fixtures follow the
+pointer; historical NumPy cases remain pinned separately. Ranking and session behavior are unchanged.
+
+Production builds stage only the active version and generate its count/artist/model notice.
+Historical catalogs remain in the repository, while unexpected assets and symlinks are rejected.
+The strict deployed-artifact allowlist remains in force. A new release must omit the seven held IDs;
+the historical exception is bound to the exact original manifest hash.
+
+Before the final expanded build, update README/PROJECT/PROGRESS coverage, windows, artists and
+phase evidence from the successful export and release evaluation; keep historical estimates labeled.
+Still required with a real expanded export: measure browser cold load, validation/initialization,
+worker-to-main metadata transfer, reliable memory where available, main-thread responsiveness and
+five-seed/refined queries on desktop and a mobile viewport. Phase 5A sizes remain estimates.
+Optimize only measured bottlenecks; preserve the worker architecture and all integrity checks.
 
 Choose a new unused version (the date below is a name, not proof of execution). First export
 without activation, inspect it, then update the pointer explicitly; an existing version cannot be
@@ -149,8 +182,35 @@ node scripts/validate-catalog.ts --version "$CATALOG_VERSION"
 ```
 
 If exclusions required a revised effective selection, use that same selection in both full
-extraction and export above. After the new artifact passes validation and the preparatory changes
-are reviewed, activate its already-written manifest atomically:
+extraction and export above. Before activation, generate a public-safe release receipt from the original selection, final
+zero-failure run, and exact export. `EFFECTIVE_SELECTION` must be the selection used for both final
+extraction and export; it defaults below to the complete original plan.
+
+```sh
+export EFFECTIVE_SELECTION=.cache/catalog/phase-5a-selection.json
+uv run --project tools/catalog --locked --extra inference python tools/catalog/processing_evidence.py \
+  --candidate docs/catalog/phase-5a-selection.json \
+  --selection .cache/catalog/phase-5a-selection.json \
+  --effective-selection "$EFFECTIVE_SELECTION" \
+  --run .cache/catalog/runs/phase5b-expansion.json \
+  --catalog "public/catalog/$CATALOG_VERSION" \
+  --output "docs/catalog/releases/$CATALOG_VERSION.json"
+```
+
+For reviewed exclusions, supply `--exclusions .cache/catalog/phase-5b-exclusions.json` and one
+`--attempt <saved-run.json>` per referenced earlier attempt. The exclusion file is an array:
+processing failures use `{id, kind: "processing-failure", runSha256, stage, category}`; exact
+duplicates use `{id, kind: "duplicate-audio", runSha256, duplicateOf, audioSha256}`. The retained
+record must have the same measured audio hash; retain a cleared baseline over a new duplicate.
+Automatic failure exclusions accept only actual `decode-or-inference` or
+`inferred-vector-validation` failures. Missing audio, storage, model initialization and other
+environment problems require repair; they do not justify dropping unattempted songs.
+Save each failed/interrupted run before rerunning because its run name is a checkpoint, not an
+append-only history. Preserve the original candidate manifest. Unattempted additions cannot be
+excluded merely for lack of storage. Inspect receipt contents before committing; no local paths,
+exception messages, audio or model weights belong in it.
+
+After the artifact and receipt pass validation and independent review, activate its already-written manifest atomically:
 
 ```sh
 uv run --project tools/catalog --locked --extra inference python - <<'PY'

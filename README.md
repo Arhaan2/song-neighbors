@@ -97,7 +97,7 @@ uv run --project tools/catalog --locked python tools/catalog/catalog.py export \
 npm run validate:catalog -- --require-ready
 ```
 
-The example version must be unused. Increase the selection limit and use matching new selection/run paths when expanding beyond 500. Rerunning extraction resumes valid compatible cache entries. Export rejects duplicate source-audio hashes and validates staged bytes before activating a new immutable catalog directory. A new model or preprocessing policy requires a new compatible catalog; never mix vector configurations. Recheck real seed cases, exclusions, payload and browser behavior after expansion. Keep audio, weights, caches, local paths and private source manifests in ignored local storage.
+The example version must be unused. For the reviewed Phase 5B expansion, use [the exact runbook](docs/PHASE_5B.md) and its evidence-bound candidate/effective selections; do not simply increase this historical example’s limit. Rerunning extraction resumes valid compatible cache entries. Export rejects duplicate source-audio hashes and validates staged bytes before activating a new immutable catalog directory. A new model or preprocessing policy requires a new compatible catalog; never mix vector configurations. Recheck real seed cases, exclusions, payload and browser behavior after expansion. Keep audio, weights, caches, local paths and private source manifests in ignored local storage.
 
 ## Limitations
 
@@ -123,4 +123,4 @@ Original application and pipeline code is [MIT licensed](LICENSE). That license 
 | `public/catalog/` | Active pointer, immutable catalog and attribution |
 | `docs/phases/` | Verification evidence and phase handoffs |
 
-[PROJECT.md](PROJECT.md) describes architecture and scope. [The implementation plan](docs/IMPLEMENTATION_PLAN.md) and [phase prompts](prompts/) preserve the original sequence. This release completes only Phase 4; broader catalog acquisition and product features remain outside it.
+[PROJECT.md](PROJECT.md) describes architecture and scope. [The implementation plan](docs/IMPLEMENTATION_PLAN.md) and [phase prompts](prompts/) preserve the original sequence. The live catalog remains the verified 500-record release. Phase 5A audit and Phase 5B release preparation are implemented; expanded audio acquisition/publication awaits suitable storage. See [Phase 5B status](docs/phases/phase-5b.md).

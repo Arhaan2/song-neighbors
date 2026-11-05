@@ -1,5 +1,21 @@
 # Song Neighbors Progress
 
+## Phase 5B — November 5, 2026
+
+Release preparation is implemented: evidence-bound candidate/effective-selection validation,
+active-only catalog staging, active fixtures and checkpoint status/timing/failure evidence.
+The exact 4,925-candidate selection reproduced; all 500 baseline caches passed preflight. A separate
+ignored 493-record check reused those cleared caches and validated an export without activation.
+No additions were downloaded, decoded, inferred or published. The live catalog remains 500.
+Local source gates passed 84 web tests, 40 Python tests, lint/typecheck/Ruff, catalog validation
+and real-data evaluation. Independent preparation browser checks passed all 20 desktop/mobile cases.
+
+Expanded acquisition awaits storage: the supplied 64 GB card had 58.20 GiB free, below the 93.42 GiB
+archive alone. Use an existing archive volume with at least 100 GiB free plus 8 GiB locally.
+The card and unrelated files were preserved. Phase 5B publication is incomplete.
+
+[Execution and review evidence](docs/phases/phase-5b.md) · [Processing status](docs/phases/phase-5b-processing.json) · [Exact resume commands](docs/PHASE_5B.md).
+
 ## Phase 5A — November 5, 2026
 
 Expanded metadata audit and ingestion preparation are implemented. The active live catalog remains

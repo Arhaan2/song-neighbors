@@ -1,0 +1,75 @@
+{
+  "note": "Phase 5B preparation on unchanged historical 500-recording catalog, local unthrottled Chrome, no expanded data tested; not a physical mobile device or memory measurement.",
+  "runs": [
+    {
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "browser": "156.0.8078.80",
+      "identity": {
+        "schemaVersion": 1,
+        "sourceSha": "0a55968f8b7584e5bcf6594ca92476dc2d2f3cf2",
+        "sourceDirty": true,
+        "catalogVersion": "fma-small-clap-general-20261104",
+        "catalogManifestSha256": "b57bda0fb968b5feb49bb4ad7f33ea61ff67647483f496b519edea85b576ae11",
+        "basePath": "/song-neighbors/"
+      },
+      "navigationToReadyMs": 135.77987500000017,
+      "clickTo20VisibleMs": [
+        57.68541600000026,
+        60.56908300000032
+      ],
+      "catalogVersion": "fma-small-clap-general-20261104",
+      "trackCount": 500,
+      "releaseEvidence": {
+        "kind": "historical",
+        "retainedCount": 500,
+        "additionsCount": 0,
+        "sourceArtistIds": 170,
+        "excludedCount": 0,
+        "candidateCount": 500
+      },
+      "expandedSeedVerified": false,
+      "newRecordingSeed": null,
+      "comparedArtifactFiles": 16,
+      "errors": [],
+      "failed": []
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "browser": "156.0.8078.80",
+      "identity": {
+        "schemaVersion": 1,
+        "sourceSha": "0a55968f8b7584e5bcf6594ca92476dc2d2f3cf2",
+        "sourceDirty": true,
+        "catalogVersion": "fma-small-clap-general-20261104",
+        "catalogManifestSha256": "b57bda0fb968b5feb49bb4ad7f33ea61ff67647483f496b519edea85b576ae11",
+        "basePath": "/song-neighbors/"
+      },
+      "navigationToReadyMs": 138.5983750000014,
+      "clickTo20VisibleMs": [
+        54.71349999999984,
+        57.91083399999843
+      ],
+      "catalogVersion": "fma-small-clap-general-20261104",
+      "trackCount": 500,
+      "releaseEvidence": {
+        "kind": "historical",
+        "retainedCount": 500,
+        "additionsCount": 0,
+        "sourceArtistIds": 170,
+        "excludedCount": 0,
+        "candidateCount": 500
+      },
+      "expandedSeedVerified": false,
+      "newRecordingSeed": null,
+      "comparedArtifactFiles": 16,
+      "errors": [],
+      "failed": []
+    }
+  ]
+}

@@ -86,10 +86,11 @@ describe('browser catalog integrity', () => {
   it('loads actual approved rows and normalizes once without changing row identities', async () => {
     const { data, pointer } = await realData()
     const catalog = await validateCatalogData(data, pointer)
-    expect(catalog.tracks).toHaveLength(500)
+    const sourceTracks = JSON.parse(data.tracks.toString('utf8')) as CatalogTrack[]
+    expect(catalog.tracks.map(track => track.id)).toEqual(sourceTracks.map(track => track.id))
+    expect(catalog.tracks).toHaveLength(catalog.manifest.trackCount)
     expect(catalog.dimension).toBe(512)
-    expect(catalog.vectors).toHaveLength(500 * 512)
-    expect(catalog.tracks[0]?.id).toBe('fma:003832')
+    expect(catalog.vectors).toHaveLength(catalog.manifest.trackCount * catalog.dimension)
     for (const track of catalog.tracks) {
       const row = catalog.vectors.subarray(track.row * catalog.dimension, (track.row + 1) * catalog.dimension)
       expect(Math.hypot(...row)).toBeCloseTo(1, 13)

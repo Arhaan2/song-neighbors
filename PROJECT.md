@@ -117,3 +117,20 @@ eligibility is separate from audio availability, decoding, inference, deduplicat
 Phase 5B must handle the seven explicit publication holds, measure actual delivery performance,
 update the original-catalog evaluation/packaging assumptions, and publish only verified successes.
 No architecture redesign is required by current evidence. Human preference remains unmeasured.
+
+
+## Phase 5B execution status
+
+Independent release preparation now supports evidence-bound expanded catalogs, active-only website
+staging, pointer-based active tests, and extraction checkpoint status/timing/failure categories.
+The encoder, processor, dependency lock, cache compatibility, UI and ranking rules remain unchanged.
+The original 4,925-candidate plan is preserved. The 500-cache preflight and exact selection
+materialization passed; a separate ignored 493-record baseline check reused caches without inference.
+
+Expanded acquisition remains pending suitable storage. The supplied 64 GB card had 58.20 GiB free,
+while the archive alone needs 93.42 GiB. Plan at least 100 GiB free on an archive volume plus 8 GiB
+locally. No new audio was downloaded, decoded or embedded; no expanded catalog was activated.
+The active publication remains 500 recordings, including the seven existing IDs held from the next
+release. This preparation does not resolve those holds or claim Phase 5B publication is complete.
+
+[Phase 5B evidence](docs/phases/phase-5b.md) · [Resume commands](docs/PHASE_5B.md).

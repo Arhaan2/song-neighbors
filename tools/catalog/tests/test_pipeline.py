@@ -142,6 +142,80 @@ class CacheTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 catalog.eligible_record(invalid)
 
+    def test_attempted_failure_binds_audio_and_configuration_without_private_text(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            audio = root / "bad.wav"
+            audio.write_bytes(b"isolated undecodable fixture")
+            selection = root / "selection.json"
+            catalog.write_json(selection, {"records": [record("test:bad", "bad.wav")]})
+            args = argparse.Namespace(
+                selection=selection,
+                cache=root,
+                audio_root=root,
+                limit=None,
+                run="failure",
+                threads=1,
+            )
+            fake = unittest.mock.MagicMock()
+            fake.extract.side_effect = ValueError(f"decoder details {root}")
+            with (
+                patch("catalog.model_artifacts", return_value=[]),
+                patch("catalog.load_configuration", return_value=({"test": True}, {})),
+                patch("catalog.get_versions", return_value={}),
+                patch("catalog.Encoder", return_value=fake),
+            ):
+                self.assertEqual(catalog.extract(args), 1)
+            run = catalog.read_json(root / "runs/failure.json")
+            failure = run["failures"][0]
+            self.assertEqual(failure["stage"], "decode-or-inference")
+            self.assertEqual(failure["audioSha256"], catalog.file_sha(audio))
+            self.assertEqual(
+                failure["cacheKeySha256"],
+                catalog.cache_key(catalog.file_sha(audio), run["configurationSha256"]),
+            )
+            self.assertNotIn(str(root), json.dumps(run))
+
+    def test_interruption_checkpoints_only_successes_and_resume_reuses_them(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            for name in ["one", "two"]:
+                (root / f"{name}.wav").write_bytes(name.encode())
+            selection = root / "selection.json"
+            catalog.write_json(
+                selection,
+                {"records": [record("test:one", "one.wav"), record("test:two", "two.wav")]},
+            )
+            args = argparse.Namespace(
+                selection=selection,
+                cache=root,
+                audio_root=root,
+                limit=None,
+                run="interrupted",
+                threads=1,
+            )
+            fake = unittest.mock.MagicMock()
+            result = ([0.6, 0.8], fixture_entry()["coverage"])
+            fake.extract.side_effect = [result, KeyboardInterrupt(), result]
+            with (
+                patch("catalog.model_artifacts", return_value=[]),
+                patch("catalog.load_configuration", return_value=({"test": True}, {})),
+                patch("catalog.get_versions", return_value={}),
+                patch("catalog.Encoder", return_value=fake),
+            ):
+                with self.assertRaises(KeyboardInterrupt):
+                    catalog.extract(args)
+                interrupted = catalog.read_json(root / "runs/interrupted.json")
+                self.assertEqual(interrupted["status"], "interrupted")
+                self.assertEqual([row["id"] for row in interrupted["rows"]], ["test:one"])
+                self.assertEqual(interrupted["failures"], [])
+                self.assertNotIn("completedAt", interrupted)
+                self.assertEqual(catalog.extract(args), 0)
+                resumed = catalog.read_json(root / "runs/interrupted.json")
+                self.assertEqual(resumed["status"], "complete")
+                self.assertEqual((resumed["cacheHits"], resumed["inferred"]), (1, 1))
+                self.assertEqual(fake.extract.call_count, 3)
+
     def test_resume_skips_compatible_cache_and_retries_failure(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
@@ -165,6 +239,12 @@ class CacheTests(unittest.TestCase):
                 self.assertEqual(catalog.extract(args), 1)
                 first = catalog.read_json(root / "runs/test.json")
                 self.assertEqual((first["inferred"], len(first["failures"])), (1, 1))
+                self.assertEqual(first["failures"][0]["category"], "missing-audio")
+                self.assertNotIn("audioSha256", first["failures"][0])
+                self.assertNotIn("cacheKeySha256", first["failures"][0])
+                self.assertEqual(first["status"], "failed")
+                self.assertEqual(first["requestedCount"], 2)
+                self.assertGreaterEqual(first["elapsedSeconds"], 0)
                 (root / "two.wav").write_bytes(b"different isolated test fixture")
                 self.assertEqual(catalog.extract(args), 0)
                 second = catalog.read_json(root / "runs/test.json")
@@ -172,6 +252,7 @@ class CacheTests(unittest.TestCase):
                 self.assertEqual(catalog.extract(args), 0)
                 third = catalog.read_json(root / "runs/test.json")
                 self.assertEqual((third["cacheHits"], third["inferred"]), (2, 0))
+                self.assertEqual(third["status"], "complete")
                 self.assertEqual(encoder.call_count, 2)
                 self.assertEqual(fake.extract.call_count, 2)
                 # Mutated source bytes must trigger fresh extraction, never stale reuse.
