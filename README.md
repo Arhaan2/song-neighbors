@@ -4,6 +4,8 @@ Search a prepared catalog, choose **1–5 songs**, and receive up to **20 audio-
 
 [Open Song Neighbors](https://arhaan2.github.io/song-neighbors/) · [Public repository](https://github.com/Arhaan2/song-neighbors) · [Release evidence](docs/phases/phase-4.md) · [Short demo](docs/DEMO.md)
 
+**Adaptive view** composes a visual neighborhood from your selected tracks and feedback. Its path counts reflect the returned songs, while its changing artwork is decorative. **Plain list** shows exactly the same recommendations in the same order. Both run locally in your browser.
+
 This public beta uses **500 real recordings**, **169 artist display names** (170 source artist IDs), eight FMA-small source genre labels, and **512-dimensional audio embeddings**. It lists titles and artists; it has no playback, account connection, hosted inference, or analytics. All selection and feedback state stays in memory and clears on refresh. Human listening quality and preference are **unmeasured**; [the listening worksheet](docs/LISTENING_WORKSHEET.md) separates those questions.
 
 The deployed [build-info.json](https://arhaan2.github.io/song-neighbors/build-info.json) identifies the site's source commit and catalog version. [PROGRESS.md](PROGRESS.md) and [Phase 4 evidence](docs/phases/phase-4.md) record implementation, verification and publication separately. A later evidence-only documentation commit is not necessarily the deployed revision.
