@@ -109,3 +109,29 @@ resolve actual failures/duplicates, export an unused immutable version, generate
 review and atomically activate locally. Update actual coverage, run all product/delivery gates,
 integrate through reviewed CI and verify the exact expanded Pages artifact. The runbook contains the
 commands and receipt/exclusion formats. Until then, Phase 5B expanded publication is incomplete.
+
+
+## Integration and public verification
+
+Implementation commit `a68b625d51760a4d648e068232341c2dbd700208` passed the clean local production
+build, **20/20** browser cases and the strict **16-file** artifact audit (3,288,786 bytes).
+[PR #9](https://github.com/Arhaan2/song-neighbors/pull/9) merged as
+`7cdeff649d53383bf57b9e66888559be3ca5aa57`. [PR CI](https://github.com/Arhaan2/song-neighbors/actions/runs/42110864164)
+and [main CI/deployment](https://github.com/Arhaan2/song-neighbors/actions/runs/42112853463) passed on
+their second attempts. Both first web jobs hit the existing 10-minute job timeout because Ubuntu's
+mirror needed approximately nine minutes for 21.9 MB of font dependencies. The PR reached 17 passing
+browser cases before cancellation. Retrying the jobs resolved the infrastructure delay; no tests,
+workflow gates or product code were weakened to obtain a pass.
+
+The exact tested Pages artifact is `13453499975`, ZIP SHA-256
+`79efd018b332c2df3559c7e4d03086ed611a4fb7ec9788098d149d25db4c979b`.
+Signed-out public Chromium desktop/mobile journeys both passed and matched **all 16 live files** to
+that artifact. The live build identifies the clean integrated source `7cdeff6`; pointer, 500-record
+catalog and original release tag remain unchanged. Repository visibility is PUBLIC.
+[Public verification evidence](phase-5b-public-verification.json) records exact hashes and observations.
+A final no-inference preflight again verified all 500 compatible caches.
+
+This final evidence-only update is separate from the deployed source and does not redeploy unchanged
+website files. **Preparation is integrated and verified; expanded Phase 5B publication remains
+incomplete solely pending suitable archive storage and the consequent audio/release work.**
+No additions, new-audio timings, expanded-memory measurements or human listening results are claimed.

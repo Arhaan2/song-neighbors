@@ -57,7 +57,9 @@
     "sourceArtistIds": 170,
     "artistDisplayNames": 169,
     "changed": false,
-    "futureHeldCount": 7
+    "futureHeldCount": 7,
+    "preparationDeployedSource": "7cdeff649d53383bf57b9e66888559be3ca5aa57",
+    "expandedPublication": false
   },
   "remaining": [
     "sufficient archive storage",

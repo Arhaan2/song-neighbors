@@ -1,0 +1,268 @@
+{
+  "schemaVersion": 1,
+  "scope": "Verified public deployment of Phase 5B preparation; unchanged historical 500-record catalog, zero additions",
+  "sourceCommit": "a68b625d51760a4d648e068232341c2dbd700208",
+  "integratedAndDeployedCommit": "7cdeff649d53383bf57b9e66888559be3ca5aa57",
+  "pullRequest": 9,
+  "prWorkflowRun": 42110864164,
+  "mainWorkflowRun": 42112853463,
+  "successfulAttempts": {
+    "pr": 2,
+    "main": 2
+  },
+  "initialAttemptLimitation": "Both initial web jobs timed out after lengthy Ubuntu font-package acquisition consumed most of the job allowance; PR reached 17 passing browser cases before cancellation. Retried jobs passed every gate without source/workflow changes.",
+  "artifactId": 13453499975,
+  "artifactZipSha256": "79efd018b332c2df3559c7e4d03086ed611a4fb7ec9788098d149d25db4c979b",
+  "artifactTarSha256": "84bf99c0c55df8a37fe845a69f77b537c603c9866f088e1784080de81add20d0",
+  "artifactFiles": [
+    {
+      "path": "LICENSE.txt",
+      "bytes": 1072,
+      "sha256": "7c3234840a155c9006bfecf386e4fd481e7174023327640c870427452e9c00c8"
+    },
+    {
+      "path": "THIRD_PARTY_LICENSES.txt",
+      "bytes": 4388,
+      "sha256": "35aaba155dc11b44533ced66fe7a9ea8ff29dc0310244a13fd5e7c20baf40082"
+    },
+    {
+      "path": "THIRD_PARTY_NOTICES.md",
+      "bytes": 5578,
+      "sha256": "0ad089640afc7ebdd2090c3d42e8b5f97f051c372d1b96a612e0037c5e839252"
+    },
+    {
+      "path": "asset-manifest.json",
+      "bytes": 252,
+      "sha256": "720924c0ccb96964436415857e12d08810db7dd1810b0beaaa9f350ec7be7204"
+    },
+    {
+      "path": "assets/index-2jluNJET.css",
+      "bytes": 19126,
+      "sha256": "a27a598baa8b3a3d4f42f5a7be14e6c42ebe6f1b212fb7fef603038076ce4a62"
+    },
+    {
+      "path": "assets/index-DkQIysuc.js",
+      "bytes": 344254,
+      "sha256": "5006676b0b8a820eb8175d1135747839b82e34f08086eae1da3a83703245588e"
+    },
+    {
+      "path": "assets/recommend.worker-BUQyE7PA.js",
+      "bytes": 111049,
+      "sha256": "5340dc2dede50e163454f3d4dda674fee980e2af3566772e2ba28fa3f1c6e3d8"
+    },
+    {
+      "path": "build-info.json",
+      "bytes": 292,
+      "sha256": "00b90645b3e32b188a159076dc726edbdbf9538a8769938ebe2aeb856fd0bf66"
+    },
+    {
+      "path": "catalog/README.md",
+      "bytes": 782,
+      "sha256": "45573934f169dc7b0e3f94554a000f487a11d143fd4d282b5a76933b0c488a29"
+    },
+    {
+      "path": "catalog/current.json",
+      "bytes": 172,
+      "sha256": "11af300741e34589de3086489c05b7b8ffc7b6959f5f3ffaa08df252f9b4451c"
+    },
+    {
+      "path": "catalog/fma-small-clap-general-20261104/ATTRIBUTION.md",
+      "bytes": 578195,
+      "sha256": "84f78b50a8135da5484d444ff7c7c31fa7ae914ed0a7b1346e82b8fce871e981"
+    },
+    {
+      "path": "catalog/fma-small-clap-general-20261104/build.json",
+      "bytes": 331169,
+      "sha256": "f7dce8ea9a4a0c3e65a744832a9e6a38982d945cf71fed2a2f3bddd31531a166"
+    },
+    {
+      "path": "catalog/fma-small-clap-general-20261104/embeddings.f32",
+      "bytes": 1024000,
+      "sha256": "0b29eefec5e6f708f1be7bc2d25d5b3e4970b4f036e698c7ce8d775389aa9054"
+    },
+    {
+      "path": "catalog/fma-small-clap-general-20261104/manifest.json",
+      "bytes": 3173,
+      "sha256": "b57bda0fb968b5feb49bb4ad7f33ea61ff67647483f496b519edea85b576ae11"
+    },
+    {
+      "path": "catalog/fma-small-clap-general-20261104/tracks.json",
+      "bytes": 864444,
+      "sha256": "0c057dfd8a53e14f04a4f19471e4aea22761b43e60b0b13c9eeee3dfd421284f"
+    },
+    {
+      "path": "index.html",
+      "bytes": 840,
+      "sha256": "5eb0d2558c4223c668de54b0f8d54f65e6969db9ced8c60af4a8490fd9dda913"
+    }
+  ],
+  "browserRuns": [
+    {
+      "url": "https://arhaan2.github.io/song-neighbors/",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "browser": "156.0.8078.80",
+      "identity": {
+        "schemaVersion": 1,
+        "sourceSha": "7cdeff649d53383bf57b9e66888559be3ca5aa57",
+        "sourceDirty": false,
+        "catalogVersion": "fma-small-clap-general-20261104",
+        "catalogManifestSha256": "b57bda0fb968b5feb49bb4ad7f33ea61ff67647483f496b519edea85b576ae11",
+        "basePath": "/song-neighbors/"
+      },
+      "navigationToReadyMs": 1081.041459,
+      "clickTo20VisibleMs": [
+        70.26745899999969,
+        59.105125000000044
+      ],
+      "timingNote": "Single unthrottled run; wall time includes Playwright actions/assertion polling, worker validation, network and rendering. Not a universal latency promise.",
+      "catalogVersion": "fma-small-clap-general-20261104",
+      "trackCount": 500,
+      "releaseEvidence": {
+        "kind": "historical",
+        "retainedCount": 500,
+        "additionsCount": 0,
+        "sourceArtistIds": 170,
+        "excludedCount": 0,
+        "candidateCount": 500
+      },
+      "expandedSeedVerified": false,
+      "newRecordingSeed": null,
+      "seeds": [
+        "fma:045099",
+        "fma:003832",
+        "fma:003950",
+        "fma:004037",
+        "fma:004070"
+      ],
+      "baseline": [
+        "fma:004071",
+        "fma:006855",
+        "fma:004075",
+        "fma:004074",
+        "fma:004076",
+        "fma:004072",
+        "fma:045100",
+        "fma:006856",
+        "fma:004078",
+        "fma:004077",
+        "fma:004080",
+        "fma:006854",
+        "fma:122363",
+        "fma:004073",
+        "fma:148234",
+        "fma:074370",
+        "fma:122360",
+        "fma:004079",
+        "fma:115775",
+        "fma:148235"
+      ],
+      "positive": "fma:004071",
+      "rejected": "fma:004074",
+      "comparedArtifactFiles": 16,
+      "anonymousContext": true,
+      "resetExact": true,
+      "refreshCleared": true,
+      "errors": [],
+      "failed": [],
+      "requestedUrls": [
+        "https://arhaan2.github.io/song-neighbors/",
+        "https://arhaan2.github.io/song-neighbors/assets/index-DkQIysuc.js",
+        "https://arhaan2.github.io/song-neighbors/assets/index-2jluNJET.css",
+        "https://arhaan2.github.io/song-neighbors/assets/recommend.worker-BUQyE7PA.js",
+        "https://arhaan2.github.io/song-neighbors/catalog/current.json",
+        "https://arhaan2.github.io/song-neighbors/catalog/fma-small-clap-general-20261104/manifest.json",
+        "https://arhaan2.github.io/song-neighbors/catalog/fma-small-clap-general-20261104/tracks.json",
+        "https://arhaan2.github.io/song-neighbors/catalog/fma-small-clap-general-20261104/build.json",
+        "https://arhaan2.github.io/song-neighbors/catalog/fma-small-clap-general-20261104/embeddings.f32"
+      ]
+    },
+    {
+      "url": "https://arhaan2.github.io/song-neighbors/",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "browser": "156.0.8078.80",
+      "identity": {
+        "schemaVersion": 1,
+        "sourceSha": "7cdeff649d53383bf57b9e66888559be3ca5aa57",
+        "sourceDirty": false,
+        "catalogVersion": "fma-small-clap-general-20261104",
+        "catalogManifestSha256": "b57bda0fb968b5feb49bb4ad7f33ea61ff67647483f496b519edea85b576ae11",
+        "basePath": "/song-neighbors/"
+      },
+      "navigationToReadyMs": 295.04075,
+      "clickTo20VisibleMs": [
+        49.980458999999996,
+        59.76800000000003
+      ],
+      "timingNote": "Single unthrottled run; wall time includes Playwright actions/assertion polling, worker validation, network and rendering. Not a universal latency promise.",
+      "catalogVersion": "fma-small-clap-general-20261104",
+      "trackCount": 500,
+      "releaseEvidence": {
+        "kind": "historical",
+        "retainedCount": 500,
+        "additionsCount": 0,
+        "sourceArtistIds": 170,
+        "excludedCount": 0,
+        "candidateCount": 500
+      },
+      "expandedSeedVerified": false,
+      "newRecordingSeed": null,
+      "seeds": [
+        "fma:045099",
+        "fma:003832",
+        "fma:003950",
+        "fma:004037",
+        "fma:004070"
+      ],
+      "baseline": [
+        "fma:004071",
+        "fma:006855",
+        "fma:004075",
+        "fma:004074",
+        "fma:004076",
+        "fma:004072",
+        "fma:045100",
+        "fma:006856",
+        "fma:004078",
+        "fma:004077",
+        "fma:004080",
+        "fma:006854",
+        "fma:122363",
+        "fma:004073",
+        "fma:148234",
+        "fma:074370",
+        "fma:122360",
+        "fma:004079",
+        "fma:115775",
+        "fma:148235"
+      ],
+      "positive": "fma:004071",
+      "rejected": "fma:004074",
+      "comparedArtifactFiles": 16,
+      "anonymousContext": true,
+      "resetExact": true,
+      "refreshCleared": true,
+      "errors": [],
+      "failed": [],
+      "requestedUrls": [
+        "https://arhaan2.github.io/song-neighbors/",
+        "https://arhaan2.github.io/song-neighbors/assets/index-2jluNJET.css",
+        "https://arhaan2.github.io/song-neighbors/assets/index-DkQIysuc.js",
+        "https://arhaan2.github.io/song-neighbors/assets/recommend.worker-BUQyE7PA.js",
+        "https://arhaan2.github.io/song-neighbors/catalog/current.json",
+        "https://arhaan2.github.io/song-neighbors/catalog/fma-small-clap-general-20261104/manifest.json",
+        "https://arhaan2.github.io/song-neighbors/catalog/fma-small-clap-general-20261104/tracks.json",
+        "https://arhaan2.github.io/song-neighbors/catalog/fma-small-clap-general-20261104/build.json",
+        "https://arhaan2.github.io/song-neighbors/catalog/fma-small-clap-general-20261104/embeddings.f32"
+      ]
+    }
+  ],
+  "physicalDeviceTested": false,
+  "humanPreference": "unmeasured",
+  "expandedPublication": false
+}

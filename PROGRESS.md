@@ -14,6 +14,13 @@ Expanded acquisition awaits storage: the supplied 64 GB card had 58.20 GiB free,
 archive alone. Use an existing archive volume with at least 100 GiB free plus 8 GiB locally.
 The card and unrelated files were preserved. Phase 5B publication is incomplete.
 
+[PR #9](https://github.com/Arhaan2/song-neighbors/pull/9) merged as `7cdeff649d53383bf57b9e66888559be3ca5aa57`.
+[PR CI](https://github.com/Arhaan2/song-neighbors/actions/runs/42110864164) and
+[main CI/deployment](https://github.com/Arhaan2/song-neighbors/actions/runs/42112853463) passed after
+retrying slow Ubuntu dependency-download timeouts. Public desktop/mobile journeys matched all
+16 files to the tested artifact and verified the clean merge source. Catalog bytes and v0.1.0
+are unchanged. This evidence-only update does not redeploy the site.
+
 [Execution and review evidence](docs/phases/phase-5b.md) · [Processing status](docs/phases/phase-5b-processing.json) · [Exact resume commands](docs/PHASE_5B.md).
 
 ## Phase 5A — November 5, 2026
