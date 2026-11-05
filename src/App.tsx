@@ -1,6 +1,8 @@
-import { useMemo, useRef } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { CatalogUnavailable } from './components/CatalogUnavailable'
-import { NeighborSleeve } from './components/NeighborSleeve'
+import { DiscoveryComposition } from './components/DiscoveryComposition'
+import { SelectionPrint } from './components/SelectionPrint'
+import { composeDiscovery } from './ui/discoveryComposition'
 import { SongSearch } from './components/SongSearch'
 import { useSongNeighbors } from './ui/useSongNeighbors'
 import { recordingDescription } from './ui/search'
@@ -8,12 +10,15 @@ import './App.css'
 
 export default function App() {
   const app = useSongNeighbors()
+  const [adaptive, setAdaptive] = useState(true)
   const aboutCatalog = useRef<HTMLDetailsElement>(null)
   const resultHeading = useRef<HTMLHeadingElement>(null)
   const selectedHeading = useRef<HTMLHeadingElement>(null)
   const tracks = useMemo(() => app.catalog?.tracks ?? [], [app.catalog])
   const byId = useMemo(() => new Map(tracks.map((track) => [track.id, track])), [tracks])
   const artistCount = useMemo(() => new Set(tracks.map((track) => track.artist)).size, [tracks])
+  const composition = composeDiscovery(app, byId)
+  const artworkIds = [...app.session.seedIds, ...app.session.positiveIds, ...app.session.negativeIds.map(id => `away:${id}`)]
   const selected = app.session.seedIds.flatMap((id) => byId.get(id) ?? [])
   const positive = app.session.positiveIds.flatMap((id) => byId.get(id) ?? [])
   const negative = app.session.negativeIds.flatMap((id) => byId.get(id) ?? [])
@@ -48,13 +53,19 @@ export default function App() {
       <div className="page-heading">
         <div><h1>Discover by sound.</h1>
           <p>Choose 1–5 songs you like. Find up to 20 that sound like them.</p></div>
-        {app.catalogStatus === 'ready' && <dl className="catalog-figures" aria-label="Catalog coverage">
-          <div><dt>Songs</dt><dd>{tracks.length.toLocaleString()}</dd></div>
-          <div><dt>Artists</dt><dd>{artistCount.toLocaleString()}</dd></div>
-        </dl>}
+        {app.catalogStatus === 'ready' && <div className="heading-tools">
+          <dl className="catalog-figures" aria-label="Catalog coverage">
+            <div><dt>Songs</dt><dd>{tracks.length.toLocaleString()}</dd></div>
+            <div><dt>Artists</dt><dd>{artistCount.toLocaleString()}</dd></div>
+          </dl>
+          <div className="view-switch" role="group" aria-label="Recommendation view">
+            <button type="button" aria-pressed={adaptive} onClick={() => setAdaptive(true)}>Adaptive</button>
+            <button type="button" aria-pressed={!adaptive} onClick={() => setAdaptive(false)}>Plain list</button>
+          </div>
+        </div>}
       </div>
       {app.catalogStatus === 'ready' ? <>
-        <div className="discovery-layout">
+        <div className={`discovery-layout${adaptive ? ' is-adaptive' : ''}${app.resultStatus === 'ready' ? ' has-results' : ''}`}>
           <section className="selection-panel" aria-labelledby="selection-heading">
             <div className="section-heading"><h2 id="selection-heading" tabIndex={-1}>Your starting point</h2></div>
             <SongSearch tracks={tracks} selectedIds={app.session.seedIds} onSelect={app.addSeed} />
@@ -82,18 +93,16 @@ export default function App() {
             <p className="sr-only" role="status" aria-live="polite">{resultStatus}</p>
             {refined && <div className="refinement-panel" aria-label="Active refinement">
               <div className="refinement-heading"><h3>Refinement active</h3><button type="button" className="text-button" onClick={() => actOnResults(app.reset)}><span aria-hidden="true">↺ </span>Reset refinement</button></div>
-              <p>Preferences for this session. Your selected songs stay the starting point.</p>
               <dl className="preference-list">
                 {positive.length > 0 && <div data-testid="feedback-positive"><dt>More like</dt><dd>{positive.map((track) => `${track.title} — ${track.artist}`).join('; ')}</dd></div>}
                 {negative.length > 0 && <div data-testid="feedback-negative"><dt>Less like</dt><dd>{negative.map((track) => `${track.title} — ${track.artist}`).join('; ')}</dd></div>}
               </dl>
             </div>}
-            {app.resultStatus === 'idle' && <div className="empty-sleeve">
-              <NeighborSleeve />
-              <div className="sleeve-caption">
-                <h3>{selected.length ? 'Ready when you are.' : 'One song is enough.'}</h3>
-                <p>{selected.length ? 'Choose Recommend to find the nearest sounds in the catalog.' : 'Choose a track, then select Recommend. You can refine the list as you discover what fits your mood.'}</p>
-              </div>
+            {adaptive && (app.resultStatus === 'idle' || (app.resultStatus === 'ready' && resultCount > 0)) &&
+              <DiscoveryComposition composition={composition} artworkIds={artworkIds} />}
+            {!adaptive && app.resultStatus === 'idle' && <div className="results-message">
+              <h3>{selected.length ? 'Ready when you are.' : 'One song is enough.'}</h3>
+              <p>Choose a starting song, then select Recommend to find its neighbors.</p>
             </div>}
             {app.resultStatus === 'loading' && <div className="results-message panel" role="status"><h3>Finding your neighbors…</h3><p>Comparing the sound of your selected songs.</p></div>}
             {app.resultStatus === 'error' && <div className="results-message panel" role="alert"><h3>We couldn’t find recommendations</h3><p>{app.resultError}</p><button type="button" className="secondary-button" onClick={() => actOnResults(app.retryRecommendations)}>Retry recommendations</button></div>}
@@ -104,9 +113,10 @@ export default function App() {
                   const track = byId.get(recommendation.id)
                   const closest = byId.get(recommendation.closestSeedId)
                   if (!track) return null
-                  return <li key={track.id} className="result-card" data-testid="recommendation-card" data-track-id={track.id}>
+                  return <li key={track.id} className="result-card" id={`track-${track.id}`} tabIndex={-1} data-testid="recommendation-card" data-track-id={track.id}>
                     <span className="result-rank" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
-                    <div className="result-main">
+                    <div className={`result-main${adaptive && index === 0 ? ' result-feature' : ''}`}>
+                      {adaptive && index === 0 && <div className="result-art"><SelectionPrint ids={[track.id]} compact /></div>}
                       <h3>{track.title}</h3><p className="result-artist">{track.artist}</p>
                       <p className="recording-detail">{recordingDescription(track)}</p>
                       {closest && <p className="closest-seed"><span aria-hidden="true">↳ </span>Closest to your pick: <strong>{closest.title}</strong></p>}
@@ -129,6 +139,7 @@ export default function App() {
           <p>Song Neighbors finds recordings with similar audio in a small, prepared catalog from the Free Music Archive. Many familiar or commercial songs won’t be here. A search with no match means that recording isn’t available in this catalog.</p>
           {app.catalog && <p>This catalog contains {tracks.length.toLocaleString()} recordings from {artistCount.toLocaleString()} artist names. Recommendations use analyzed audio excerpts, usually around 30 seconds, rather than whole songs. The results are sound-based suggestions, not a measure of how much you will enjoy them.</p>}
           <p>Your selected songs are the starting point. “More like this” adds a positive preference; “Not this mood” excludes that recording and gently steers away from its sound. Feedback recordings are excluded from the results. Reset clears feedback and keeps your selected songs; editing those songs starts a fresh refinement.</p>
+          <p>Adaptive view composes artwork and context around your current selection and feedback. Its path counts come from the returned songs’ closest selected track. The artwork is a generated illustration, not an audio waveform or album cover. Plain list shows the same songs in the same order.</p>
           <p>Search and ranking run in your browser. Selections and feedback stay in memory and disappear on refresh. No account or playback is needed.</p>
           {app.catalog && <p><a href={`${import.meta.env.BASE_URL}catalog/${app.catalog.manifest.catalogVersion}/ATTRIBUTION.md`}>Catalog credits, recording licenses &amp; notices</a>. Metadata comes from the FMA dataset under CC BY 4.0; recordings retain their individual CC0 or CC BY terms. Excerpts were transformed into numerical audio representations. No endorsement is implied.</p>}
           {app.catalog && <p className="technical-note">Catalog: {app.catalog.manifest.catalogVersion}. Encoder: {app.catalog.manifest.encoder.id}, {app.catalog.manifest.dimension} dimensions. Rankings use audio similarity and session feedback; their musical usefulness has not been evaluated with listeners.</p>}
