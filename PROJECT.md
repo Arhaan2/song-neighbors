@@ -90,3 +90,30 @@ This is a prepared-catalog project. The source may not contain the user's favori
 4. Release: focused evaluation, production checks, public GitHub Pages deployment, release.
 
 Each phase has one complete prompt and ends with a report. Local technical progress may continue through independent work when publication is temporarily pending. A public recommender release requires the real-data path and required browser verification.
+
+## Phase 5A expansion preparation
+
+Phase 5A prepares an approximately 5,000-recording expansion without changing the active 500-song
+catalog, adaptive interface, ranking or session behavior. Cumulative metadata audit covers small
+(8,000), medium (25,000), and large (106,574). Expanded source-notice review finds 786 / 1,574 /
+6,258 policy-eligible records respectively; the historical small inspector still reproduces 793.
+All memberships contain the same 500 currently published IDs. Seven existing IDs have unresolved
+underlying-source grants and are explicitly held from future publication, leaving 493 eligible
+baseline IDs; the current release remains unchanged.
+
+The deterministic candidate manifest selects **4,925 records: 493 eligible baseline + 4,432 new**,
+across 756 source artist IDs / 754 display names, with a 50-per-artist cap. This is 75 below the planning
+target before audio failures/deduplication, not a claim that songs have been added. FMA-large is
+the smallest archive supporting that near-5,000 batch; its 93.42 GiB download needs additional
+storage (plan 110 GiB free on one volume, or 100 GiB for the archive plus 8 GiB locally).
+
+Acquisition now supports verified resumable small/medium/large archives and atomic selected-only
+extraction. A no-inference preflight verified 500 compatible existing caches against published
+bytes. Encoder, processor, configuration, lock and cache rules remain unchanged, including rejection
+of the earlier music checkpoint. Source content flags and exact credits are retained; metadata
+eligibility is separate from audio availability, decoding, inference, deduplication and publication.
+
+[Phase 5A report](docs/phases/phase-5a.md) · [Candidate manifest](docs/catalog/phase-5a-selection.json) · [Exact Phase 5B commands](docs/PHASE_5B.md).
+Phase 5B must handle the seven explicit publication holds, measure actual delivery performance,
+update the original-catalog evaluation/packaging assumptions, and publish only verified successes.
+No architecture redesign is required by current evidence. Human preference remains unmeasured.

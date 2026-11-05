@@ -1,4 +1,4 @@
-"""Reproducible FMA-small acquisition and per-record rights selection (standard library)."""
+"""Reproducible FMA acquisition and per-record rights selection (standard library)."""
 
 from __future__ import annotations
 
@@ -11,6 +11,7 @@ import json
 import re
 import shutil
 import subprocess
+import tempfile
 import zipfile
 from collections import Counter, defaultdict, deque
 from pathlib import Path
@@ -18,7 +19,17 @@ from urllib.parse import urlsplit, urlunsplit
 
 METADATA_SHA1 = "f0df49ffe5f2a6008d7dc83c6915b31835dfe733"
 SMALL_SHA1 = "ade154f733639d52e35e32f5593efe5be76c6d70"
-ARCHIVE_BYTES = {"metadata": 358_412_441, "small": 7_679_594_875}
+MEDIUM_SHA1 = "c67b69ea232021025fca9231fc1c7c1a063ab50b"
+LARGE_SHA1 = "497109f4dd721066b5ce5e5f250ec604dc78939e"
+# Official archive HEAD Content-Length, verified 2026-11-05. No full-length archive.
+ARCHIVE_BYTES = {
+    "metadata": 358_412_441,
+    "small": 7_679_594_875,
+    "medium": 23_825_005_356,
+    "large": 100_306_112_191,
+}
+AUDIO_SUBSETS = ("small", "medium", "large")
+DISK_RESERVE_BYTES = 2_000_000_000
 DATASET_VERSION = "2017-05-09-rc1"
 POLICY_VERSION = "fma-explicit-cc0-by-v1"
 SOURCE = "https://github.com/mdeff/fma"
@@ -356,27 +367,42 @@ def write_json(path: Path, value: dict) -> None:
     temp.replace(path)
 
 
+def archive_identity(kind: str) -> tuple[str, str]:
+    checksums = {
+        "metadata": METADATA_SHA1,
+        "small": SMALL_SHA1,
+        "medium": MEDIUM_SHA1,
+        "large": LARGE_SHA1,
+    }
+    if kind not in checksums:
+        raise ValueError(f"Unsupported FMA archive: {kind}")
+    return f"fma_{kind}.zip", checksums[kind]
+
+
 def download(kind: str, cache: Path) -> None:
+    name, expected = archive_identity(kind)
     cache.mkdir(parents=True, exist_ok=True)
-    name = "fma_metadata.zip" if kind == "metadata" else "fma_small.zip"
-    expected = METADATA_SHA1 if kind == "metadata" else SMALL_SHA1
     target = cache / name
     if target.exists():
         verify_archive(target, expected)
         print(json.dumps({"file": name, "reused": True, "sha256": digest(target)}))
         return
     partial = cache / (name + ".part")
-    # A completed transfer can be interrupted before its final verification/rename.
-    # Verify and adopt it locally instead of requesting bytes beyond EOF (HTTP 416).
-    if partial.exists() and partial.stat().st_size == ARCHIVE_BYTES[kind]:
+    partial_size = partial.stat().st_size if partial.exists() else 0
+    if partial_size > ARCHIVE_BYTES[kind]:
+        raise ValueError(f"Partial {name} exceeds expected archive size; retain for inspection")
+    # Adopt a completed transfer interrupted before verification/rename, avoiding HTTP 416.
+    if partial_size == ARCHIVE_BYTES[kind]:
         verify_archive(partial, expected)
         partial.replace(target)
         print(json.dumps({"file": name, "reused": True, "sha256": digest(target)}))
         return
-    required = 500_000_000 if kind == "metadata" else 9_000_000_000
-    remaining = required - (partial.stat().st_size if partial.exists() else 0)
-    if shutil.disk_usage(cache).free < max(remaining, 0) + 2_000_000_000:
-        raise ValueError("Insufficient free disk space (including 2GB reserve)")
+    remaining = ARCHIVE_BYTES[kind] - partial_size
+    if shutil.disk_usage(cache).free < remaining + DISK_RESERVE_BYTES:
+        raise ValueError(
+            f"Insufficient free disk space for {name}: need {remaining + DISK_RESERVE_BYTES} "
+            "bytes including 2GB reserve; selected extraction needs additional space"
+        )
     subprocess.run(
         [
             "curl",
@@ -397,33 +423,118 @@ def download(kind: str, cache: Path) -> None:
     print(json.dumps({"file": name, "reused": False, "sha256": digest(target)}))
 
 
-def extract_selected(archive: Path, selection: dict, output: Path) -> None:
-    verify_archive(archive, SMALL_SHA1)
-    output.mkdir(parents=True, exist_ok=True)
+def extract_selected(archive: Path, selection: dict, output: Path, subset: str = "small") -> dict:
+    """Verify the chosen cumulative archive, preflight all records, then atomically extract.
+
+    Reruns compare existing files to the verified ZIP member's SHA-256 and reuse exact bytes.
+    Archive kind is explicit, never inferred from recording IDs or the ZIP's filename.
+    """
+    from catalog import eligible_record
+
+    if subset not in AUDIO_SUBSETS:
+        raise ValueError(f"Unsupported audio subset: {subset}")
+    _, expected = archive_identity(subset)
+    verify_archive(archive, expected)
+    allowed_sources = {f"fma-{name}" for name in AUDIO_SUBSETS[: AUDIO_SUBSETS.index(subset) + 1]}
+    records = selection["records"]
+    if not records:
+        raise ValueError("Selection contains no recordings")
+    seen = set()
+    pending = []
+    selected_bytes = 0
+    reused = 0
     with zipfile.ZipFile(archive) as z:
-        for record in selection["records"]:
-            tid = f"{int(record['provenance']['sourceRecordId']):06d}"
-            relative = f"{tid[:3]}/{tid}.mp3"
-            if record["audioPath"] != relative or record["id"] != f"fma:{tid}":
-                raise ValueError("Selection identity/audio path mismatch")
-            if canonical_license(record["provenance"]["recordingLicense"]["url"]) is None:
-                raise ValueError("Selection has disallowed license")
-            target = output / relative
-            if not target.resolve().is_relative_to(output.resolve()):
-                raise ValueError("Audio target escapes selected output directory")
+        member_counts = Counter(z.namelist())
+        for record in records:
+            identifier = record.get("id", "missing-id")
+            try:
+                eligible_record(record)
+                provenance = record["provenance"]
+                if provenance["datasetId"] not in allowed_sources:
+                    raise ValueError("record belongs to a larger or unknown source subset")
+                if provenance["datasetVersion"] != DATASET_VERSION:
+                    raise ValueError("source dataset version mismatch")
+                source_id = provenance["sourceRecordId"]
+                if not re.fullmatch(r"[1-9][0-9]*", source_id):
+                    raise ValueError("invalid source recording ID")
+                tid = f"{int(source_id):06d}"
+                relative = f"{tid[:3]}/{tid}.mp3"
+                if record["audioPath"] != relative or identifier != f"fma:{tid}":
+                    raise ValueError("selection identity/audio path mismatch")
+                if identifier in seen:
+                    raise ValueError("duplicate recording ID in selection")
+                seen.add(identifier)
+                target = output / relative
+                if not target.resolve().is_relative_to(output.resolve()):
+                    raise ValueError("audio target escapes selected output directory")
+                name = f"fma_{subset}/{relative}"
+                if member_counts[name] != 1:
+                    raise ValueError("selected archive member missing or duplicated")
+                info = z.getinfo(name)
+                if info.is_dir() or info.file_size <= 0:
+                    raise ValueError("selected archive member is empty or not a file")
+                selected_bytes += info.file_size
+                if target.is_file() and target.stat().st_size == info.file_size:
+                    with z.open(info) as source:
+                        member_sha = hashlib.file_digest(source, "sha256").hexdigest()
+                    if digest(target) == member_sha:
+                        reused += 1
+                        continue
+                if target.exists() and not target.is_file():
+                    raise ValueError("selected output is not a regular file")
+                pending.append((identifier, info, target))
+            except (KeyError, TypeError, ValueError) as error:
+                raise ValueError(f"{identifier}: {error}") from error
+        # Account for final growth plus one atomic replacement while its old bytes still exist.
+        growth = sum(
+            max(0, info.file_size - (p.stat().st_size if p.exists() else 0))
+            for _, info, p in pending
+        )
+        temporary = max((info.file_size for _, info, _ in pending), default=0)
+        ancestor = output.resolve()
+        while not ancestor.exists():
+            ancestor = ancestor.parent
+        required = growth + temporary + DISK_RESERVE_BYTES
+        if pending and shutil.disk_usage(ancestor).free < required:
+            raise ValueError(
+                f"Insufficient extraction space: need {required} bytes including 2GB reserve"
+            )
+        for identifier, info, target in pending:
             target.parent.mkdir(parents=True, exist_ok=True)
-            temp = target.with_suffix(".mp3.tmp")
-            with z.open("fma_small/" + relative) as source, temp.open("wb") as dest:
-                shutil.copyfileobj(source, dest)
-            temp.replace(target)
-    print(json.dumps({"extracted": len(selection["records"]), "archiveSha256": digest(archive)}))
+            temp = None
+            try:
+                with tempfile.NamedTemporaryFile(
+                    dir=target.parent, suffix=".mp3.tmp", delete=False
+                ) as dest:
+                    temp = Path(dest.name)
+                    with z.open(info) as source:
+                        shutil.copyfileobj(source, dest)
+                temp.replace(target)
+            except (OSError, RuntimeError, zipfile.BadZipFile) as error:
+                raise ValueError(
+                    f"{identifier}: extraction failed: {type(error).__name__}"
+                ) from error
+            finally:
+                if temp is not None:
+                    temp.unlink(missing_ok=True)
+    result = {
+        "subset": subset,
+        "selected": len(records),
+        "selectedBytes": selected_bytes,
+        "extracted": len(pending),
+        "reused": reused,
+        "archiveSha1": expected,
+        "archiveSha256": digest(archive),
+    }
+    print(json.dumps(result))
+    return result
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest="command", required=True)
     acquire = commands.add_parser("download")
-    acquire.add_argument("kind", choices=["metadata", "small"])
+    acquire.add_argument("kind", choices=["metadata", *AUDIO_SUBSETS])
     acquire.add_argument("--cache", type=Path, required=True)
     inspect = commands.add_parser("inspect")
     inspect.add_argument("--metadata-archive", type=Path, required=True)
@@ -432,6 +543,7 @@ def main() -> None:
     inspect.add_argument("--report", type=Path, required=True)
     extract = commands.add_parser("extract")
     extract.add_argument("--audio-archive", type=Path, required=True)
+    extract.add_argument("--subset", choices=AUDIO_SUBSETS, default="small")
     extract.add_argument("--selection", type=Path, required=True)
     extract.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
@@ -454,7 +566,9 @@ def main() -> None:
             )
         )
     else:
-        extract_selected(args.audio_archive, json.loads(args.selection.read_text()), args.output)
+        extract_selected(
+            args.audio_archive, json.loads(args.selection.read_text()), args.output, args.subset
+        )
 
 
 if __name__ == "__main__":

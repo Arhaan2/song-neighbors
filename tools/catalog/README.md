@@ -1,6 +1,7 @@
 # Offline audio catalog
 
-The pipeline acquires official FMA-small metadata/audio, applies the narrow record-level policy,
+The pipeline audits cumulative FMA small/medium/large metadata, acquires the selected official
+audio archive, applies the narrow record-level policy,
 and runs genuine CPU CLAP inference. Heavy dependencies are an **optional** `inference` extra;
 ordinary web CI validates the committed export without downloading music or model weights.
 Run these commands from the repository root with Python 3.12, uv, curl, and Node 24 available.
@@ -19,9 +20,11 @@ uv run --project tools/catalog --locked python tools/catalog/source.py inspect \
 `source.py` verifies the upstream SHA-1, hashes the exact archive with SHA-256, joins actual
 small-subset IDs to raw record license URLs, preserves attribution/copyright statements, and
 writes inclusion/exclusion evidence. `tracks.csv` license labels alone are insufficient to infer
-license versions. Inspect the report before the larger download. The only audio archive supported
-by the downloader is the approximately 7.2 GiB **small** archive; no full/larger datasets or remote
-ZIP range infrastructure is used. Downloads resume through curl and require disk-space reserves.
+license versions. Inspect the report before the larger download. The historical command below preserves the original small selection. The downloader also
+supports `medium` (22.19 GiB) and `large` (93.42 GiB); these are cumulative archives, not
+additional disjoint pools. No full-length dataset or remote ZIP range infrastructure is used.
+Downloads resume through curl and require disk-space reserves. Phase 5A does not download either
+larger audio archive; see the [Phase 5B runbook](../../docs/PHASE_5B.md).
 
 ```sh
 uv run --project tools/catalog --locked python tools/catalog/source.py download small --cache .cache/catalog
@@ -146,3 +149,48 @@ failure recovery, cache compatibility, atomic replacement and license rejection.
 establish real inference. The separately recorded real smoke must do that. The Node validator
 rejects unknown/incompatible configuration, missing provenance, mismatched row counts/hashes,
 nonfinite/zero/non-normalized vectors and incorrect byte counts without loading Torch.
+
+## Phase 5A expansion preparation
+
+[Audit report](../../docs/phases/phase-5a.md) · [Candidate manifest](../../docs/catalog/phase-5a-selection.json) · [Executable Phase 5B runbook](../../docs/PHASE_5B.md)
+
+The original `source.py inspect` behavior remains unchanged. `expansion.py` audits all three
+cumulative memberships, applies the exact original URL allowlist plus documented immutable notice
+review, preserves stable IDs and source provenance, records explicit holds affecting published IDs,
+and selects deterministically with a global cap of 50
+recordings per source artist ID. It defers likely nonmusical additions on specific source evidence.
+Metadata eligibility does not establish new audio availability, decoding, inference or publication.
+
+Reproduce the metadata work without acquiring audio or loading model weights:
+
+```sh
+uv run --project tools/catalog --locked python tools/catalog/expansion.py audit \
+  --metadata-archive .cache/catalog/fma_metadata.zip \
+  --manifest docs/catalog/phase-5a-selection.json --report docs/phases/phase-5a-audit.json \
+  --selection .cache/catalog/phase-5a-selection.json \
+  --additions-selection .cache/catalog/phase-5b-additions.json \
+  --evidence .cache/catalog/phase-5a-source-evidence.json
+uv run --project tools/catalog --locked python tools/catalog/delivery.py \
+  --selection .cache/catalog/phase-5a-selection.json --output docs/phases/phase-5a-delivery.json
+```
+
+Use `materialize` instead of `audit` when consuming the committed candidate manifest: it recomputes
+and compares that exact manifest before writing the full local selection. `--subset` defaults to
+`large`, `--target-total` to 5000, and `--artist-cap` to 50. The lower cumulative subsets are reported
+in every audit. Selection is bounded by actual eligible variety; no count is guaranteed. Detailed
+exact metadata evidence remains ignored, reproducible from the checked archive and bound by hashes.
+Currently published IDs with newly found unresolved rights are explicitly held from the future
+selection; the active catalog remains unchanged. Applicable newly identified credits augment
+future attribution without changing audio/cache compatibility.
+
+`source.py extract --subset small|medium|large` verifies the explicitly chosen archive and its root,
+preflights IDs/provenance/licenses/members/disk space, and writes only selected files atomically.
+Reruns hash matching members before reusing local audio. The default remains `small`. Extract only
+new IDs into the existing audio root to preserve baseline bytes across overlapping archives.
+
+`preflight.py --audio-root .cache/catalog/fma_small` (with the locked inference extra installed)
+checks the current manifest and all artifact hashes, pinned model files, exact runtime configuration,
+source audio and cached vector bytes without instantiating the encoder or inferring anything.
+A nonzero result is a Phase 5B prerequisite failure, with public-safe categories and local stderr
+details. `delivery.py` measures existing formats and candidate text to estimate expanded sizes;
+its output is not a catalog and generates no vectors.
