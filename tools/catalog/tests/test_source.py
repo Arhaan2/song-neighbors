@@ -189,5 +189,192 @@ class SourcePolicyTests(unittest.TestCase):
         self.assertEqual(chosen, diverse_selection(list(reversed(candidates)), 3))
 
 
+class ArchivePreparationTests(unittest.TestCase):
+    """ZIP bodies are text fixtures, not audio or model inputs."""
+
+    def record(self, tid="12", subset="small"):
+        record, _ = record_for(
+            tid,
+            {},
+            {
+                "license_url": "https://creativecommons.org/licenses/by/4.0/",
+                "license_title": "Attribution",
+                "track_url": "https://freemusicarchive.org/music/Fixture/Test/",
+                "track_title": "Isolated archive fixture",
+                "artist_name": "Fixture Artist",
+            },
+        )
+        record["provenance"]["datasetId"] = f"fma-{subset}"
+        return record
+
+    def archive(self, folder, subset="small", ids=("12",)):
+        archive = folder / f"fma_{subset}.zip"
+        with zipfile.ZipFile(archive, "w") as z:
+            for tid in ids:
+                padded = f"{int(tid):06d}"
+                z.writestr(f"fma_{subset}/{padded[:3]}/{padded}.mp3", f"fixture only {tid}")
+            z.writestr(f"fma_{subset}/999/999999.mp3", "unselected fixture")
+        return archive
+
+    def test_cumulative_archives_extract_only_selected_and_reuse_verified_bytes(self):
+        import hashlib
+
+        from source import extract_selected
+
+        for subset in ("small", "medium", "large"):
+            with self.subTest(subset=subset), tempfile.TemporaryDirectory() as tmp:
+                folder = Path(tmp)
+                archive = self.archive(folder, subset)
+                output = folder / "selected"
+                selection = {"records": [self.record()]}
+                checksum = hashlib.sha1(archive.read_bytes()).hexdigest()
+                with patch(f"source.{subset.upper()}_SHA1", checksum):
+                    first = extract_selected(archive, selection, output, subset)
+                    self.assertEqual(first["extracted"], 1)
+                    self.assertEqual(first["reused"], 0)
+                    target = output / "000/000012.mp3"
+                    original_mtime = target.stat().st_mtime_ns
+                    second = extract_selected(archive, selection, output, subset)
+                    self.assertEqual(second["extracted"], 0)
+                    self.assertEqual(second["reused"], 1)
+                    self.assertEqual(target.stat().st_mtime_ns, original_mtime)
+                    # Same-length corruption must be replaced, not trusted by size/CRC assumptions.
+                    target.write_bytes(b"X" * target.stat().st_size)
+                    third = extract_selected(archive, selection, output, subset)
+                    self.assertEqual(third["extracted"], 1)
+                    self.assertEqual(target.read_bytes(), b"fixture only 12")
+                    self.assertEqual(list(output.rglob("*.mp3")), [target])
+
+    def test_archive_choice_integrity_and_subset_are_enforced(self):
+        from source import extract_selected
+
+        with tempfile.TemporaryDirectory() as tmp:
+            folder = Path(tmp)
+            archive = self.archive(folder, "medium")
+            output = folder / "selected"
+            with self.assertRaisesRegex(ValueError, "SHA-1 mismatch"):
+                extract_selected(archive, {"records": [self.record()]}, output)
+            with patch("source.verify_archive"):
+                with self.assertRaisesRegex(ValueError, "larger or unknown"):
+                    extract_selected(
+                        archive, {"records": [self.record(subset="large")]}, output, "medium"
+                    )
+                with self.assertRaisesRegex(ValueError, "missing or duplicated"):
+                    extract_selected(archive, {"records": [self.record()]}, output, "small")
+            self.assertFalse(output.exists())
+
+    def test_all_records_preflight_before_any_writes(self):
+        from source import extract_selected
+
+        for kind in ("missing", "duplicate", "path", "license", "version", "provenance"):
+            with self.subTest(kind=kind), tempfile.TemporaryDirectory() as tmp:
+                folder = Path(tmp)
+                archive = self.archive(folder)
+                good = self.record()
+                bad = self.record("13")
+                if kind == "duplicate":
+                    bad = good
+                elif kind == "path":
+                    bad["audioPath"] = "../escape.mp3"
+                elif kind == "license":
+                    bad["provenance"]["recordingLicense"]["url"] = (
+                        "https://creativecommons.org/licenses/by-nc/4.0/"
+                    )
+                elif kind == "version":
+                    bad["provenance"]["datasetVersion"] = "unknown"
+                elif kind == "provenance":
+                    bad["provenance"]["recordingLicense"]["attribution"] = ""
+                with patch("source.verify_archive"), self.assertRaises(ValueError):
+                    extract_selected(archive, {"records": [good, bad]}, folder / "selected")
+                self.assertFalse((folder / "selected").exists())
+
+    def test_extraction_space_and_failure_preserve_existing_files(self):
+        from types import SimpleNamespace
+
+        from source import extract_selected
+
+        with tempfile.TemporaryDirectory() as tmp:
+            folder = Path(tmp)
+            archive = self.archive(folder)
+            output = folder / "selected"
+            selection = {"records": [self.record()]}
+            with (
+                patch("source.verify_archive"),
+                patch("source.shutil.disk_usage", return_value=SimpleNamespace(free=0)),
+            ):
+                with self.assertRaisesRegex(ValueError, "Insufficient extraction space"):
+                    extract_selected(archive, selection, output)
+            self.assertFalse(output.exists())
+            target = output / "000/000012.mp3"
+            target.parent.mkdir(parents=True)
+            target.write_bytes(b"previous fixture")
+            with (
+                patch("source.verify_archive"),
+                patch("source.shutil.copyfileobj", side_effect=OSError("fixture failure")),
+            ):
+                with self.assertRaisesRegex(ValueError, "fma:000012: extraction failed: OSError"):
+                    extract_selected(archive, selection, output)
+            self.assertEqual(target.read_bytes(), b"previous fixture")
+            self.assertEqual(list(output.rglob("*.tmp")), [])
+
+    def test_medium_download_resumes_correct_archive_with_exact_space_budget(self):
+        import hashlib
+        from types import SimpleNamespace
+
+        from source import DISK_RESERVE_BYTES, download
+
+        with tempfile.TemporaryDirectory() as tmp:
+            cache = Path(tmp)
+            body = b"isolated medium download fixture"
+            partial = cache / "fma_medium.zip.part"
+            partial.write_bytes(body[:5])
+
+            def complete(command, **kwargs):
+                self.assertIn("--continue-at", command)
+                self.assertEqual(command[-1], "https://os.unil.cloud.switch.ch/fma/fma_medium.zip")
+                partial.write_bytes(body)
+
+            with (
+                patch("source.ARCHIVE_BYTES", {"medium": len(body)}),
+                patch("source.MEDIUM_SHA1", hashlib.sha1(body).hexdigest()),
+                patch(
+                    "source.shutil.disk_usage",
+                    return_value=SimpleNamespace(free=len(body) - 5 + DISK_RESERVE_BYTES),
+                ),
+                patch("source.subprocess.run", side_effect=complete) as network,
+            ):
+                download("medium", cache)
+                network.assert_called_once()
+            self.assertEqual((cache / "fma_medium.zip").read_bytes(), body)
+            self.assertFalse(partial.exists())
+
+    def test_download_refuses_insufficient_space_and_oversized_part_without_network(self):
+        from types import SimpleNamespace
+
+        from source import download
+
+        with tempfile.TemporaryDirectory() as tmp:
+            cache = Path(tmp)
+            with (
+                patch("source.shutil.disk_usage", return_value=SimpleNamespace(free=0)),
+                patch("source.subprocess.run") as network,
+            ):
+                with self.assertRaisesRegex(
+                    ValueError, "Insufficient free disk space for fma_large.zip"
+                ):
+                    download("large", cache)
+                network.assert_not_called()
+            partial = cache / "fma_medium.zip.part"
+            partial.write_bytes(b"oversized fixture")
+            with (
+                patch("source.ARCHIVE_BYTES", {"medium": 1}),
+                patch("source.subprocess.run") as network,
+            ):
+                with self.assertRaisesRegex(ValueError, "exceeds expected"):
+                    download("medium", cache)
+                network.assert_not_called()
+            self.assertTrue(partial.exists())
+
+
 if __name__ == "__main__":
     unittest.main()

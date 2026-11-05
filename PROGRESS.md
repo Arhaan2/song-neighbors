@@ -1,5 +1,26 @@
 # Song Neighbors Progress
 
+## Phase 5A — November 5, 2026
+
+Expanded metadata audit and ingestion preparation are implemented. The active live catalog remains
+**500 recordings; zero songs were added in this phase**. Reviewed cumulative capacity is 786 small,
+1,574 medium and 6,258 large; original small-only rules still reproduce 793. Seven currently published
+IDs have unresolved source-rights evidence and are held from the next publication, leaving 493
+cleared existing IDs. [The report](docs/phases/phase-5a.md) lists every hold and limitation.
+
+The committed deterministic candidate manifest targets **4,925 total: 493 existing + 4,432 additions**,
+with a 50-record source-artist cap and 75-record planning shortfall. Full audio availability, decoding,
+inference and deduplication of additions remain unverified. Recommend FMA-large (93.42 GiB ZIP);
+Phase 5B needs more storage. Existing 500 embedding-cache entries still match the active configuration
+and published bytes. Current product/UI/ranking and active public artifacts were not changed.
+
+Local web verification passed 75 unit tests, 20 Chromium desktop/mobile cases, lint, TypeScript,
+ready-catalog validation, real-catalog evaluation, production build and artifact audit. All 34 Python
+tests and Ruff checks passed. Independent review reproduced the audit/selection and verified all
+4,925 evidence hashes; policy/credit findings were repaired. See the Phase 5A report for detail.
+
+[Candidate manifest](docs/catalog/phase-5a-selection.json) · [Exact Phase 5B runbook](docs/PHASE_5B.md).
+
 ## Current site — November 5, 2026
 
 The **adaptive visual interface is live**. [PR #7](https://github.com/Arhaan2/song-neighbors/pull/7) integrated the reviewed code as `3bb26009059ee277b18817207287ab2ef8d5335d`, the exact source in [live build-info.json](https://arhaan2.github.io/song-neighbors/build-info.json). The [main workflow](https://github.com/Arhaan2/song-neighbors/actions/runs/42094331153) passed validation, built once, ran 20 production-browser cases and successfully deployed that artifact.

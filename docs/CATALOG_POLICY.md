@@ -10,7 +10,7 @@ Use the official FMA project as the initial reproducible source candidate: <http
 
 The repository lists an FMA-small archive of 8,000 thirty-second clips, approximately 7.2 GiB, and a metadata archive of approximately 342 MiB. Its metadata is CC BY 4.0; recordings retain individual artist-selected licenses. These facts do not establish how many records meet this project's allowlist. Count them during Phase 1.
 
-Download metadata first. Use the current official links and checksum instructions. The plan has not verified successful archive transfer on the user's machine. Inspect disk space and avoid full/medium/large archives. A straightforward one-time small-archive download into an ignored cache is sufficient; remote ZIP range machinery is not a v1 requirement.
+Download metadata first. Use the current official links and checksum instructions. The plan has not verified successful archive transfer on the user's machine. For the initial Phase 1, inspect disk space and avoid full/medium/large archives. A straightforward one-time small-archive download into an ignored cache is sufficient; remote ZIP range machinery is not a v1 requirement.
 
 Official archive links published by the project:
 
@@ -96,3 +96,29 @@ Mixed compilation notices are evaluated by named track, so a restriction on anot
 or on unshipped artwork does not silently change an included recording's explicit license.
 The complete counted selection and per-record exclusions are in
 [the source audit](phases/phase-1-source-audit.json).
+
+## Phase 5A cumulative expansion
+
+Phase 5A audits the checksum-verified metadata across cumulative small (8,000), medium
+(25,000), and large (106,574) memberships. CSV subset labels identify the smallest membership,
+so medium includes small and large includes both. The original small audit and narrow URL
+allowlist remain unchanged; new source coverage is not new permission. Stable `fma:` IDs are
+independent of archive size. Phase 5B may acquire the chosen larger 30-second archive under the
+[runbook](PHASE_5B.md); full-length audio is outside this expansion.
+
+`tools/catalog/expansion.py` binds additional notice adjudications and preserved credits to the
+exact rc1 archive. [The Phase 5A audit](phases/phase-5a-audit.json) records each decision and
+per-record exclusions. New conflicts or unresolved credit/permission requirements fail closed;
+scoped restrictions on another compilation track, unshipped artwork or quoted biography are
+not silently applied to unrelated recording grants. Raw track/album/artist evidence can be
+reconstructed into ignored storage; the public candidate manifest hashes each selected record's
+exact evidence. Applicable contributor credits remain in materialized attribution.
+
+Selection content deferrals are separate from license eligibility: source Spoken/Sound Effects
+tags, an explicitly described crowd sound-effects collection, and researcher-conversation/radio
+episodes flag likely nonmusical additions.
+Field Recordings is an uncertainty flag, not an exclusion; ambient, experimental and instrumental
+music remain eligible. The active published artifact remains unchanged in Phase 5A. Explicitly identified source-rights
+holds omit affected IDs from the future selection without renumbering them or silently changing
+existing releases; the audit records the current publication review obligation. No source-genre label
+establishes listener preference, successful audio analysis, or exhaustive duplicate recognition.
