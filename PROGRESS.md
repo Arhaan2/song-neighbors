@@ -1,8 +1,18 @@
 # Song Neighbors Progress
 
-## Current site — November 4, 2026
+## Current site — November 5, 2026
 
-[The redesigned discovery interface is live](https://arhaan2.github.io/song-neighbors/). [PR #6](https://github.com/Arhaan2/song-neighbors/pull/6) merged as `3cd2af55a0a40da0171e16bd60f769b6c5034249`. The [main workflow](https://github.com/Arhaan2/song-neighbors/actions/runs/41936739134) passed web, catalog and Python checks, tested the production build in 18 Chromium cases, and deployed the tested Pages artifact. Its [live build identity](https://arhaan2.github.io/song-neighbors/build-info.json) names the same source and the unchanged catalog `fma-small-clap-general-20261104`.
+The **adaptive visual interface is live**. [PR #7](https://github.com/Arhaan2/song-neighbors/pull/7) integrated the reviewed code as `3bb26009059ee277b18817207287ab2ef8d5335d`, the exact source in [live build-info.json](https://arhaan2.github.io/song-neighbors/build-info.json). The [main workflow](https://github.com/Arhaan2/song-neighbors/actions/runs/42094331153) passed validation, built once, ran 20 production-browser cases and successfully deployed that artifact.
+
+The interface composes selection-specific artwork, one- or multi-song context, and paths based on actual closest-seed counts. Plain list retains identical results and controls. The catalog, ranking engine, worker and session controller are unchanged. Independent review compared 80 ranking positions to the previous live site; all matched. Human listening remains unmeasured.
+
+Local verification passed 75 unit tests, lint, TypeScript, catalog validation and artifact audit. Four subsequent public Chromium checks (desktop and mobile) passed the release and generated-view journeys. Each release journey matched all 16 public files to artifact `13445923984`; generated-view checks verified all five lane counts, view-switch rank preservation, feedback, exact artwork/list reset, text reflow and refresh. The repository remains PUBLIC. No deployment or verification blocker remains.
+
+[Implementation and review notes](docs/DESIGN.md#adaptive-visual-interface) · [Live browser evidence](docs/phases/generative-browser.json) · [Desktop](docs/phases/assets/generative-desktop.png) · [Mobile](docs/phases/assets/generative-mobile.png)
+
+## Record-catalog redesign — November 4, 2026
+
+[The redesigned discovery interface is live](https://arhaan2.github.io/song-neighbors/). [PR #6](https://github.com/Arhaan2/song-neighbors/pull/6) merged as `3cd2af55a0a40da0171e16bd60f769b6c5034249`. The [main workflow](https://github.com/Arhaan2/song-neighbors/actions/runs/41936739134) passed web, catalog and Python checks, tested the production build in 18 Chromium cases, and deployed the tested Pages artifact. At that deployment, its build identity named the same source and the unchanged catalog `fma-small-clap-general-20261104`.
 
 Separate signed-out Chromium desktop and mobile journeys each matched all 16 public files to workflow artifact `13373688657` and verified one- and five-song selection, ranking, both feedback actions, exact reset and refresh with no page or request errors. Independent before/after comparisons found identical results at all 80 ranked positions inspected. The original v0.1.0 tag remains on its historical source.
 
