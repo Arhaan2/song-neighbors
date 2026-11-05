@@ -189,3 +189,30 @@ can be integrated independently of the storage prerequisite; **songs added to li
 [Exact Phase 5B commands/prerequisites](../PHASE_5B.md) cover deterministic materialization,
 acquisition, additions-only extraction, a real new-audio smoke, full compatible-cache run,
 validation, measured delivery checks and reviewed publication. Stop here at Phase 5A.
+
+## Integration and public verification
+
+[PR #8](https://github.com/Arhaan2/song-neighbors/pull/8) integrated reviewed implementation
+`0b6f6b4013bb4981af6653e3d5cb5d11f5313810` as main
+`4b1cd5999ab613d46e945eb06abcd130b897bc25`; their Git trees match.
+[PR CI 42104050094](https://github.com/Arhaan2/song-neighbors/actions/runs/42104050094) passed.
+[Main CI 42104313405](https://github.com/Arhaan2/song-neighbors/actions/runs/42104313405) passed
+web/Python checks, the 20-case production-browser suite, artifact audit and deployment.
+
+The live `build-info.json` identifies that clean merge source. A separate public check matched
+the pointer plus all five catalog artifacts byte-for-byte to the unchanged local catalog. Then
+**2/2 signed-out public Chromium release journeys** (desktop/mobile, 7.4 s) passed and matched
+all 16 public artifact files to the clean integrated build:
+
+```sh
+npm run build
+npm run audit:release
+RELEASE_BASE_URL=https://arhaan2.github.io/song-neighbors/ PLAYWRIGHT_CHANNEL=chrome \
+  npm run test:e2e -- tests/e2e/release.spec.ts
+```
+
+Repository visibility remains PUBLIC. `v0.1.0` still resolves to its historical source
+`f8c6260985bbb4de1a041e42e2b1959522aa88b6`. No audio/cache/environment files are tracked.
+This final evidence-only documentation update is separate from the verified deployed merge;
+it does not move the release tag or redeploy unchanged assets. Phase 5A has no remaining blocker.
+Phase 5B's smallest storage resolution and seven source-policy holds are explicit above.

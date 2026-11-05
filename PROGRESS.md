@@ -19,6 +19,15 @@ ready-catalog validation, real-catalog evaluation, production build and artifact
 tests and Ruff checks passed. Independent review reproduced the audit/selection and verified all
 4,925 evidence hashes; policy/credit findings were repaired. See the Phase 5A report for detail.
 
+[PR #8](https://github.com/Arhaan2/song-neighbors/pull/8) merged as
+`4b1cd5999ab613d46e945eb06abcd130b897bc25`. [PR CI](https://github.com/Arhaan2/song-neighbors/actions/runs/42104050094)
+and [main CI/deployment](https://github.com/Arhaan2/song-neighbors/actions/runs/42104313405) passed.
+The live build identifies that clean merge; two signed-out public desktop/mobile release journeys
+passed and matched all 16 artifact files. Public pointer/catalog bytes remain unchanged. Repository
+visibility is PUBLIC and the original release tag is preserved. Phase 5A has no remaining blocker;
+the next phase needs storage and actual audio-stage verification. This evidence-only update does
+not redeploy unchanged assets.
+
 [Candidate manifest](docs/catalog/phase-5a-selection.json) · [Exact Phase 5B runbook](docs/PHASE_5B.md).
 
 ## Current site — November 5, 2026
